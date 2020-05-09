@@ -1,0 +1,11 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:CryptoCalc">
+    
+    <Color x:Key="Black">#000000</Color>
+    <SolidColorBrush x:Key="BlackBrush" Color="{StaticResource Black}" />
+
+    <Color x:Key="White">#ffffff</Color>
+    <SolidColorBrush x:Key="WhiteBrush" Color="{StaticResource White}" />
+    
+</ResourceDictionary>
