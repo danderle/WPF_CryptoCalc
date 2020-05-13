@@ -2,25 +2,18 @@
 
 namespace CryptoCalc
 {
-    /// <summary>
-    /// A base page for all pages to gain base functionality
-    /// </summary>
-    public class BasePage : BaseUserControl
-    {
-    }
 
     /// <summary>
     /// A base page for all pages to gain base functionality
     /// </summary>
-    public class BasePage<VM> : BasePage
-        where VM : BaseViewModel, new()
+    public class BasePage : BaseUserControl
     {
         #region Private Member
 
         /// <summary>
         /// The View Model associated with this page
         /// </summary>
-        private VM viewModel;
+        private object viewModelObject;
 
         #endregion
 
@@ -29,21 +22,41 @@ namespace CryptoCalc
         /// <summary>
         /// The View Model associated with this page
         /// </summary>
-        public VM ViewModel
+        public object ViewModelObject
         {
-            get { return viewModel; }
+            get { return viewModelObject; }
             set
             {
                 // If nothing has changed, return
-                if (viewModel == value)
+                if (viewModelObject == value)
                     return;
 
                 // Update the value
-                viewModel = value;
+                viewModelObject = value;
 
                 // Set the data context for this page
-                this.DataContext = viewModel;
+                DataContext = viewModelObject;
             }
+        }
+
+        #endregion
+    }
+
+    /// <summary>
+    /// A base page for all pages to gain base functionality
+    /// </summary>
+    public class BasePage<VM> : BasePage
+        where VM : BaseViewModel, new()
+    {
+        #region Public Properties
+
+        /// <summary>
+        /// The view model associated with this page
+        /// </summary>
+        public VM ViewModel
+        {
+            get => (VM)ViewModelObject;
+            set => ViewModelObject = value;
         }
 
         #endregion
@@ -53,13 +66,28 @@ namespace CryptoCalc
         /// <summary>
         /// Default constructor
         /// </summary>
-        public BasePage()
+        public BasePage() : base()
         {
             // Create a default view model
-            this.ViewModel = new VM();
+            ViewModel = Ioc.Get<VM>();
         }
 
-        
+        /// <summary>
+        /// Constructor with a specific view model
+        /// </summary>
+        public BasePage(VM specificViewModel = null) : base()
+        {
+            // Set specific view model
+            if(specificViewModel != null)
+            {
+                ViewModel = specificViewModel;
+            }
+            else
+            {
+                //Create a default view model
+                ViewModel = Ioc.Get<VM>();
+            }
+        }
         #endregion
     }
 }
