@@ -11,10 +11,10 @@
         Width="800">
 
     <Grid>
-        <local:PageHost Grid.Column="1"
-                        DataContext="{Binding ApplicationViewModel.CurrentPage,
-            Source={x:Static local:ViewModelLocator.Instance},
-            Converter={local:ApplicationPageValueConverter}}" 
-                        CurrentPage="{Binding}"/>
+        <local:PageHost Grid.Column="1" 
+                        CurrentPage="{Binding ApplicationViewModel.CurrentPage,
+                                    Source={x:Static local:ViewModelLocator.Instance}}"
+                        CurrentPageViewModel="{Binding ApplicationViewModel.CurrentPageViewModel,
+                                            Source={x:Static local:ViewModelLocator.Instance}}"/>
     </Grid>
 </Window>
