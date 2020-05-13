@@ -14,6 +14,11 @@ namespace CryptoCalc.Core
         /// </summary>
         public static IKernel Kernal { get; private set; } = new StandardKernel();
 
+        /// <summary>
+        /// Gets the Application view model
+        /// </summary>
+        public static ApplicationViewModel Application => Ioc.Get<ApplicationViewModel>();
+
         #endregion
 
         #region Conbstruction
