@@ -20,6 +20,27 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Controls\HashItemListControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Controls\HashItemControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Controls\DataFormatControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Controls\HashItemListControl.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\HashItemControl.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\DataFormatControl.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Styles\CheckBoxes.xaml">
       <SubType>Designer</SubType>
     </Page>
