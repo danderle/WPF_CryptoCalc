@@ -1,0 +1,29 @@
+﻿<UserControl x:Class="CryptoCalc.HashItemControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CryptoCalc"
+             xmlns:core="clr-namespace:CryptoCalc.Core;assembly=CryptoCalc.Core"
+             mc:Ignorable="d" 
+             d:DesignHeight="50" >
+    
+    <Border Background="{StaticResource WhiteBrush}"
+            d:DataContext="{x:Static core:HashItemDesignModel.Instance}">
+        <Grid VerticalAlignment="Center">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <CheckBox Content="{Binding HashName}"
+                      Margin="8"
+                      Padding="5 0 0 0"
+                      HorizontalAlignment="Left"
+                      IsChecked="{Binding IsChecked}"/>
+            <TextBlock Grid.Column="1"
+                       Text="{Binding HashValue}" 
+                       Padding="8"/>
+        </Grid>
+    </Border>
+</UserControl>
