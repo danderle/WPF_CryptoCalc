@@ -44,6 +44,9 @@
     <Page Update="Styles\CheckBoxes.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Styles\Borders.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Styles\Fonts.xaml">
       <SubType>Designer</SubType>
     </Page>
