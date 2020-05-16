@@ -5,13 +5,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:CryptoCalc"
              xmlns:core="clr-namespace:CryptoCalc.Core;assembly=CryptoCalc.Core"
-             mc:Ignorable="d" 
-             d:DesignHeight="50" >
+             mc:Ignorable="d" >
 
-    <Grid d:DataContext="{x:Static core:}"
-          Background="{StaticResource WhiteBrush}">
-        <ScrollViewer VerticalScrollBarVisibility="Auto">
-            <ItemsControl ItemsSource="{Binding LoadedProjects}">
+    <Border d:DataContext="{x:Static core:HashItemListDesignModel.Instance}"
+          Background="{StaticResource WhiteBrush}"
+            BorderThickness="0 0 0 1">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <ItemsControl ItemsSource="{Binding Items}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <local:HashItemControl DataContext="{Binding }" />
@@ -19,5 +19,5 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </ScrollViewer>
-    </Grid>
+    </Border>
 </UserControl>
