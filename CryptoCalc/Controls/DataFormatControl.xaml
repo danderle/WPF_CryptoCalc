@@ -6,42 +6,36 @@
              xmlns:local="clr-namespace:CryptoCalc"
              xmlns:core="clr-namespace:CryptoCalc.Core;assembly=CryptoCalc.Core"
              mc:Ignorable="d" 
-             d:DesignHeight="200" d:DesignWidth="400">
-    <Grid>
-        <Border Background="{StaticResource WhiteBrush}"
-                BorderThickness="0 0 0 1"
-                Padding="8">
-            
-            <Border.BorderBrush>
-                <LinearGradientBrush StartPoint="0, 0" EndPoint="1, 0">
-                    <GradientStop Color="{StaticResource White}" Offset="0.0" />
-                    <GradientStop Color="{StaticResource Black}" Offset="0.5" />
-                    <GradientStop Color="{StaticResource White}" Offset="1.0" />
-                </LinearGradientBrush>
-            </Border.BorderBrush>
-
-
-            <Grid >
+             d:DesignHeight="100" d:DesignWidth="400">
+    
+    <Grid Background="{StaticResource WhiteBrush}"
+          d:DataContext="{x:Static core:DataFormatDesignModel.Instance}">
                 <Grid.ColumnDefinitions>
+                    <!--Option to select what type of format to hash-->
                     <ColumnDefinition Width="Auto" />
+                    <!--The data that will be hashed plus optional entries-->
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
+                <!--Column 0-->
                 <StackPanel Margin="5">
+                    <!--ComboBox of what type of format to hash-->
                     <TextBlock Text="Data Format:" />
                     <ComboBox ItemsSource="{Binding DataFormat}"
                               SelectedIndex="{Binding DataFormatSelected, Converter={local:DataHashFormatEnumToString}}"
-                              local:ComboBoxElementsMaxWidthProperty.Value="True" 
-                              />
+                              local:ComboBoxElementsMaxWidthProperty.Value="True"/>
 
+                    <!--The HMAC option-->
                     <CheckBox Content="HMAC"
                               Margin="0 10 0 0"
                               Name="hmacCheck"
                               IsChecked="{Binding HmacChecked}"/>
                 </StackPanel>
 
+                <!--Column 1-->
                 <StackPanel Grid.Column="1"
                             Margin="5">
+                    <!--Data to be hashed-->
                     <TextBlock Text="Data:" />
                     <TextBox Text="{Binding Data, UpdateSourceTrigger=PropertyChanged}"/>
                     <Grid Margin="0 5">
@@ -49,6 +43,8 @@
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
+                        
+                        <!--Key format options, only enabled if HMAC is checked-->
                         <StackPanel Margin="0 0 5 0">
                             <TextBlock Text=" Key Format" />
                             <ComboBox ItemsSource="{Binding KeyFormat}"
@@ -56,6 +52,8 @@
                                       local:ComboBoxElementsMaxWidthProperty.Value="True"
                                       IsEnabled="{Binding ElementName=hmacCheck, Path=IsChecked}"/>
                         </StackPanel>
+                        
+                        <!--Key entry, only enabled if HMAC is checked-->
                         <StackPanel Grid.Column="1"
                                     Margin="5 0 0 0"
                                     VerticalAlignment="Stretch">
@@ -66,6 +64,5 @@
                     </Grid>
                 </StackPanel>
             </Grid>
-        </Border>
-    </Grid>
+       
 </UserControl>
