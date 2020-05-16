@@ -5,10 +5,8 @@
                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
                 xmlns:local="clr-namespace:CryptoCalc"
                 xmlns:core="clr-namespace:CryptoCalc.Core;assembly=CryptoCalc.Core"
-                mc:Ignorable="d" 
-                d:DesignHeight="450" 
-                d:DesignWidth="800">
-    
+                mc:Ignorable="d"
+                MinWidth="400">
 
     <Grid Background="{StaticResource WhiteBrush}">
         <Grid.RowDefinitions>
@@ -17,6 +15,49 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <local:DataFormatControl DataContext="{Binding DataFormatSetup}"/>
+        <Border Style="{StaticResource SectionBorder}" VerticalAlignment="Bottom">
+            <!--Data formatting options and data to be hashed entry-->
+            <local:DataFormatControl DataContext="{Binding DataFormatSetup}" 
+                                     d:DataContext="{x:Static core:DataFormatDesignModel.Instance}"/>
+        </Border>
+
+        <Border Grid.Row="1"
+                Style="{StaticResource SectionBorder}"
+                Padding="0 8">
+            <!--List of hashing algorithims-->
+            <local:HashItemListControl d:DataContext="{x:Static core:HashItemListDesignModel.Instance}"
+                                       VerticalAlignment="Center"/>
+        </Border>
+
+        <Grid Grid.Row="2"
+              Margin="0 8">
+            <Grid.ColumnDefinitions>
+                <!--TradeMark-->
+                <ColumnDefinition Width="Auto" />
+                <!--Buttons for calculating, close, and help-->
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Text="by danderle" 
+                       FontStyle="Italic"
+                       FontWeight="Bold"
+                       TextDecorations="Underline"
+                       Padding="10 5"/>
+
+            <StackPanel Grid.Column="1"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Right">
+                <Button Content="Calculate"
+                        Margin="5 0"
+                        Padding="3"/>
+                <Button Content="Close" 
+                        Margin="5 0"
+                        Padding="3"/>
+                <Button Content="Help" 
+                        Margin="5 0 10 0"
+                        Padding="3"/>
+            </StackPanel>
+        </Grid>
+
     </Grid>
 </local:BasePage>
