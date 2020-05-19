@@ -37,7 +37,7 @@ namespace CryptoCalc.Core
         /// <summary>
         /// Currently selected data format
         /// </summary>
-        public DataHashFormat DataFormatSelected { get; set; } = DataHashFormat.File;
+        public int DataFormatSelected { get; set; } = 0;
 
         /// <summary>
         /// Currently selected key format

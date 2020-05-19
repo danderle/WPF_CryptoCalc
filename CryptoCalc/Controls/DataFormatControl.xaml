@@ -22,7 +22,7 @@
                     <!--ComboBox of what type of format to hash-->
                     <TextBlock Text="Data Format:" />
                     <ComboBox ItemsSource="{Binding DataFormat}"
-                              SelectedIndex="{Binding DataFormatSelected, Converter={local:DataHashFormatEnumToString}}"
+                              SelectedIndex="{Binding DataFormatSelected}"
                               local:ComboBoxElementsMaxWidthProperty.Value="True"/>
 
                     <!--The HMAC option-->

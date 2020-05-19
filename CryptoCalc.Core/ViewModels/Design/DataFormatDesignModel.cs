@@ -30,7 +30,7 @@ namespace CryptoCalc.Core
             DataFormat.Add(DataHashFormat.TextString.ToString());
             DataFormat.Add(DataHashFormat.HexString.ToString());
 
-            DataFormatSelected = DataHashFormat.File;
+            DataFormatSelected = 0;
             KeyFormatSelected = DataHashFormat.TextString;
         } 
 

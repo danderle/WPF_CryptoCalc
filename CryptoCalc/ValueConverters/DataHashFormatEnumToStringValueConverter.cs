@@ -16,7 +16,7 @@ namespace CryptoCalc
 
         public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return Enum.Parse(typeof(DataHashFormat), value.ToString());
+            return (DataHashFormat)Enum.Parse(typeof(DataHashFormat), value.ToString());
         }
     }
 }
