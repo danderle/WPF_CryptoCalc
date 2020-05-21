@@ -22,7 +22,7 @@
                     <!--ComboBox of what type of format to hash-->
                     <TextBlock Text="Data Format:" />
                     <ComboBox ItemsSource="{Binding DataFormat}"
-                              SelectedIndex="{Binding DataFormatSelected}"
+                              SelectedIndex="{Binding DataFormatSelected, Converter={local:DataHashFormatEnumToInt}}"
                               local:ComboBoxElementsMaxWidthProperty.Value="True"/>
 
                     <!--The HMAC option-->
@@ -37,7 +37,8 @@
                             Margin="5">
                     <!--Data to be hashed-->
                     <TextBlock Text="Data:" />
-                    <TextBox Text="{Binding Data, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBox Text="{Binding Data, UpdateSourceTrigger=PropertyChanged}"
+                             local:DragDropProperty.Value="{Binding DropCommand}"/>
                     <Grid Margin="0 5">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
@@ -48,7 +49,7 @@
                         <StackPanel Margin="0 0 5 0">
                             <TextBlock Text=" Key Format" />
                             <ComboBox ItemsSource="{Binding KeyFormat}"
-                                      SelectedIndex="{Binding KeyFormatSelected, Converter={local:DataHashFormatEnumToString}}"
+                                      SelectedIndex="{Binding KeyFormatSelected, Converter={local:DataHashFormatEnumToInt}}"
                                       local:ComboBoxElementsMaxWidthProperty.Value="True"
                                       IsEnabled="{Binding ElementName=hmacCheck, Path=IsChecked}"/>
                         </StackPanel>
