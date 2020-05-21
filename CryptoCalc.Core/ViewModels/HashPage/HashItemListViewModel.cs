@@ -9,7 +9,6 @@ namespace CryptoCalc.Core
     /// </summary>
     public class HashItemListViewModel : BaseViewModel
     {
-
         #region Properties
 
         /// <summary>
