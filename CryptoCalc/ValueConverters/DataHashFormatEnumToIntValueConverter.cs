@@ -5,18 +5,18 @@ using System.Globalization;
 namespace CryptoCalc
 {
     /// <summary>
-    /// Converts the <see cref="DataHashFormat"/>enum value to a string value
+    /// Converts the <see cref="DataHashFormat"/>enum value to an int value
     /// </summary>
-    public class DataHashFormatEnumToString : BaseValueConverter<DataHashFormatEnumToString>
+    public class DataHashFormatEnumToInt : BaseValueConverter<DataHashFormatEnumToInt>
     {
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return ((int)(DataHashFormat)value).ToString();
+            return ((int)(DataHashFormat)value);
         }
 
         public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (DataHashFormat)Enum.Parse(typeof(DataHashFormat), value.ToString());
+            return (DataHashFormat)value;
         }
     }
 }
