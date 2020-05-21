@@ -1,12 +1,14 @@
-﻿using System;
+﻿using CryptoCalc.Core.Models;
+using System;
 using System.Diagnostics;
+using System.IO;
 using System.Text;
 using System.Windows.Input;
 
 namespace CryptoCalc.Core
 {
     /// <summary>
-    /// The view model forthe hash page
+    /// The view model for the hash page
     /// </summary>
     public class HashViewModel : BaseViewModel
     {
@@ -42,6 +44,8 @@ namespace CryptoCalc.Core
         /// </summary>
         public ICommand HelpCommand { get; set; }
 
+        
+
         #endregion
 
         #region Constructor
@@ -51,11 +55,14 @@ namespace CryptoCalc.Core
         /// </summary>
         public HashViewModel()
         {
+            //Initialize the commands
             CalculateCommand = new RelayCommand(Calculate);
             CloseCommand = new RelayCommand(Close);
             HelpCommand = new RelayCommand(Help);
-
+            
         }
+
+        
 
         #endregion
 
@@ -73,7 +80,7 @@ namespace CryptoCalc.Core
         }
 
         /// <summary>
-        /// The command method to calculate the hash values
+        /// The command method to calculate the hash values according to the selected data format
         /// </summary>
         private void Calculate()
         {
@@ -81,17 +88,20 @@ namespace CryptoCalc.Core
             switch((DataHashFormat)DataFormatSetup.DataFormatSelected)
             {
                 case DataHashFormat.File:
+                    data = Hash.GetBytesFromFile(DataFormatSetup.Data);
                     break;
                 case DataHashFormat.TextString:
                     data = Encoding.ASCII.GetBytes(DataFormatSetup.Data);
                     break;
                 case DataHashFormat.HexString:
+                    data = Hash.HexStringToBytes(DataFormatSetup.Data);
                     break;
                 default:
                     Debugger.Break();
                     break;
             }
 
+            //Check which hash options are checked and then calculate
             foreach(var item in HashList.Items)
             {
                 if(item.IsChecked)
