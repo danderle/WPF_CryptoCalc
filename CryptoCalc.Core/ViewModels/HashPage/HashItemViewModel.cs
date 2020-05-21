@@ -1,7 +1,5 @@
 ﻿using CryptoCalc.Core.Models;
 using System;
-using System.Text;
-using System.ComponentModel;
 
 namespace CryptoCalc.Core
 {
@@ -51,6 +49,10 @@ namespace CryptoCalc.Core
 
         #region Public Methods
 
+        /// <summary>
+        /// Calcualte the hash value according to the set hash algorithim and set the hash value
+        /// </summary>
+        /// <param name="data"></param>
         public void CalculateHash(byte[] data)
         {
             var value = Hash.Compute(hashAlgorithim, data);
