@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows;
 using System.Linq;
+using System.Windows.Input;
+using System.IO;
 
 namespace CryptoCalc.Core
 {
+    /// <summary>
+    /// The view model for the <see cref="DataFormatControl.xaml"/>
+    /// </summary>
     public class DataFormatViewModel : BaseViewModel
     {
-
         #region Properties
 
         /// <summary>
@@ -37,12 +42,21 @@ namespace CryptoCalc.Core
         /// <summary>
         /// Currently selected data format
         /// </summary>
-        public int DataFormatSelected { get; set; } = 0;
+        public DataHashFormat DataFormatSelected { get; set; } = DataHashFormat.File;
 
         /// <summary>
         /// Currently selected key format
         /// </summary>
         public DataHashFormat KeyFormatSelected { get; set; } = DataHashFormat.TextString;
+
+        #endregion
+
+        #region Commands
+
+        /// <summary>
+        /// The command to execute a drag and drop
+        /// </summary>
+        public ICommand DropCommand { get; set; }
 
         #endregion
 
@@ -53,11 +67,32 @@ namespace CryptoCalc.Core
         /// </summary>
         public DataFormatViewModel()
         {
+            //Initialize commands
+            DropCommand = new RelayParameterizedCommand(Drop);
+
             // Adds the formats to the lists
             DataFormat = Enum.GetValues(typeof(DataHashFormat)).Cast<DataHashFormat>().Select(t => t.ToString()).ToList();
             KeyFormat.Add(DataHashFormat.TextString.ToString());
             KeyFormat.Add(DataHashFormat.HexString.ToString());
-        } 
+        }
+
+
+        #endregion
+
+        #region Command Methods
+
+        /// <summary>
+        /// The commands method to evaluate the dropped file path
+        /// </summary>
+        /// <param name="obj"></param>
+        private void Drop(object obj)
+        {
+            string[] paths = (string[])obj;
+            if (File.Exists(paths[0]))
+            {
+                Data = paths[0];
+            }
+        }
 
         #endregion
     }
