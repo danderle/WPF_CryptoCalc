@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
-using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Digests;
 
 namespace CryptoCalc.Core.Models
@@ -12,6 +13,28 @@ namespace CryptoCalc.Core.Models
     /// </summary>
     static class Hash
     {
+        #region Private Properties
+
+        /// <summary>
+        /// Dictionary which hold all the hash computation functions
+        /// </summary>
+        private static Dictionary<HashAlgorithim, Func<byte[], byte[]>> hashMethods = new Dictionary<HashAlgorithim, Func<byte[], byte[]>>();
+
+        #endregion
+
+        #region Constructor
+
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        static Hash()
+        {
+            SetupHashMethodsDictionary();
+        }
+
+        #endregion
+
+        
         #region Public Methods
 
         /// <summary>
@@ -52,7 +75,9 @@ namespace CryptoCalc.Core.Models
         /// <returns></returns>
         public static byte[] Compute(HashAlgorithim algorithim, byte[] data)
         {
-            return ComputeSha1(data);
+            Func<byte[], byte[]> method;
+            hashMethods.TryGetValue(algorithim, out method);
+            return method.Invoke(data);
         }
 
         #region Hash Algorithims´methods
@@ -62,7 +87,7 @@ namespace CryptoCalc.Core.Models
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        public static byte[] ComputeMD5(byte[] data)
+        public static byte[] ComputeMd5(byte[] data)
         {
             var md5 = MD5.Create();
             var hash = md5.ComputeHash(data);
@@ -70,11 +95,11 @@ namespace CryptoCalc.Core.Models
         }
 
         /// <summary>
-        /// SHA1 computation
+        /// MD4 computation
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        public static byte[] ComputeMD4(byte[] data)
+        public static byte[] ComputeMd4(byte[] data)
         {
             var md4 = new MD4Digest();
             md4.BlockUpdate(data, 0, data.Length);
@@ -120,7 +145,7 @@ namespace CryptoCalc.Core.Models
         }
 
         /// <summary>
-        /// SHA1 computation
+        /// SHA512 computation
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
@@ -132,39 +157,45 @@ namespace CryptoCalc.Core.Models
         }
 
         /// <summary>
-        /// SHA1 computation
+        /// RipeMd160 computation
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
         public static byte[] ComputeRipeMd160(byte[] data)
         {
-            var sha1 = SHA256.Create();
-            var hash = sha1.ComputeHash(data);
-            return hash;
+            var ripe = new RipeMD160Digest();
+            ripe.BlockUpdate(data, 0, data.Length);
+            byte[] outData = new byte[20];
+            ripe.DoFinal(outData, 0);
+            return outData;
         }
 
         /// <summary>
-        /// SHA1 computation
+        /// Whirlpool computation
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        public static byte[] ComputePanama(byte[] data)
+        public static byte[] ComputeWhirlpool(byte[] data)
         {
-            var sha1 = SHA1.Create();
-            var hash = sha1.ComputeHash(data);
-            return hash;
+            var digest = new WhirlpoolDigest();
+            digest.BlockUpdate(data, 0, data.Length);
+            byte[] outData = new byte[64];
+            digest.DoFinal(outData, 0);
+            return outData;
         }
 
         /// <summary>
-        /// SHA1 computation
+        /// Tiger computation
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
         public static byte[] ComputeTiger(byte[] data)
         {
-            var sha1 = SHA1.Create();
-            var hash = sha1.ComputeHash(data);
-            return hash;
+            var tiger = new TigerDigest();
+            tiger.BlockUpdate(data, 0, data.Length);
+            byte[] outData = new byte[24];
+            tiger.DoFinal(outData, 0);
+            return outData;
         }
 
         /// <summary>
@@ -174,9 +205,11 @@ namespace CryptoCalc.Core.Models
         /// <returns></returns>
         public static byte[] ComputeMd2(byte[] data)
         {
-            var sha1 = SHA1.Create();
-            var hash = sha1.ComputeHash(data);
-            return hash;
+            var md2 = new MD2Digest();
+            md2.BlockUpdate(data, 0, data.Length);
+            byte[] outData = new byte[16];
+            md2.DoFinal(outData, 0);
+            return outData;
         }
 
         /// <summary>
@@ -186,17 +219,82 @@ namespace CryptoCalc.Core.Models
         /// <returns></returns>
         public static byte[] ComputeAdler32(byte[] data)
         {
-            var sha1 = SHA1.Create();
-            var hash = sha1.ComputeHash(data);
-            return hash;
+            var digest = new AdlerChecksum();
+            digest.MakeForBuff(data);
+            var hash = digest.ChecksumValue;
+            return BitConverter.GetBytes(hash).Reverse().ToArray();
         }
+
+        /// <summary>
+        /// Crc32 computation
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
         public static byte[] ComputeCrc32(byte[] data)
         {
-
-            return data;
+            var hash = Crc32.Compute(data);
+            return BitConverter.GetBytes(hash).Reverse().ToArray();
         }
 
         #endregion
+
+
+        #endregion
+
+        #region Private Methods
+
+        /// <summary>
+        /// Method for adding the hash methods to a dictionary
+        /// </summary>
+        private static void SetupHashMethodsDictionary()
+        {
+            foreach (HashAlgorithim algorithim in Enum.GetValues(typeof(HashAlgorithim)))
+            {
+                switch (algorithim)
+                {
+                    case HashAlgorithim.MD5:
+                        hashMethods.Add(algorithim, ComputeMd5);
+                        break;
+                    case HashAlgorithim.MD4:
+                        hashMethods.Add(algorithim, ComputeMd4);
+                        break;
+                    case HashAlgorithim.SHA1:
+                        hashMethods.Add(algorithim, ComputeSha1);
+                        break;
+                    case HashAlgorithim.SHA256:
+                        hashMethods.Add(algorithim, ComputeSha256);
+                        break;
+                    case HashAlgorithim.SHA384:
+                        hashMethods.Add(algorithim, ComputeSha384);
+                        break;
+                    case HashAlgorithim.SHA512:
+                        hashMethods.Add(algorithim, ComputeSha512);
+                        break;
+                    case HashAlgorithim.RIPEMD160:
+                        hashMethods.Add(algorithim, ComputeRipeMd160);
+                        break;
+                    case HashAlgorithim.WHIRLPOOL:
+                        hashMethods.Add(algorithim, ComputeWhirlpool);
+                        break;
+                    case HashAlgorithim.TIGER:
+                        hashMethods.Add(algorithim, ComputeTiger);
+                        break;
+                    case HashAlgorithim.MD2:
+                        hashMethods.Add(algorithim, ComputeMd2);
+                        break;
+                    case HashAlgorithim.ADLER32:
+                        hashMethods.Add(algorithim, ComputeAdler32);
+                        break;
+                    case HashAlgorithim.CRC32:
+                        hashMethods.Add(algorithim, ComputeCrc32);
+                        break;
+                    default:
+                        Debugger.Break();
+                        break;
+                }
+            }
+        }
+
 
         #endregion
     }
