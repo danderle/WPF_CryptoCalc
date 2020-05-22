@@ -12,7 +12,7 @@
         SHA384,
         SHA512,
         RIPEMD160,
-        PANAMA,
+        WHIRLPOOL,
         TIGER,
         MD2,
         ADLER32,

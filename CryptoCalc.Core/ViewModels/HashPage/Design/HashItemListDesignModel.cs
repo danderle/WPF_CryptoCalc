@@ -55,7 +55,7 @@ namespace CryptoCalc.Core
                 new HashItemViewModel
                 {
                     IsChecked = true,
-                    HashName = "MD5",
+                    HashName = "Whirlpool",
                     HashValue = "876i8kjhg",
                 },
 
