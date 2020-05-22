@@ -1,7 +1,6 @@
 ﻿using CryptoCalc.Core.Models;
 using System;
 using System.Diagnostics;
-using System.IO;
 using System.Text;
 using System.Windows.Input;
 
@@ -12,7 +11,6 @@ namespace CryptoCalc.Core
     /// </summary>
     public class HashViewModel : BaseViewModel
     {
-
         #region Properties
 
         /// <summary>
@@ -44,8 +42,6 @@ namespace CryptoCalc.Core
         /// </summary>
         public ICommand HelpCommand { get; set; }
 
-        
-
         #endregion
 
         #region Constructor
@@ -59,7 +55,6 @@ namespace CryptoCalc.Core
             CalculateCommand = new RelayCommand(Calculate);
             CloseCommand = new RelayCommand(Close);
             HelpCommand = new RelayCommand(Help);
-            
         }
 
         
@@ -85,7 +80,7 @@ namespace CryptoCalc.Core
         private void Calculate()
         {
             byte[] data = null;
-            switch((DataHashFormat)DataFormatSetup.DataFormatSelected)
+            switch(DataFormatSetup.DataFormatSelected)
             {
                 case DataHashFormat.File:
                     data = Hash.GetBytesFromFile(DataFormatSetup.Data);
