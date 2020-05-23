@@ -12,7 +12,7 @@
             d:DataContext="{x:Static core:HashItemDesignModel.Instance}">
         <Grid VerticalAlignment="Center">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Name="CheckBoxColumn" Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
@@ -20,6 +20,7 @@
                       Margin="8"
                       Padding="5 0 0 0"
                       HorizontalAlignment="Left"
+                      Name="CheckBoxItem"
                       IsChecked="{Binding IsChecked}"/>
             <TextBlock Grid.Column="1"
                        Text="{Binding HashValue}" 
