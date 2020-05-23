@@ -12,9 +12,15 @@
             BorderThickness="0 0 0 1">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
             <ItemsControl ItemsSource="{Binding Items}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel local:CheckBoxWidthMatcherProperty.Value="True"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <local:HashItemControl DataContext="{Binding }" />
+                            <local:HashItemControl DataContext="{Binding }" 
+                                                   />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
