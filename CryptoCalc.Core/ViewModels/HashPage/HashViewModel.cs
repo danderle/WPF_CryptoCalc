@@ -1,5 +1,4 @@
-﻿using CryptoCalc.Core.Models;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Text;
 using System.Windows.Input;
@@ -79,31 +78,53 @@ namespace CryptoCalc.Core
         /// </summary>
         private void Calculate()
         {
-            byte[] data = null;
-            switch(DataFormatSetup.DataFormatSelected)
+            byte[] key = null;
+            if (DataFormatSetup.HmacChecked)
             {
-                case DataHashFormat.File:
-                    data = Hash.GetBytesFromFile(DataFormatSetup.Data);
-                    break;
-                case DataHashFormat.TextString:
-                    data = Encoding.ASCII.GetBytes(DataFormatSetup.Data);
-                    break;
-                case DataHashFormat.HexString:
-                    data = Hash.HexStringToBytes(DataFormatSetup.Data);
-                    break;
-                default:
-                    Debugger.Break();
-                    break;
+                key = GetBytesAccordingToFormatSelected(DataFormatSetup.KeyFormatSelected, DataFormatSetup.Key);
             }
+
+            var data = GetBytesAccordingToFormatSelected(DataFormatSetup.DataFormatSelected, DataFormatSetup.Data);
 
             //Check which hash options are checked and then calculate
             foreach(var item in HashList.Items)
             {
                 if(item.IsChecked)
                 {
-                    item.CalculateHash(data);
+                    item.CalculateHash(data, key);
                 }
             }
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="format"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        private byte[] GetBytesAccordingToFormatSelected(DataHashFormat format, string data)
+        {
+            byte[] bytes = null;
+            switch (DataFormatSetup.DataFormatSelected)
+            {
+                case DataHashFormat.File:
+                    bytes = Hash.GetBytesFromFile(data);
+                    break;
+                case DataHashFormat.TextString:
+                    bytes = Encoding.ASCII.GetBytes(data);
+                    break;
+                case DataHashFormat.HexString:
+                    bytes = Hash.HexStringToBytes(data);
+                    break;
+                default:
+                    Debugger.Break();
+                    break;
+            }
+            return bytes;
         }
 
         #endregion
