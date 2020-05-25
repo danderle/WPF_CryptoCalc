@@ -24,7 +24,7 @@ namespace CryptoCalc
         }
 
         /// <summary>
-        /// Registers <see cref="CurrentPage"/> as a dependancy property
+        /// Registers <see cref="CurrentPage"/> as a dependency property
         /// </summary>
         public static readonly DependencyProperty CurrentPageProperty =
             DependencyProperty.Register(nameof(CurrentPage), typeof(ApplicationPage), typeof(PageHost), new UIPropertyMetadata(default(ApplicationPage), null, CurrentPagePropertyChanged));
@@ -39,7 +39,7 @@ namespace CryptoCalc
         }
 
         /// <summary>
-        /// Registers <see cref="CurrentPageViewModel"/> as a dependancy property
+        /// Registers <see cref="CurrentPageViewModel"/> as a dependency property
         /// </summary>
         public static readonly DependencyProperty CurrentPageViewModelProperty =
             DependencyProperty.Register(nameof(CurrentPageViewModel), typeof(BaseViewModel), typeof(PageHost), new UIPropertyMetadata());
