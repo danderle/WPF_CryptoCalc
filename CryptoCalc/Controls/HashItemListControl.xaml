@@ -11,10 +11,12 @@
           Background="{StaticResource WhiteBrush}"
             BorderThickness="0 0 0 1">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
-            <ItemsControl ItemsSource="{Binding Items}">
+            <ItemsControl ItemsSource="{Binding Items}"
+                          x:Name="TheItemsControl">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <StackPanel local:CheckBoxWidthMatcherProperty.Value="True"/>
+                        <StackPanel local:CheckBoxWidthMatcherProperty.Value="True"
+                                    x:Name="TheStackPanel"/>
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
