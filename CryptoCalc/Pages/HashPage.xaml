@@ -18,7 +18,10 @@
         <Border Style="{StaticResource SectionBorder}" VerticalAlignment="Bottom">
             <!--Data formatting options and data to be hashed entry-->
             <local:DataFormatControl DataContext="{Binding DataFormatSetup}" 
-                                     d:DataContext="{x:Static core:DataFormatDesignModel.Instance}"/>
+                                     HmacSelected="{Binding HmacChecked}"
+                                     d:DataContext="{x:Static core:DataFormatDesignModel.Instance}"
+                                     x:Name="DataFormat"
+                                     />
         </Border>
 
         <Border Grid.Row="1"
@@ -27,7 +30,8 @@
             <!--List of hashing algorithims-->
             <local:HashItemListControl d:DataContext="{x:Static core:HashItemListDesignModel.Instance}"
                                        DataContext="{Binding HashList}"
-                                       VerticalAlignment="Center"/>
+                                       VerticalAlignment="Center"
+                                       local:HmacSelectedProperty.Value="{Binding ElementName=DataFormat, Path=HmacSelected}"/>
         </Border>
 
         <Grid Grid.Row="2"
