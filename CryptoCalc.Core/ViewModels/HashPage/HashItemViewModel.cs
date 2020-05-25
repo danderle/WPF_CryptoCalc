@@ -34,6 +34,11 @@ namespace CryptoCalc.Core
         /// </summary>
         public string HashValue { get; set; } = string.Empty;
 
+        /// <summary>
+        /// Determines if able to apply an hmac 
+        /// </summary>
+        public bool HmacNotPossible => HashName.Contains("MD2") || HashName.Contains("ADLER32") || HashName.Contains("CRC32");
+
         #endregion
 
         #region Constructor
@@ -53,9 +58,9 @@ namespace CryptoCalc.Core
         /// Calcualte the hash value according to the set hash algorithim and set the hash value
         /// </summary>
         /// <param name="data"></param>
-        public void CalculateHash(byte[] data)
+        public void CalculateHash(byte[] data, byte[] key)
         {
-            var value = Hash.Compute(hashAlgorithim, data);
+            var value = Hash.Compute(hashAlgorithim, data, key);
             HashValue = BitConverter.ToString(value).Replace("-", string.Empty);
         }
 
