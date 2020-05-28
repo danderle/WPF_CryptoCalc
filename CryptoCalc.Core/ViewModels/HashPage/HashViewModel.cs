@@ -53,7 +53,7 @@ namespace CryptoCalc.Core
             //Initialize the commands
             CalculateCommand = new RelayCommand(Calculate);
             CloseCommand = new RelayCommand(Close);
-            HelpCommand = new RelayCommand(Help);
+            HelpCommand = new RelayCommand(HelpAsync);
         }
 
         
@@ -63,14 +63,22 @@ namespace CryptoCalc.Core
         #region Command Methods
 
 
-        private void Help()
+        private async void HelpAsync()
         {
-            throw new NotImplementedException();
+            await Ioc.UI.ShowMessage(new MessageBoxDialogViewModel
+            {
+                Message = "Hello this is a pop up message",
+                Title = "First dialog message",
+                OkText = "Press ok to continue",
+            });
         }
 
+        /// <summary>
+        /// The command method to close the application
+        /// </summary>
         private void Close()
         {
-            throw new NotImplementedException();
+            Ioc.Application.Close();
         }
 
         /// <summary>
