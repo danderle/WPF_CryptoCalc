@@ -10,7 +10,7 @@ namespace CryptoCalc
     public class WindowViewModel : BaseViewModel
     {
         #region Private Members
-        
+
         /// <summary>
         /// the window this viewmodel controls
         /// </summary>
@@ -38,12 +38,12 @@ namespace CryptoCalc
         /// <summary>
         /// The minimum width of the window
         /// </summary>
-        public double MinimumWidth => 800;
+        public double MinimumWidth { get; set; } = 800;
 
         /// <summary>
         /// The minimum height of the window
         /// </summary>
-        public double MinimumHeight => 500;
+        public double MinimumHeight { get; set; } = 500;
 
         /// <summary>
         /// True if the window should be borderless
@@ -112,6 +112,11 @@ namespace CryptoCalc
         /// Height of the title bar 
         /// </summary>
         public GridLength TitleHeightGridLength => new GridLength(TitleHeight - OuterMarginSize);
+
+        /// <summary>
+        /// True if we should have a dimmed overlay on the window such as when a popup is visible or the window is not focused
+        /// </summary>
+        public bool DimmableOverlayVisible { get; set; }
 
         #endregion
 
