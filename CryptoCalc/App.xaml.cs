@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using CryptoCalc.Core;
 
 namespace CryptoCalc
@@ -16,12 +17,25 @@ namespace CryptoCalc
         {
             base.OnStartup(e);
 
-            //Setup the ioc
-            Ioc.Setup();
+            //Setup the main application
+            ApplicationSetup();
+
 
             //Show the main window
             Current.MainWindow = new MainWindow();
             Current.MainWindow.Show();
+        }
+
+        /// <summary>
+        /// Configure the application
+        /// </summary>
+        private void ApplicationSetup()
+        {
+            //Setup the ioc
+            Ioc.Setup();
+
+            //Bind UI manager
+            Ioc.Kernal.Bind<IUIManager>().ToConstant(new UIManager());
         }
     }
 }
