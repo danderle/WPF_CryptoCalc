@@ -15,6 +15,11 @@ namespace CryptoCalc.Core
         public static IKernel Kernal { get; private set; } = new StandardKernel();
 
         /// <summary>
+        /// A shortcut to acces the <see cref="IUIManager"/>
+        /// </summary>
+        public static IUIManager UI => Get<IUIManager>();
+
+        /// <summary>
         /// Gets the Application view model
         /// </summary>
         public static ApplicationViewModel Application => Ioc.Get<ApplicationViewModel>();
