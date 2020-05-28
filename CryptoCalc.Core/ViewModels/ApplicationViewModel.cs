@@ -37,7 +37,16 @@
 
             // Fire off a currentPage changed event
             OnPropertyChanged(nameof(CurrentPage));
-        } 
+        }
+
+        /// <summary>
+        /// Closes the application
+        /// </summary>
+        /// <param name="exitCode">The exit code when closing the application</param>
+        public void Close(int exitCode = 0)
+        {
+            System.Environment.Exit(exitCode);
+        }
 
         #endregion
     }
