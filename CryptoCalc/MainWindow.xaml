@@ -7,7 +7,9 @@
         mc:Ignorable="d"
         Title="CryptoCalc"
         WindowStartupLocation="CenterScreen"
-        Height="450" 
+        Activated="Window_Activated"
+        Deactivated="Window_Deactivated"
+        Height="600" 
         Width="800">
 
     <Grid>
@@ -16,5 +18,9 @@
                                     Source={x:Static local:ViewModelLocator.Instance}}"
                         CurrentPageViewModel="{Binding ApplicationViewModel.CurrentPageViewModel,
                                             Source={x:Static local:ViewModelLocator.Instance}}"/>
+        <Border Opacity="0.3">
+            <Border Background="{StaticResource BlackBrush}" 
+                    local:AnimateFadeInProperty.Value="{Binding DimmableOverlayVisible}"/>
+        </Border>
     </Grid>
 </Window>

@@ -1,5 +1,4 @@
-﻿using CryptoCalc.Core.Models;
-using System;
+﻿using System;
 
 namespace CryptoCalc.Core
 {

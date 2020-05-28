@@ -41,6 +41,9 @@
     <Page Update="Controls\DataFormatControl.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="DialogWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Styles\CheckBoxes.xaml">
       <SubType>Designer</SubType>
     </Page>
