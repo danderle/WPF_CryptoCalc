@@ -190,5 +190,59 @@ namespace CryptoCalc
 
         #endregion
 
+        #region Fade in / out
+
+        /// <summary>
+        /// Fades an element in
+        /// </summary>
+        /// <param name="element">the element to animate</param>
+        /// <param name="seconds">the time the animation takes</param>
+        /// <returns></returns>
+        public static async Task FadeInAsync(this FrameworkElement element, float seconds = 0.3f)
+        {
+            //Create the storyboard
+            var sb = new Storyboard();
+
+            //Adds the fade out
+            sb.AddsFadeIn(seconds);
+
+            //Star animation
+            sb.Begin(element);
+
+            // Make page visible
+            element.Visibility = Visibility.Visible;
+
+            //Wait for the animation to finish
+            await Task.Delay((int)(seconds * 1000));
+        }
+
+        /// <summary>
+        /// Fades an element out
+        /// </summary>
+        /// <param name="element">the element to animate</param>
+        /// <param name="seconds">the time the animation takes</param>
+        /// <returns></returns>
+        public static async Task FadeOutAsync(this FrameworkElement element, float seconds = 0.3f)
+        {
+            //Create the storyboard
+            var sb = new Storyboard();
+
+            //Adds the fade out
+            sb.AddsFadeOut(seconds);
+
+            //Star animation
+            sb.Begin(element);
+
+            // Make page visible
+            element.Visibility = Visibility.Visible;
+
+            //Wait for the animation to finish
+            await Task.Delay((int)(seconds * 1000));
+
+            //Fully hide the element
+            element.Visibility = Visibility.Collapsed;
+        }
+
+        #endregion
     }
 }
