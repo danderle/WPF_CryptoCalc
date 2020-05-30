@@ -38,8 +38,20 @@
                             Margin="5">
                     <!--Data to be hashed-->
                     <TextBlock Text="Data:" />
-                    <TextBox Text="{Binding Data, UpdateSourceTrigger=PropertyChanged}"
-                             local:DragDropProperty.Value="{Binding DropCommand}"/>
+            <Grid >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBox Text="{Binding Data, UpdateSourceTrigger=PropertyChanged}"
+                             local:DragDropProperty.Value="{Binding DropCommand}"
+                         VerticalContentAlignment="Center"/>
+                <Button Grid.Column="1"
+                        Margin="5 0 0 0"
+                        Padding="5 2"
+                        Content="..." 
+                        Command="{Binding OpenFolderDialogCommand}"/>
+            </Grid>
                     <Grid Margin="0 5">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
