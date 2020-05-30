@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CryptoCalc.Core
@@ -16,5 +14,13 @@ namespace CryptoCalc.Core
         /// <param name="viewModel">The view model</param>
         /// <returns></returns>
         Task ShowMessage(MessageBoxDialogViewModel viewModel);
+
+        /// <summary>
+        /// Displays a single folder broser dialog to the user
+        /// </summary>
+        /// <param name="viewModel">The view model</param>
+        /// <returns></returns>
+        Task ShowFolderDialog(FolderBrowserDialogViewModel viewModel);
+
     }
 }

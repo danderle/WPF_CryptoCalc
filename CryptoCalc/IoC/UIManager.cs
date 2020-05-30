@@ -1,9 +1,5 @@
 ﻿using CryptoCalc.Core;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
 
 namespace CryptoCalc
 {
@@ -20,6 +16,16 @@ namespace CryptoCalc
         public Task ShowMessage(MessageBoxDialogViewModel viewModel)
         {
             return new DialogMessageBox().ShowMessage(viewModel);
+        }
+
+        /// <summary>
+        /// Displays a single folder broser dialog to the user
+        /// </summary>
+        /// <param name="viewModel">The view model</param>
+        /// <returns></returns>
+        public Task ShowFolderDialog(FolderBrowserDialogViewModel viewModel)
+        {
+            return new FolderBrowserDialog().ShowMessage(viewModel);
         }
     }
 }
