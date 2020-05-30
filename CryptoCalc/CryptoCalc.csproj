@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\drive.png" />
+    <None Remove="Images\file.png" />
+    <None Remove="Images\folder.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\CryptoCalc.Core\CryptoCalc.Core.csproj" />
   </ItemGroup>
 
@@ -20,6 +26,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Images\drive.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\file.png" />
+    <Resource Include="Images\folder.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Controls\TreeViewControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Controls\HashItemListControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -32,6 +49,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Update="Controls\TreeViewControl.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Controls\HashItemListControl.xaml">
       <SubType>Designer</SubType>
     </Page>
