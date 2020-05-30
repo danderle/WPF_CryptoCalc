@@ -58,6 +58,11 @@ namespace CryptoCalc.Core
         /// </summary>
         public ICommand DropCommand { get; set; }
 
+        /// <summary>
+        /// The command to open a folder dialog window
+        /// </summary>
+        public ICommand OpenFolderDialogCommand { get; set; }
+
         #endregion
 
         #region Constructor
@@ -69,6 +74,7 @@ namespace CryptoCalc.Core
         {
             //Initialize commands
             DropCommand = new RelayParameterizedCommand(Drop);
+            OpenFolderDialogCommand = new RelayCommand(OpenFolderDialogAsync);
 
             // Adds the formats to the lists
             DataFormat = Enum.GetValues(typeof(DataHashFormat)).Cast<DataHashFormat>().Select(t => t.ToString()).ToList();
@@ -80,6 +86,14 @@ namespace CryptoCalc.Core
         #endregion
 
         #region Command Methods
+
+        /// <summary>
+        /// The command method to show a help document
+        /// </summary>
+        private async void OpenFolderDialogAsync()
+        {
+            await Ioc.UI.ShowFolderDialog(new FolderBrowserDialogViewModel());
+        }
 
         /// <summary>
         /// The commands method to evaluate the dropped file path
