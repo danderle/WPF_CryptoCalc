@@ -38,10 +38,14 @@ namespace CryptoCalc
 
         #region Constructor
 
+        /// <summary>
+        /// Default constructor
+        /// </summary>
         public DialogWindow()
         {
             InitializeComponent();
 
+            //Settting the dialog windo view model 
             DataContext = new DialogWindowViewModel(this);
         } 
 

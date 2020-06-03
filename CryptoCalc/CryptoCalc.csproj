@@ -7,17 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Images\drive.png" />
-    <None Remove="Images\file.png" />
-    <None Remove="Images\folder.png" />
+    <None Remove="Resources\Images\drive.png" />
+    <None Remove="Resources\Images\file.png" />
+    <None Remove="Resources\Images\folder.png" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\CryptoCalc.Core\CryptoCalc.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Resources\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,11 +22,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Images\drive.png">
+    <Resource Include="Resources\Images\drive.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Images\file.png" />
-    <Resource Include="Images\folder.png" />
+    <Resource Include="Resources\Images\file.png" />
+    <Resource Include="Resources\Images\folder.png" />
   </ItemGroup>
 
   <ItemGroup>
