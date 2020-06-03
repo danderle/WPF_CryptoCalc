@@ -1,7 +1,5 @@
-﻿using CryptoCalc.Core;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 
 namespace CryptoCalc
 {
@@ -11,6 +9,16 @@ namespace CryptoCalc
     public class DialogWindowViewModel : WindowViewModel
     {
         #region Public Properties
+
+        /// <summary>
+        /// The maximum height of this dialog
+        /// </summary>
+        public int MaximumHeight { get; set; } = 600;
+
+        /// <summary>
+        /// The maximum width of this dialog window
+        /// </summary>
+        public int MaximumWidth { get; set; } = 800;
 
         /// <summary>
         /// The title of this dialog window
@@ -31,9 +39,6 @@ namespace CryptoCalc
         /// </summary>
         public DialogWindowViewModel(Window _window) : base(_window) 
         {
-            //Set minimum size of window
-            MinimumHeight = 100;
-            MinimumWidth = 250;
         }
         
         #endregion
