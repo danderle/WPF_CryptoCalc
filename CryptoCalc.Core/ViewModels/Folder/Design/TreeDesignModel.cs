@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 namespace CryptoCalc.Core
 {
@@ -22,18 +23,19 @@ namespace CryptoCalc.Core
         {
             LogicalDrives = new ObservableCollection<TreeItemViewModel>
             {
-                new TreeItemViewModel("Item1")
+                new TreeItemViewModel("Item1", null, TreeItemType.LogicalDrive)
                 {
-                    SubItems = new ObservableCollection<TreeItemViewModel>
+                    IsExpanded = true,
+                    Children = new ObservableCollection<TreeItemViewModel>
                     {
-                        new TreeItemViewModel("Item1.1"),
-                        new TreeItemViewModel("Item1.2"),
-                        new TreeItemViewModel("Item1.3"),
+                        new TreeItemViewModel("Item1.1", null, TreeItemType.Directory),
+                        new TreeItemViewModel("Item1.2", null, TreeItemType.Directory),
+                        new TreeItemViewModel("Item1.3", null, TreeItemType.Directory),
                     }
                 },
-                new TreeItemViewModel("Item2"),
-                new TreeItemViewModel("Item3"),
-                new TreeItemViewModel("Item4"),
+                new TreeItemViewModel("Item2", null, TreeItemType.File),
+                new TreeItemViewModel("Item3", null, TreeItemType.File),
+                new TreeItemViewModel("Item4", null, TreeItemType.File),
             };
         } 
 
