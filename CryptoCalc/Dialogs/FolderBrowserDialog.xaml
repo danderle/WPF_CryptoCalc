@@ -7,8 +7,31 @@
                              xmlns:core="clr-namespace:CryptoCalc.Core;assembly=CryptoCalc.Core"
                              mc:Ignorable="d">
 
-    <Grid>
-        <local:TreeViewControl DataContext="{Binding}" />
+    <Grid Background="{StaticResource WhiteBrush}"
+                d:DataContext="{x:Static core:FolderBrowserDialogDesignModel.Instance}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock Text="{Binding Message}" 
+                   Padding="5"/>
+        <!--The tree view-->
+        <local:TreeViewControl Grid.Row="1"
+                               DataContext="{Binding FolderDialogTree}"/>
+        <StackPanel Grid.Row="2">
+            <!--The path of the selected file-->
+            <TextBox Text="{Binding SelectedFilePath}"
+                 IsReadOnly="True" 
+                 Padding="5"/>
+            
+            <!--The button to close the dialog-->
+            <Button Content="{Binding OkText}" 
+                    HorizontalAlignment="Center"
+                    Margin="5"
+                    Padding="5"
+                    Command="{Binding CloseCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:BaseDialogUserControl}}}"/>
+        </StackPanel>
     </Grid>
 </local:BaseDialogUserControl>
 
