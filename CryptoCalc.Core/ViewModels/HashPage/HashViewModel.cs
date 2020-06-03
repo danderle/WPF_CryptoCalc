@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Text;
 using System.Windows.Input;
 
@@ -15,7 +14,7 @@ namespace CryptoCalc.Core
         /// <summary>
         /// The view model to setup the hashing process
         /// </summary>
-        public DataFormatViewModel DataFormatSetup { get; set; } = new DataFormatViewModel();
+        public DataFormatViewModel DataFormatSetup { get; set; } = Ioc.Get<DataFormatViewModel>();
 
         /// <summary>
         /// The view model that holds all the hashing methods
@@ -62,7 +61,9 @@ namespace CryptoCalc.Core
 
         #region Command Methods
 
-
+        /// <summary>
+        /// Show the Help dialog window
+        /// </summary>
         private async void HelpAsync()
         {
             await Ioc.UI.ShowMessage(new MessageBoxDialogViewModel
