@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System;
+using System.Threading.Channels;
+using System.Windows.Input;
 
 namespace CryptoCalc.Core
 {
@@ -14,19 +14,36 @@ namespace CryptoCalc.Core
         /// <summary>
         /// The message to display
         /// </summary>
-        public string Message { get; set; }
+        public string Message => "Select file and press the \"Continue\" button";
 
         /// <summary>
         /// The text to use for the ok button
         /// </summary>
-        public string OkText { get; set; }
+        public string OkText => "Continue";
 
         /// <summary>
-        /// 
+        /// The path to the selected file
         /// </summary>
-        public List<TreeItemViewModel> LogicalDrives { get; set; } = new List<TreeItemViewModel>();
+        public string SelectedFilePath { get; set; }
 
+        /// <summary>
+        /// Get all the logical drives
+        /// </summary>
+        public TreeViewModel FolderDialogTree { get; set; }
 
+        #endregion
+
+        #region Commands
+
+        /// <summary>
+        /// The command to execute when a file is selected
+        /// </summary>
+        public ICommand FileSelectedCommand { get; set; }
+
+        /// <summary>
+        /// The command to execute when the continue button is pressed
+        /// </summary>
+        public ICommand ContinueCommand { get; set; }
 
         #endregion
 
@@ -37,18 +54,24 @@ namespace CryptoCalc.Core
         /// </summary>
         public FolderBrowserDialogViewModel()
         {
-            foreach(var item in Directory.GetLogicalDrives())
-            {
-                LogicalDrives.Add(new TreeItemViewModel(item)
-                {
-                    Name = item
-                });
-            }
+            FileSelectedCommand = new RelayParameterizedCommand(FileSelected);
+                 
+            FolderDialogTree = new TreeViewModel(FileSelectedCommand);
         }
 
         #endregion
 
-        #region MyRegion
+        #region Command Methods
+
+        /// <summary>
+        /// The file selected command method, which saves the files path to the <see cref="DataFormatViewModel"/>
+        /// </summary>
+        /// <param name="obj"></param>
+        private void FileSelected(object obj)
+        {
+            SelectedFilePath = (string)obj;
+            Ioc.DataFormat.Data = SelectedFilePath;
+        }
 
         #endregion
     }
