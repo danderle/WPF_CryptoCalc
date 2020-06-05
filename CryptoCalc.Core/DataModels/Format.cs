@@ -3,7 +3,7 @@
     /// <summary>
     /// Data format options for hashing
     /// </summary>
-    public enum DataHashFormat
+    public enum Format
     {
         /// <summary>
         /// Hash a file
