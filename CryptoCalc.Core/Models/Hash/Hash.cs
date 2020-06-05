@@ -40,36 +40,6 @@ namespace CryptoCalc.Core
         #region Public Methods
 
         /// <summary>
-        /// Reads all bytes from file
-        /// </summary>
-        /// <param name="filePath">path to the file</param>
-        /// <returns></returns>
-        public static byte[] GetBytesFromFile(string filePath)
-        {
-            if(!File.Exists(filePath))
-            {
-                return null;
-            }
-            return File.ReadAllBytes(filePath);
-        }
-
-        /// <summary>
-        /// Converts a hex string into byte array
-        /// </summary>
-        /// <param name="stringData">the hex string</param>
-        /// <returns></returns>
-        public static byte[] HexStringToBytes(string stringData)
-        {
-            List<byte> bytes = new List<byte>();
-            for(int i = 0; i < stringData.Length; i+=2)
-            {
-                byte bite = Convert.ToByte(stringData.Substring(i, 2), 16);
-                bytes.Add(bite);
-            }
-            return bytes.ToArray();
-        }
-
-        /// <summary>
         /// Genereic function for computing hash values
         /// </summary>
         /// <param name="algorithim">the algorthim to compute with</param>
