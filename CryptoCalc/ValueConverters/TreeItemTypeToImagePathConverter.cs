@@ -34,7 +34,7 @@ namespace CryptoCalc
 
         public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (DataHashFormat)value;
+            return (Format)value;
         }
     }
 }

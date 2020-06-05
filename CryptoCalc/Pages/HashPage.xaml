@@ -20,7 +20,7 @@
             <local:DataFormatControl DataContext="{Binding DataFormatSetup}" 
                                      HmacSelected="{Binding HmacChecked}"
                                      d:DataContext="{x:Static core:DataFormatDesignModel.Instance}"
-                                     x:Name="DataFormat"
+                                     x:Name="DataFormatOptions"
                                      />
         </Border>
 
@@ -31,7 +31,7 @@
             <local:HashItemListControl d:DataContext="{x:Static core:HashItemListDesignModel.Instance}"
                                        DataContext="{Binding HashList}"
                                        VerticalAlignment="Center"
-                                       local:HmacSelectedProperty.Value="{Binding ElementName=DataFormat, Path=HmacSelected}"/>
+                                       local:HmacSelectedProperty.Value="{Binding ElementName=DataFormatOptions, Path=HmacSelected}"/>
         </Border>
 
         <Grid Grid.Row="2"

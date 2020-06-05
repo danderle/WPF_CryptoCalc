@@ -20,7 +20,7 @@ namespace CryptoCalc.Core
         public bool HmacChecked { get; set; } = false;
 
         /// <summary>
-        /// The data to be hashed <see cref="DataHashFormat"/> for hash data format options
+        /// The data to be hashed <see cref="Format"/> for hash data format options
         /// </summary>
         public string Data { get; set; } = string.Empty;
 
@@ -35,19 +35,19 @@ namespace CryptoCalc.Core
         public List<string> KeyFormat { get; set; } = new List<string>();
 
         /// <summary>
-        /// Holds the dat format options
+        /// Holds the data format options
         /// </summary>
-        public List<string> DataFormat { get; set; } = new List<string>();
+        public List<string> DataFormatOptions { get; set; } = new List<string>();
 
         /// <summary>
         /// Currently selected data format
         /// </summary>
-        public DataHashFormat DataFormatSelected { get; set; } = DataHashFormat.File;
+        public Format DataFormatSelected { get; set; } = Format.File;
 
         /// <summary>
         /// Currently selected key format
         /// </summary>
-        public DataHashFormat KeyFormatSelected { get; set; } = DataHashFormat.TextString;
+        public Format KeyFormatSelected { get; set; } = Format.TextString;
 
         #endregion
 
@@ -77,9 +77,9 @@ namespace CryptoCalc.Core
             OpenFolderDialogCommand = new RelayCommand(OpenFolderDialogAsync);
 
             // Adds the formats to the lists
-            DataFormat = Enum.GetValues(typeof(DataHashFormat)).Cast<DataHashFormat>().Select(t => t.ToString()).ToList();
-            KeyFormat.Add(DataHashFormat.TextString.ToString());
-            KeyFormat.Add(DataHashFormat.HexString.ToString());
+            DataFormatOptions = Enum.GetValues(typeof(Format)).Cast<Format>().Select(t => t.ToString()).ToList();
+            KeyFormat.Add(Format.TextString.ToString());
+            KeyFormat.Add(Format.HexString.ToString());
         }
 
 

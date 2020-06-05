@@ -24,14 +24,14 @@ namespace CryptoCalc.Core
             Data = "Data to be hashed";
             Key = "some kind of hash key";
 
-            KeyFormat.Add(DataHashFormat.TextString.ToString());
-            KeyFormat.Add(DataHashFormat.HexString.ToString());
-            DataFormat.Add(DataHashFormat.File.ToString());
-            DataFormat.Add(DataHashFormat.TextString.ToString());
-            DataFormat.Add(DataHashFormat.HexString.ToString());
+            KeyFormat.Add(Format.TextString.ToString());
+            KeyFormat.Add(Format.HexString.ToString());
+            DataFormatOptions.Add(Format.File.ToString());
+            DataFormatOptions.Add(Format.TextString.ToString());
+            DataFormatOptions.Add(Format.HexString.ToString());
 
             DataFormatSelected = 0;
-            KeyFormatSelected = DataHashFormat.TextString;
+            KeyFormatSelected = Format.TextString;
         } 
 
         #endregion

@@ -21,7 +21,7 @@
                 <StackPanel Margin="5">
                     <!--ComboBox of what type of format to hash-->
                     <TextBlock Text="Data Format:" />
-                    <ComboBox ItemsSource="{Binding DataFormat}"
+                    <ComboBox ItemsSource="{Binding DataFormatOptions}"
                               SelectedIndex="{Binding DataFormatSelected, Converter={local:DataHashFormatEnumToInt}}"
                               local:ComboBoxElementsMaxWidthProperty.Value="True"/>
 

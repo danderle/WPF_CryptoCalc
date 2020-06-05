@@ -115,19 +115,19 @@ namespace CryptoCalc.Core
         /// <param name="format"></param>
         /// <param name="data"></param>
         /// <returns></returns>
-        private byte[] GetBytesAccordingToFormatSelected(DataHashFormat format, string data)
+        private byte[] GetBytesAccordingToFormatSelected(Format format, string data)
         {
             byte[] bytes = null;
             switch (DataFormatSetup.DataFormatSelected)
             {
-                case DataHashFormat.File:
-                    bytes = Hash.GetBytesFromFile(data);
+                case Format.File:
+                    bytes = ByteConvert.FileToBytes(data);
                     break;
-                case DataHashFormat.TextString:
-                    bytes = Encoding.ASCII.GetBytes(data);
+                case Format.TextString:
+                    bytes = ByteConvert.StringToBytes(data);
                     break;
-                case DataHashFormat.HexString:
-                    bytes = Hash.HexStringToBytes(data);
+                case Format.HexString:
+                    bytes = ByteConvert.HexStringToBytes(data);
                     break;
                 default:
                     Debugger.Break();
