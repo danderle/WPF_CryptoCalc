@@ -23,9 +23,10 @@ namespace CryptoCalc
             switch (page)
             {
                 case ApplicationPage.Hash:
-                case ApplicationPage.SymmetricCiphers:
-                case ApplicationPage.AsymmetricCiphers:
                     return new HashPage(viewModel as HashViewModel);
+                case ApplicationPage.SymmetricCiphers:
+                    return new AesPage(viewModel as AesViewModel);
+                case ApplicationPage.AsymmetricCiphers:
                 default:
                     Debugger.Break();
                     return null;
@@ -33,15 +34,16 @@ namespace CryptoCalc
         }
 
         /// <summary>
-        /// 
+        /// Take in a <see cref="BasePage"/> and returns a <see cref="ApplicationPage"/>
         /// </summary>
-        /// <param name="page"></param>
-        /// <returns></returns>
+        /// <param name="page">The type of page passed in</param>
+        /// <returns>The page as an enum</returns>
         public static ApplicationPage ToApplicationPage(this BasePage page)
         {
             if (page is HashPage)
                 return ApplicationPage.Hash;
-
+            if (page is AesPage)
+                return ApplicationPage.SymmetricCiphers;
             //Alert developer
             Debugger.Break();
             return default(ApplicationPage);
