@@ -35,7 +35,7 @@ namespace CryptoCalc.Core
         /// </summary>
         public List<string> DataFormatOptions { get; set; } = new List<string>();
 
-        public Aes AesCrypt { get; set; } = SymmetricCypher.AesCrypt;
+        public Aes AesCrypt { get; set; } = SymmetricCipher.AesCrypt;
 
         public int KeySizeIndex { get; set; }
 
@@ -114,14 +114,14 @@ namespace CryptoCalc.Core
             {
                 case Format.File:
                     encrypted = ByteConvert.FileToBytes(EncryptedFilePath);
-                    var decryptedBytes = SymmetricCypher.AesDecryptToByte(password, KeySizes[KeySizeIndex], encrypted);
+                    var decryptedBytes = SymmetricCipher.AesDecryptToByte(password, KeySizes[KeySizeIndex], encrypted);
                     var extension = Path.GetExtension(EncryptedFilePath);
                     DecryptedFilePath = Path.Combine(Directory.GetParent(EncryptedFilePath).ToString(), Path.GetFileNameWithoutExtension(EncryptedFilePath) + ".Decrypted" + extension);
                     File.WriteAllBytes(DecryptedFilePath, decryptedBytes);
                     break;
                 case Format.TextString:
                     encrypted = ByteConvert.HexStringToBytes(EncryptedText);
-                    DecryptedText = SymmetricCypher.AesDecryptToText(password, KeySizes[KeySizeIndex], encrypted);
+                    DecryptedText = SymmetricCipher.AesDecryptToText(password, KeySizes[KeySizeIndex], encrypted);
                     break;
             }
         }
@@ -139,14 +139,14 @@ namespace CryptoCalc.Core
                     if (File.Exists(FilePath))
                     {
                         var plainBytes = File.ReadAllBytes(FilePath);
-                        var encryptedBytes = SymmetricCypher.AesEncrypt(password, KeySizes[KeySizeIndex], plainBytes);
+                        var encryptedBytes = SymmetricCipher.AesEncrypt(password, KeySizes[KeySizeIndex], plainBytes);
                         var extension = Path.GetExtension(FilePath);
                         EncryptedFilePath = Path.Combine(Directory.GetParent(FilePath).ToString(), Path.GetFileNameWithoutExtension(FilePath) + ".Encrypted" + extension);
                         File.WriteAllBytes(EncryptedFilePath, encryptedBytes);
                     }
                 break;
                 case Format.TextString:
-                    encrypted = SymmetricCypher.AesEncrypt(password, KeySizes[KeySizeIndex], PlainText);
+                    encrypted = SymmetricCipher.AesEncrypt(password, KeySizes[KeySizeIndex], PlainText);
                     EncryptedText = ByteConvert.BytesToString(encrypted);
                     break;
             }

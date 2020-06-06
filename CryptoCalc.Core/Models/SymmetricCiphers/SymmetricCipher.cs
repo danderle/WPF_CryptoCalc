@@ -7,7 +7,7 @@ using System.Diagnostics;
 
 namespace CryptoCalc.Core
 {
-    static class SymmetricCypher
+    static class SymmetricCipher
     {
         #region Public Properties
 
@@ -20,7 +20,7 @@ namespace CryptoCalc.Core
         /// <summary>
         /// Default static constructor
         /// </summary>
-        static SymmetricCypher()
+        static SymmetricCipher()
         {
             AesCrypt = Aes.Create();
             var bsize = AesCrypt.BlockSize;
