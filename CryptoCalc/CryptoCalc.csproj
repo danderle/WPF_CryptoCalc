@@ -30,6 +30,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Controls\CipherInputControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Controls\AesSetupControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Controls\TreeViewControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -48,6 +54,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Update="Controls\CipherInputControl.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\AesSetupControl.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Controls\TreeViewControl.xaml">
       <SubType>Designer</SubType>
     </Page>

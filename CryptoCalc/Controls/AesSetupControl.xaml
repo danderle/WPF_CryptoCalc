@@ -1,0 +1,37 @@
+﻿<UserControl x:Class="CryptoCalc.AesSetupControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CryptoCalc"
+             xmlns:core="clr-namespace:CryptoCalc.Core;assembly=CryptoCalc.Core"
+             mc:Ignorable="d" >
+
+    <Grid Background="{StaticResource WhiteBrush}"
+          >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <StackPanel Margin="0 0 5 0">
+            <!--ComboBox of what type of format to hash-->
+            <TextBlock Text="Data Format:" />
+            <ComboBox ItemsSource="{Binding DataFormatOptions}"
+                      SelectedIndex="{Binding DataFormatSelected, Converter={local:DataHashFormatEnumToInt}}"
+                      HorizontalAlignment="Left"
+                      local:ComboBoxElementsMaxWidthProperty.Value="True"/>
+        </StackPanel>
+        <StackPanel Grid.Column="1"
+                    Margin="5 0 0 0">
+            <TextBlock Text="Key Size" />
+            <ComboBox ItemsSource="{Binding KeySizes}"
+                    SelectedIndex="{Binding KeySizeIndex}"
+                    local:ComboBoxElementsMaxWidthProperty.Value="True"
+                  HorizontalAlignment="Left"/>
+            <!--Secret Key-->
+            <TextBlock Text="Password" />
+            <TextBox Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}" />
+        </StackPanel>
+    </Grid>
+    
+</UserControl>
