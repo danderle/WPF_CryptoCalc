@@ -60,7 +60,7 @@ namespace CryptoCalc.Core
         /// <param name="data">the data to hash</param>
         /// <param name="key">optional hmac key</param>
         /// <returns>the hash value</returns>
-        public static byte[] ComputeMd5(byte[] data, byte[] key)
+        private static byte[] ComputeMd5(byte[] data, byte[] key)
         {
             byte[] hash = null;
 
@@ -84,7 +84,7 @@ namespace CryptoCalc.Core
         /// <param name="data">the data to hash</param>
         /// <param name="key">optional hmac key</param>
         /// <returns>the hash value</returns>
-        public static byte[] ComputeMd4(byte[] data, byte[] key)
+        private static byte[] ComputeMd4(byte[] data, byte[] key)
         {
             byte[] outData = new byte[16];
             if (key != null)
@@ -109,7 +109,7 @@ namespace CryptoCalc.Core
         /// <param name="data">the data to hash</param>
         /// <param name="key">optional hmac key</param>
         /// <returns>the hash value</returns>
-        public static byte[] ComputeSha1(byte[] data, byte[] key)
+        private static byte[] ComputeSha1(byte[] data, byte[] key)
         {
             byte[] hash = null;
 
@@ -133,7 +133,7 @@ namespace CryptoCalc.Core
         /// <param name="data">the data to hash</param>
         /// <param name="key">optional hmac key</param>
         /// <returns>the hash value</returns>
-        public static byte[] ComputeSha256(byte[] data, byte[] key)
+        private static byte[] ComputeSha256(byte[] data, byte[] key)
         {
             byte[] hash = null;
 
@@ -157,7 +157,7 @@ namespace CryptoCalc.Core
         /// <param name="data">the data to hash</param>
         /// <param name="key">optional hmac key</param>
         /// <returns>the hash value</returns>
-        public static byte[] ComputeSha384(byte[] data, byte[] key)
+        private static byte[] ComputeSha384(byte[] data, byte[] key)
         {
             byte[] hash = null;
 
@@ -181,7 +181,7 @@ namespace CryptoCalc.Core
         /// <param name="data">the data to hash</param>
         /// <param name="key">optional hmac key</param>
         /// <returns>the hash value</returns>
-        public static byte[] ComputeSha512(byte[] data, byte[] key)
+        private static byte[] ComputeSha512(byte[] data, byte[] key)
         {
             byte[] hash = null;
 
@@ -205,7 +205,7 @@ namespace CryptoCalc.Core
         /// <param name="data">the data to hash</param>
         /// <param name="key">optional hmac key</param>
         /// <returns>the hash value</returns>
-        public static byte[] ComputeRipeMd160(byte[] data, byte[] key)
+        private static byte[] ComputeRipeMd160(byte[] data, byte[] key)
         {
             byte[] outData = new byte[20];
             
@@ -232,7 +232,7 @@ namespace CryptoCalc.Core
         /// <param name="data">the data to hash</param>
         /// <param name="key">optional hmac key</param>
         /// <returns>the hash value</returns>
-        public static byte[] ComputeWhirlpool(byte[] data, byte[] key)
+        private static byte[] ComputeWhirlpool(byte[] data, byte[] key)
         {
             byte[] outData = new byte[64];
 
@@ -259,7 +259,7 @@ namespace CryptoCalc.Core
         /// <param name="data">the data to hash</param>
         /// <param name="key">optional hmac key</param>
         /// <returns>the hash value</returns>
-        public static byte[] ComputeTiger(byte[] data, byte[] key)
+        private static byte[] ComputeTiger(byte[] data, byte[] key)
         {
             byte[] outData = new byte[24];
 
@@ -286,7 +286,7 @@ namespace CryptoCalc.Core
         /// <param name="data">the data to hash</param>
         /// <param name="key">not usable</param>
         /// <returns>the hash value</returns>
-        public static byte[] ComputeMd2(byte[] data, byte[] key)
+        private static byte[] ComputeMd2(byte[] data, byte[] key)
         {
             byte[] outData = new byte[16];
 
@@ -313,7 +313,7 @@ namespace CryptoCalc.Core
         /// <param name="data">the data to hash</param>
         /// <param name="key">not usable</param>
         /// <returns>the hash value</returns>
-        public static byte[] ComputeAdler32(byte[] data, byte[] key = null)
+        private static byte[] ComputeAdler32(byte[] data, byte[] key = null)
         {
             var digest = new AdlerChecksum();
             digest.MakeForBuff(data);
@@ -327,7 +327,7 @@ namespace CryptoCalc.Core
         /// <param name="data"></param>
         /// <param name="key">not usable</param>
         /// <returns>the hash value</returns>
-        public static byte[] ComputeCrc32(byte[] data, byte[] key = null)
+        private static byte[] ComputeCrc32(byte[] data, byte[] key = null)
         {
             var hash = Crc32.Compute(data);
             return BitConverter.GetBytes(hash).Reverse().ToArray();
