@@ -3,13 +3,17 @@ using System.Collections.Generic;
 using System.Text;
 using System.Security.Cryptography;
 using System.IO;
+using System.Diagnostics;
 
 namespace CryptoCalc.Core
 {
     static class SymmetricCypher
     {
-        private static byte[] aeskey = null;
-        private static byte[] aesiv = null;
+        #region Public Properties
+
+        public static Aes AesCrypt { get; set; } 
+
+        #endregion
 
         #region Constructor
 
@@ -18,35 +22,40 @@ namespace CryptoCalc.Core
         /// </summary>
         static SymmetricCypher()
         {
-            using (var aes = Aes.Create())
-            {
-                aeskey = aes.Key;
-                aesiv = aes.IV;
-            }
+            AesCrypt = Aes.Create();
+            var bsize = AesCrypt.BlockSize;
+            var fsize = AesCrypt.FeedbackSize;
+            var ksize = AesCrypt.KeySize;
+            var lsize = AesCrypt.LegalBlockSizes;
+            var msize = AesCrypt.LegalKeySizes;
         }
 
         #endregion
 
         #region Public Methods
 
-        public static byte[] AesEncrypt(string plainText)
+        public static byte[] AesEncrypt(byte[] password, int keySize, string plainText)
         {
-            return Encrypt(plainText, aeskey, aesiv);
+            SetKeyAndIV(password, keySize);
+            return Encrypt(plainText, AesCrypt.Key, AesCrypt.IV);
         }
 
-        public static byte[] AesEncrypt(byte[] plainText)
+        public static byte[] AesEncrypt(byte[] password, int keySize, byte[] plainText)
         {
-            return Encrypt(plainText, aeskey, aesiv);
+            SetKeyAndIV(password, keySize);
+            return Encrypt(plainText, AesCrypt.Key, AesCrypt.IV);
         }
 
-        public static string AesDecryptToText(byte[] encrypted)
+        public static string AesDecryptToText(byte[] password, int keySize, byte[] encrypted)
         {
-            return DecryptToText(encrypted, aeskey, aesiv);
+            SetKeyAndIV(password, keySize);
+            return DecryptToText(encrypted, AesCrypt.Key, AesCrypt.IV);
         }
 
-        public static byte[] AesDecryptToByte(byte[] encrypted)
+        public static byte[] AesDecryptToByte(byte[] password, int keySize, byte[] encrypted)
         {
-            return DecryptToByte(encrypted, aeskey, aesiv);
+            SetKeyAndIV(password, keySize);
+            return DecryptToByte(encrypted, AesCrypt.Key, AesCrypt.IV);
         }
 
         #endregion
@@ -211,6 +220,44 @@ namespace CryptoCalc.Core
 
             // Return the encrypted bytes from the memory stream.
             return encrypted;
+        }
+
+        private static void SetKeyAndIV(byte[] password, int keySize)
+        {
+            AesCrypt.KeySize = keySize;
+            byte[] hash = null;
+            byte[] key = null;
+            byte[] iv = new byte[16];
+            switch (keySize)
+            {
+                case 128:
+                    key = new byte[16];
+                    hash = Hash.Compute(HashAlgorithim.SHA256, password);
+                    Array.Copy(hash, key, 16);
+                    Array.Copy(hash, key.Length, iv, 0, 16);
+                    AesCrypt.Key = key;
+                    AesCrypt.IV = iv;
+                    break;
+                case 192:
+                    key = new byte[24];
+                    hash = Hash.Compute(HashAlgorithim.SHA384, password);
+                    Array.Copy(hash, key, 24);
+                    Array.Copy(hash, key.Length, iv, 0, 16);
+                    AesCrypt.Key = key;
+                    AesCrypt.IV = iv;
+                    break;
+                case 256:
+                    key = new byte[32];
+                    hash = Hash.Compute(HashAlgorithim.SHA512, password);
+                    Array.Copy(hash, key, 32);
+                    Array.Copy(hash, key.Length, iv, 0, 16);
+                    AesCrypt.Key = key;
+                    AesCrypt.IV = iv;
+                    break;
+                default:
+                    Debugger.Break();
+                    break;
+            }
         }
 
         #endregion
