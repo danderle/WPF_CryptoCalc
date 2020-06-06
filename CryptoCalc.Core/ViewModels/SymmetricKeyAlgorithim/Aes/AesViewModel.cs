@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography;
 using System.Windows.Input;
 
 namespace CryptoCalc.Core
@@ -10,6 +11,10 @@ namespace CryptoCalc.Core
     /// </summary>
     public class AesViewModel : BaseViewModel
     {
+        #region Private fields
+
+        #endregion
+
         #region Public Properties
 
         public string FilePath { get; set; }
@@ -18,7 +23,7 @@ namespace CryptoCalc.Core
         public string EncryptedText { get; set; }
         public string DecryptedFilePath { get; set; }
         public string DecryptedText { get; set; }
-        public string SecretKey { get; set; }
+        public string Password { get; set; }
 
         /// <summary>
         /// Currently selected data format
@@ -30,15 +35,31 @@ namespace CryptoCalc.Core
         /// </summary>
         public List<string> DataFormatOptions { get; set; } = new List<string>();
 
+        public Aes AesCrypt { get; set; } = SymmetricCypher.AesCrypt;
+
+        public int KeySizeIndex { get; set; }
+
+        public List<int> KeySizes { get; set; } = new List<int>();
+
         #endregion
 
         #region Commands
 
+        /// <summary>
+        /// The command to encrypt
+        /// </summary>
         public ICommand EncryptCommand { get; set; }
 
+        /// <summary>
+        /// The command to decrypt
+        /// </summary>
         public ICommand DecryptCommand { get; set; }
 
+        /// <summary>
+        /// The command to drop files
+        /// </summary>
         public ICommand DropCommand { get; set; }
+
         #endregion
 
         #region Constructor
@@ -55,10 +76,23 @@ namespace CryptoCalc.Core
 
             DataFormatOptions.Add(Format.File.ToString());
             DataFormatOptions.Add(Format.TextString.ToString());
+            foreach(var legalkeySize in AesCrypt.LegalKeySizes)
+            {
+                int keySize = legalkeySize.MinSize;
+                while(keySize <= legalkeySize.MaxSize)
+                {
+                    KeySizes.Add(keySize);
+                    keySize += legalkeySize.SkipSize;
+                }
+            }
         }
 
+        #endregion
+
+        #region Command Methods
+
         /// <summary>
-        /// 
+        /// The command method for dropping files
         /// </summary>
         private void Drop(object obj)
         {
@@ -69,28 +103,25 @@ namespace CryptoCalc.Core
             }
         }
 
-        #endregion
-
-        #region Command Methods
-
         /// <summary>
         /// The command method to decrypt the given data
         /// </summary>
         private void Decrypt()
         {
             byte[] encrypted  = null;
-            switch(DataFormatSelected)
+            var password = ByteConvert.StringToBytes(Password);
+            switch (DataFormatSelected)
             {
                 case Format.File:
                     encrypted = ByteConvert.FileToBytes(EncryptedFilePath);
-                    var decryptedBytes = SymmetricCypher.AesDecryptToByte(encrypted);
+                    var decryptedBytes = SymmetricCypher.AesDecryptToByte(password, KeySizes[KeySizeIndex], encrypted);
                     var extension = Path.GetExtension(EncryptedFilePath);
                     DecryptedFilePath = Path.Combine(Directory.GetParent(EncryptedFilePath).ToString(), Path.GetFileNameWithoutExtension(EncryptedFilePath) + ".Decrypted" + extension);
                     File.WriteAllBytes(DecryptedFilePath, decryptedBytes);
                     break;
                 case Format.TextString:
                     encrypted = ByteConvert.HexStringToBytes(EncryptedText);
-                    DecryptedText = SymmetricCypher.AesDecryptToText(encrypted);
+                    DecryptedText = SymmetricCypher.AesDecryptToText(password, KeySizes[KeySizeIndex], encrypted);
                     break;
             }
         }
@@ -101,17 +132,21 @@ namespace CryptoCalc.Core
         private void Encrypt()
         {
             byte[] encrypted;
+            var password = ByteConvert.StringToBytes(Password);
             switch (DataFormatSelected)
             {
                 case Format.File:
-                    var plainBytes = File.ReadAllBytes(FilePath);
-                    var encryptedBytes = SymmetricCypher.AesEncrypt(plainBytes);
-                    var extension = Path.GetExtension(FilePath);
-                    EncryptedFilePath =  Path.Combine(Directory.GetParent(FilePath).ToString(), Path.GetFileNameWithoutExtension(FilePath) + ".Encrypted" + extension);
-                    File.WriteAllBytes(EncryptedFilePath, encryptedBytes);
-                    break;
+                    if (File.Exists(FilePath))
+                    {
+                        var plainBytes = File.ReadAllBytes(FilePath);
+                        var encryptedBytes = SymmetricCypher.AesEncrypt(password, KeySizes[KeySizeIndex], plainBytes);
+                        var extension = Path.GetExtension(FilePath);
+                        EncryptedFilePath = Path.Combine(Directory.GetParent(FilePath).ToString(), Path.GetFileNameWithoutExtension(FilePath) + ".Encrypted" + extension);
+                        File.WriteAllBytes(EncryptedFilePath, encryptedBytes);
+                    }
+                break;
                 case Format.TextString:
-                    encrypted = SymmetricCypher.AesEncrypt(PlainText);
+                    encrypted = SymmetricCypher.AesEncrypt(password, KeySizes[KeySizeIndex], PlainText);
                     EncryptedText = ByteConvert.BytesToString(encrypted);
                     break;
             }
