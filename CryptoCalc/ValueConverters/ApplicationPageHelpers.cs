@@ -25,7 +25,7 @@ namespace CryptoCalc
                 case ApplicationPage.Hash:
                     return new HashPage(viewModel as HashViewModel);
                 case ApplicationPage.SymmetricCiphers:
-                    return new AesPage(viewModel as AesViewModel);
+                    return new SymmetricCipherPage(viewModel as SymmetricCipherViewModel);
                 case ApplicationPage.AsymmetricCiphers:
                 default:
                     Debugger.Break();
@@ -42,7 +42,7 @@ namespace CryptoCalc
         {
             if (page is HashPage)
                 return ApplicationPage.Hash;
-            if (page is AesPage)
+            if (page is SymmetricCipherPage)
                 return ApplicationPage.SymmetricCiphers;
             //Alert developer
             Debugger.Break();
