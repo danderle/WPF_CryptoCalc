@@ -5,14 +5,14 @@ namespace CryptoCalc
     /// <summary>
     /// Interaction logic for AesPage.xaml
     /// </summary>
-    public partial class AesPage : BasePage<AesViewModel>
+    public partial class SymmetricCipherPage : BasePage<SymmetricCipherViewModel>
     {
         #region Constructor
 
         /// <summary>
         /// Default constructor
         /// </summary>
-        public AesPage()
+        public SymmetricCipherPage()
         {
             InitializeComponent();
         }
@@ -20,7 +20,7 @@ namespace CryptoCalc
         /// <summary>
         /// Constructor with a specific view model
         /// </summary>
-        public AesPage(AesViewModel specificViewModel) : base(specificViewModel)
+        public SymmetricCipherPage(SymmetricCipherViewModel specificViewModel) : base(specificViewModel)
         {
             InitializeComponent();
         }

@@ -1,4 +1,4 @@
-﻿<local:BasePage x:TypeArguments="core:AesViewModel"  x:Class="CryptoCalc.AesPage"
+﻿<local:BasePage x:TypeArguments="core:SymmetricCipherViewModel"  x:Class="CryptoCalc.SymmetricCipherPage"
                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -16,7 +16,8 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <local:AesSetupControl DataContext="{Binding}"/>
+            
+            <local:CipherSetupControl DataContext="{Binding}"/>
             <local:CipherInputControl Grid.Row="1" 
                                       DataContext="{Binding}" />
             

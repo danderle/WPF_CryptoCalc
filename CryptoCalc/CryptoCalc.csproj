@@ -33,7 +33,7 @@
     <Compile Update="Controls\CipherInputControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Controls\AesSetupControl.xaml.cs">
+    <Compile Update="Controls\CipherSetupControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Controls\TreeViewControl.xaml.cs">
@@ -48,7 +48,7 @@
     <Compile Update="Controls\DataFormatControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Pages\AesPage.xaml.cs">
+    <Compile Update="Pages\SymmetricCipherPage.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -57,7 +57,7 @@
     <Page Update="Controls\CipherInputControl.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Controls\AesSetupControl.xaml">
+    <Page Update="Controls\CipherSetupControl.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Controls\TreeViewControl.xaml">
@@ -75,7 +75,7 @@
     <Page Update="DialogWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Pages\AesPage.xaml">
+    <Page Update="Pages\SymmetricCipherPage.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Styles\CheckBoxes.xaml">

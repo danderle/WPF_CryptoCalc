@@ -3,13 +3,13 @@
 namespace CryptoCalc
 {
     /// <summary>
-    /// Interaction logic for AesSetupControl.xaml
+    /// Interaction logic for CipherSetupControl.xaml
     /// </summary>
-    public partial class AesSetupControl : UserControl
+    public partial class CipherSetupControl : UserControl
     {
         #region Constructor
 
-        public AesSetupControl()
+        public CipherSetupControl()
         {
             InitializeComponent();
         }
