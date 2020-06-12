@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -67,7 +68,12 @@ namespace CryptoCalc.Core
         /// <summary>
         /// Currently selected algorithim
         /// </summary>
-        public SymmetricCipherAlgorithim SelectedAlgorithim { get; set; }
+        public int SelectedAlgorithim { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public CryptographyApi SelectedCryptoApi { get; set; }
 
         /// <summary>
         /// The list off all symmetric algorithims
@@ -80,14 +86,16 @@ namespace CryptoCalc.Core
         public List<string> DataFormatOptions { get; set; } = new List<string>();
 
         /// <summary>
+        /// Holds the crypto api options
+        /// </summary>
+        public List<string> CryptoApiOptions { get; set; } = new List<string>();
+
+        /// <summary>
         /// The list of all the different key size options
         /// </summary>
         public ObservableCollection<int> KeySizes { get; set; } = new ObservableCollection<int>();
 
-        /// <summary>
-        /// The symmetric algorithim beeing used for cipher
-        /// </summary>
-        public SymmetricAlgorithm Algorithim { get; set; }
+        
 
         #endregion
 
@@ -111,7 +119,12 @@ namespace CryptoCalc.Core
         /// <summary>
         /// The command to when a cipher algorithim is selected
         /// </summary>
-        public ICommand SelectionCommand { get; set; }
+        public ICommand ChangedAlgorithimCommand { get; set; }
+
+        /// <summary>
+        /// The command to when the api is changed
+        /// </summary>
+        public ICommand ChangedApiCommand { get; set; }
 
         #endregion
 
@@ -126,30 +139,53 @@ namespace CryptoCalc.Core
             EncryptCommand = new RelayCommand(Encrypt);
             DecryptCommand = new RelayCommand(Decrypt);
             DropCommand = new RelayParameterizedCommand(Drop);
-            SelectionCommand = new RelayCommand(Selection);
+            ChangedAlgorithimCommand = new RelayCommand(ChangedAlgorithim);
+            ChangedApiCommand = new RelayCommand(ChangedApi);
 
-            Algorithims = Enum.GetValues(typeof(SymmetricCipherAlgorithim)).Cast<SymmetricCipherAlgorithim>().Select(t => t.ToString()).ToList();
-            SelectedAlgorithim = SymmetricCipherAlgorithim.RC2;
+            CryptoApiOptions = Enum.GetValues(typeof(CryptographyApi)).Cast<CryptographyApi>().Select(t => t.ToString()).ToList();
+            Algorithims = Enum.GetValues(typeof(SymmetricMsdnCipher)).Cast<SymmetricMsdnCipher>().Select(t => t.ToString()).ToList();
+            SelectedAlgorithim = (int)SymmetricMsdnCipher.RC2;
+            KeySizes = SymmetricCipher.GetKeySizes(SelectedCryptoApi, SelectedAlgorithim);
 
             DataFormatOptions.Add(Format.File.ToString());
             DataFormatOptions.Add(Format.TextString.ToString());
-
-            GetAlgorithim();
         }
 
-        
+
+
 
 
         #endregion
 
         #region Command Methods
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        private void ChangedApi()
+        {
+            switch(SelectedCryptoApi)
+            {
+                case CryptographyApi.MSDN:
+                    Algorithims = SymmetricCipher.GetMSDNAlgorthims();
+                    break;
+                case CryptographyApi.BouncyCastle:
+                    Algorithims = SymmetricCipher.GetBouncyCastleAlgorithims();
+                    break;
+                default:
+                    Debugger.Break();
+                    break;
+            }
+            SelectedAlgorithim = 0;
+        }
 
         /// <summary>
         /// The command method when a different algrithim is selected
         /// </summary>
-        private void Selection()
+        private void ChangedAlgorithim()
         {
-            GetAlgorithim();
+            KeySizes = SymmetricCipher.GetKeySizes(SelectedCryptoApi, SelectedAlgorithim);
+            KeySizeIndex = 0;
         }
 
         /// <summary>
@@ -169,21 +205,21 @@ namespace CryptoCalc.Core
         /// </summary>
         private void Decrypt()
         {
-            byte[] encrypted  = null;
-            var password = ByteConvert.StringToBytes(Password);
-            Algorithim.KeySize = KeySizes[KeySizeIndex];
+            byte[] encrypted;
+            var password = ByteConvert.StringToAsciiBytes(Password);
+            
             switch (DataFormatSelected)
             {
                 case Format.File:
                     encrypted = ByteConvert.FileToBytes(EncryptedFilePath);
-                    var decryptedBytes = SymmetricCipher.DecryptToByte(Algorithim, password, encrypted);
+                    var decryptedBytes = SymmetricCipher.DecryptToBytes(SelectedCryptoApi, SelectedAlgorithim, KeySizes[KeySizeIndex], password, encrypted);
                     var extension = Path.GetExtension(EncryptedFilePath);
                     DecryptedFilePath = Path.Combine(Directory.GetParent(EncryptedFilePath).ToString(), Path.GetFileNameWithoutExtension(EncryptedFilePath) + ".Decrypted" + extension);
                     File.WriteAllBytes(DecryptedFilePath, decryptedBytes);
                     break;
                 case Format.TextString:
                     encrypted = ByteConvert.HexStringToBytes(EncryptedText);
-                    DecryptedText = SymmetricCipher.DecryptToText(Algorithim, password, encrypted);
+                    DecryptedText = SymmetricCipher.DecryptToText(SelectedCryptoApi, SelectedAlgorithim, KeySizes[KeySizeIndex], password, encrypted);
                     break;
             }
         }
@@ -194,23 +230,23 @@ namespace CryptoCalc.Core
         private void Encrypt()
         {
             byte[] encrypted;
-            var password = ByteConvert.StringToBytes(Password);
-            Algorithim.KeySize = KeySizes[KeySizeIndex];
+            var password = ByteConvert.StringToAsciiBytes(Password);
+            
             switch (DataFormatSelected)
             {
                 case Format.File:
                     if (File.Exists(FilePath))
                     {
                         var plainBytes = File.ReadAllBytes(FilePath);
-                        var encryptedBytes = SymmetricCipher.Encrypt(Algorithim, password, plainBytes);
+                        var encryptedBytes = SymmetricCipher.EncryptBytes(SelectedCryptoApi, SelectedAlgorithim, KeySizes[KeySizeIndex], password, plainBytes);
                         var extension = Path.GetExtension(FilePath);
                         EncryptedFilePath = Path.Combine(Directory.GetParent(FilePath).ToString(), Path.GetFileNameWithoutExtension(FilePath) + ".Encrypted" + extension);
                         File.WriteAllBytes(EncryptedFilePath, encryptedBytes);
                     }
                 break;
                 case Format.TextString:
-                    encrypted = SymmetricCipher.Encrypt(Algorithim, password, PlainText);
-                    EncryptedText = ByteConvert.BytesToString(encrypted);
+                    encrypted = SymmetricCipher.EncryptText(SelectedCryptoApi, SelectedAlgorithim, KeySizes[KeySizeIndex], password, PlainText);
+                    EncryptedText = ByteConvert.BytesToHexString(encrypted);
                     break;
             }
         }
@@ -219,26 +255,7 @@ namespace CryptoCalc.Core
 
         #region Private Methods
 
-        /// <summary>
-        /// Gets a symmetric algorithim object to setup the cipher
-        /// </summary>
-        private void GetAlgorithim()
-        {
-            Algorithim = SymmetricCipher.GetAlgorithim(SelectedAlgorithim);
-            KeySizes.Clear();
-            KeySizeIndex = 0;
-            foreach (var legalkeySize in Algorithim.LegalKeySizes)
-            {
-                int keySize = legalkeySize.MinSize;
-                while (keySize <= legalkeySize.MaxSize)
-                {
-                    KeySizes.Add(keySize);
-                    if (legalkeySize.SkipSize == 0)
-                        break;
-                    keySize += legalkeySize.SkipSize;
-                }
-            }
-        }
+        
         #endregion
     }
 }
