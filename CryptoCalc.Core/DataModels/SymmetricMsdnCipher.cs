@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents all the available symmetric cipher algorithims
     /// </summary>
-    public enum SymmetricCipherAlgorithim
+    public enum SymmetricMsdnCipher
     {
         Aes = 0,
         DES,
