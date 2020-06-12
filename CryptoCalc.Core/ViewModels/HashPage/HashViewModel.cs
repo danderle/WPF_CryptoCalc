@@ -124,7 +124,7 @@ namespace CryptoCalc.Core
                     bytes = ByteConvert.FileToBytes(data);
                     break;
                 case Format.TextString:
-                    bytes = ByteConvert.StringToBytes(data);
+                    bytes = ByteConvert.StringToAsciiBytes(data);
                     break;
                 case Format.HexString:
                     bytes = ByteConvert.HexStringToBytes(data);
