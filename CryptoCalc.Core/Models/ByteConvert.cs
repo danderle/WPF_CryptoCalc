@@ -52,19 +52,29 @@ namespace CryptoCalc.Core
         /// </summary>
         /// <param name="text">the string to convert to bytes</param>
         /// <returns>A byte array</returns>
-        public static byte[] StringToBytes(string text)
+        public static byte[] StringToAsciiBytes(string text)
         {
             return Encoding.ASCII.GetBytes(text);
         }
 
         /// <summary>
-        /// Converts bytes to a string
+        /// Converts bytes to a hex string
         /// </summary>
         /// <param name="bytes"></param>
         /// <returns></returns>
-        public static string BytesToString(byte[] bytes)
+        public static string BytesToHexString(byte[] bytes)
         {
             return BitConverter.ToString(bytes).Replace("-", string.Empty);
+        }
+
+        /// <summary>
+        /// Converts bytes to a ascii string
+        /// </summary>
+        /// <param name="bytes"></param>
+        /// <returns></returns>
+        public static string BytesToAsciiString(byte[] bytes)
+        {
+            return Encoding.ASCII.GetString(bytes);
         }
 
         #endregion
