@@ -407,6 +407,8 @@ namespace CryptoCalc.Core
                     return TripleDES.Create();
                 case SymmetricMsdnCipher.RC2:
                     return RC2.Create();
+                case SymmetricMsdnCipher.Rijndael:
+                    return Rijndael.Create();
                 default:
                     Debugger.Break();
                     return null;

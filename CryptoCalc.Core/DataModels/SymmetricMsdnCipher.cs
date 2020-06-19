@@ -9,5 +9,6 @@
         DES,
         RC2,
         TripleDES,
+        Rijndael
     }
 }
