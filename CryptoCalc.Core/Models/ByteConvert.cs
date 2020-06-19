@@ -54,7 +54,7 @@ namespace CryptoCalc.Core
         /// <returns>A byte array</returns>
         public static byte[] StringToAsciiBytes(string text)
         {
-            return Encoding.ASCII.GetBytes(text);
+            return string.IsNullOrEmpty(text) ? null : Encoding.ASCII.GetBytes(text);
         }
 
         /// <summary>
