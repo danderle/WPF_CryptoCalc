@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace CryptoCalc
@@ -38,7 +39,7 @@ namespace CryptoCalc
         private static void Element_DropFile(object sender, DragEventArgs e)
         {
             //set the element as a framework element
-            FrameworkElement element = (FrameworkElement)sender;
+            TextBox element = (TextBox)sender;
 
             //Get the bound value from the element
             ICommand command = GetValue(element);
@@ -46,8 +47,9 @@ namespace CryptoCalc
             // Get the paths from the file/s dropped
             string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
 
+            element.Text = files[0];
+
             //Pass the object to the bound command method
-            command.Execute(files);
         }
 
     }
