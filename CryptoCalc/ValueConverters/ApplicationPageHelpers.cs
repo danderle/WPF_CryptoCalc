@@ -27,6 +27,7 @@ namespace CryptoCalc
                 case ApplicationPage.SymmetricCiphers:
                     return new SymmetricCipherPage(viewModel as SymmetricCipherViewModel);
                 case ApplicationPage.AsymmetricCiphers:
+                    return new AsymmetricCipherPage(viewModel as AsymmetricCipherViewModel);
                 default:
                     Debugger.Break();
                     return null;
