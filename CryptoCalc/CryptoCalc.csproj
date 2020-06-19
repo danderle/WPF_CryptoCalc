@@ -30,10 +30,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Controls\SignatureInputControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Controls\CipherInputControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Controls\CipherSetupControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Controls\KeyPairCreatorControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Controls\TreeViewControl.xaml.cs">
@@ -48,16 +54,25 @@
     <Compile Update="Controls\DataFormatControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Pages\AsymmetricCipherPage.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Pages\SymmetricCipherPage.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
 
   <ItemGroup>
+    <Page Update="Controls\SignatureInputControl.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Controls\CipherInputControl.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Controls\CipherSetupControl.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\KeyPairCreatorControl.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Controls\TreeViewControl.xaml">
@@ -73,6 +88,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="DialogWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Pages\AsymmetricCipherPage.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Pages\SymmetricCipherPage.xaml">
