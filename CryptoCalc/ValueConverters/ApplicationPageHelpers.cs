@@ -22,12 +22,19 @@ namespace CryptoCalc
             // Find the appropriate page
             switch (page)
             {
-                case ApplicationPage.Hash:
-                    return new HashPage(viewModel as HashViewModel);
-                case ApplicationPage.SymmetricCiphers:
-                    return new SymmetricCipherPage(viewModel as SymmetricCipherViewModel);
-                case ApplicationPage.AsymmetricCiphers:
-                    return new AsymmetricCipherPage(viewModel as AsymmetricCipherViewModel);
+                case ApplicationPage.MSDNHash:
+                    return new MsdnHashPage(viewModel as MsdnHashViewModel);
+                case ApplicationPage.MSDNSymmetricEncryption:
+                case ApplicationPage.MSDNPublicKeyEncryption:
+                case ApplicationPage.MSDNDigitalSignature:
+                case ApplicationPage.MSDNKeyExchange:
+
+                case ApplicationPage.BouncyCastleHash:
+                    return new BouncyHashPage(viewModel as BouncyHashViewModel);
+                case ApplicationPage.BouncyCastleSymmetricEncryption:
+                case ApplicationPage.BouncyCastlePublicKeyEncryption:
+                case ApplicationPage.BouncyCastleDigitalSignature:
+                case ApplicationPage.BouncyCastleKeyExchange:
                 default:
                     Debugger.Break();
                     return null;
@@ -41,10 +48,27 @@ namespace CryptoCalc
         /// <returns>The page as an enum</returns>
         public static ApplicationPage ToApplicationPage(this BasePage page)
         {
-            if (page is HashPage)
-                return ApplicationPage.Hash;
-            if (page is SymmetricCipherPage)
-                return ApplicationPage.SymmetricCiphers;
+            if (page is MsdnHashPage)
+                return ApplicationPage.MSDNHash;
+            if (page is MsdnHashPage)
+                return ApplicationPage.MSDNSymmetricEncryption;
+            if (page is MsdnHashPage)
+                return ApplicationPage.MSDNPublicKeyEncryption;
+            if (page is MsdnHashPage)
+                return ApplicationPage.MSDNDigitalSignature;
+            if (page is MsdnHashPage)
+                return ApplicationPage.MSDNKeyExchange;
+            if (page is BouncyHashPage)
+                return ApplicationPage.BouncyCastleHash;
+            if (page is MsdnHashPage)
+                return ApplicationPage.BouncyCastleSymmetricEncryption;
+            if (page is MsdnHashPage)
+                return ApplicationPage.BouncyCastlePublicKeyEncryption;
+            if (page is MsdnHashPage)
+                return ApplicationPage.BouncyCastleDigitalSignature;
+            if (page is MsdnHashPage)
+                return ApplicationPage.BouncyCastleKeyExchange;
+
             //Alert developer
             Debugger.Break();
             return default(ApplicationPage);

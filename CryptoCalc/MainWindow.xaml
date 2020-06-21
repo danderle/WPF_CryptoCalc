@@ -13,9 +13,19 @@
         Width="800">
 
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <local:SideMenuControl>
+            <local:PageOptionListItemControl DataContext="{Binding ApplicationViewModel.PageList,
+                                            Source={x:Static local:ViewModelLocator.Instance}}" />
+        </local:SideMenuControl>
+        
         <local:PageHost Grid.Column="1" 
                         CurrentPage="{Binding ApplicationViewModel.CurrentPage,
-                                    Source={x:Static local:ViewModelLocator.Instance}}"
+                                Source={x:Static local:ViewModelLocator.Instance}}"
                         CurrentPageViewModel="{Binding ApplicationViewModel.CurrentPageViewModel,
                                             Source={x:Static local:ViewModelLocator.Instance}}"/>
         <Border Opacity="0.3">

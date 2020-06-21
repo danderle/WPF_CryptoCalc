@@ -5,19 +5,15 @@
     /// </summary>
     public enum ApplicationPage
     {
-        /// <summary>
-        /// The hash page
-        /// </summary>
-        Hash = 0,
-
-        /// <summary>
-        /// The symmetric cipher page
-        /// </summary>
-        SymmetricCiphers,
-
-        /// <summary>
-        /// The asymmetric cipher page
-        /// </summary>
-        AsymmetricCiphers,
+        MSDNHash = 0,
+        MSDNSymmetricEncryption,
+        MSDNPublicKeyEncryption,
+        MSDNDigitalSignature,
+        MSDNKeyExchange,
+        BouncyCastleHash,
+        BouncyCastleSymmetricEncryption,
+        BouncyCastlePublicKeyEncryption,
+        BouncyCastleDigitalSignature,
+        BouncyCastleKeyExchange,
     }
 }
