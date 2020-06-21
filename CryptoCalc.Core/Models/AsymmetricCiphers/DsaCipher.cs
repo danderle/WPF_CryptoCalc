@@ -99,7 +99,7 @@ namespace CryptoCalc.Core
         {
             int bytesRead;
             cipher.ImportPkcs8PrivateKey(privKey, out bytesRead);
-            var hash = Hash.Compute(HashAlgorithim.SHA1, data);
+            var hash = MsdnHash.Compute(MsdnHashAlgorithim.SHA1, data);
             return cipher.SignHash(hash, HashAlgorithmName.SHA1.ToString());
         }
 
@@ -107,7 +107,7 @@ namespace CryptoCalc.Core
         {
             int bytesRead;
             cipher.ImportSubjectPublicKeyInfo(pubKey, out bytesRead);
-            var hash = Hash.Compute(HashAlgorithim.SHA1, data);
+            var hash = MsdnHash.Compute(MsdnHashAlgorithim.SHA1, data);
             return cipher.VerifyHash(hash,  HashAlgorithmName.SHA1.ToString(), originalSignature);
         }
 

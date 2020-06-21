@@ -376,7 +376,7 @@ namespace CryptoCalc.Core
             byte[] sizedHash = new byte[sizeInBit / 8];
             List<byte> hash = new List<byte>();
             int b = 0;
-            var bytes = Hash.Compute(HashAlgorithim.SHA512, password);
+            var bytes = MsdnHash.Compute(MsdnHashAlgorithim.SHA512, password);
             for (int i = 0; i < sizedHash.Length; i++)
             {
                 if (!(b < bytes.Length))

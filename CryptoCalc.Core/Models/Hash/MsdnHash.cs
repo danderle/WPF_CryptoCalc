@@ -4,23 +4,20 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
-using Org.BouncyCastle.Crypto.Digests;
-using Org.BouncyCastle.Crypto.Macs;
-using Org.BouncyCastle.Crypto.Parameters;
 
 namespace CryptoCalc.Core
 {
     /// <summary>
     /// A class for computing a variety of hash algorithims
     /// </summary>
-    static class Hash
+    static class MsdnHash
     {
         #region Private Properties
 
         /// <summary>
         /// Dictionary which holds all the hash computation functions
         /// </summary>
-        private static Dictionary<HashAlgorithim, Func<byte[], byte[], byte[]>> hashMethods = new Dictionary<HashAlgorithim, Func<byte[], byte[], byte[]>> ();
+        private static Dictionary<MsdnHashAlgorithim, Func<byte[], byte[], byte[]>> hashMethods = new Dictionary<MsdnHashAlgorithim, Func<byte[], byte[], byte[]>> ();
 
         #endregion
 
@@ -29,13 +26,12 @@ namespace CryptoCalc.Core
         /// <summary>
         /// Default constructor
         /// </summary>
-        static Hash()
+        static MsdnHash()
         {
             SetupHashMethodsDictionary();
         }
 
         #endregion
-
         
         #region Public Methods
 
@@ -45,7 +41,7 @@ namespace CryptoCalc.Core
         /// <param name="algorithim">the algorthim to compute with</param>
         /// <param name="data">the data in bytes</param>
         /// <returns>the hash value</returns>
-        public static byte[] Compute(HashAlgorithim algorithim, byte[] data, byte[] key = null)
+        public static byte[] Compute(MsdnHashAlgorithim algorithim, byte[] data, byte[] key = null)
         {
             Func<byte[], byte[], byte[]> method;
             hashMethods.TryGetValue(algorithim, out method);
@@ -76,31 +72,6 @@ namespace CryptoCalc.Core
                 hash = md5.ComputeHash(data);
             }
             return hash;
-        }
-
-        /// <summary>
-        /// MD4 computation
-        /// </summary>
-        /// <param name="data">the data to hash</param>
-        /// <param name="key">optional hmac key</param>
-        /// <returns>the hash value</returns>
-        private static byte[] ComputeMd4(byte[] data, byte[] key)
-        {
-            byte[] outData = new byte[16];
-            if (key != null)
-            {
-                var md4Hmac = new HMac(new MD4Digest());
-                md4Hmac.Init(new KeyParameter(key));
-                md4Hmac.BlockUpdate(data, 0, data.Length);
-                md4Hmac.DoFinal(outData, 0);
-            }
-            else
-            {
-                var md4 = new MD4Digest();
-                md4.BlockUpdate(data, 0, data.Length);
-                md4.DoFinal(outData, 0);
-            }
-            return outData;
         }
 
         /// <summary>
@@ -200,114 +171,6 @@ namespace CryptoCalc.Core
         }
 
         /// <summary>
-        /// RipeMd160 computation
-        /// </summary>
-        /// <param name="data">the data to hash</param>
-        /// <param name="key">optional hmac key</param>
-        /// <returns>the hash value</returns>
-        private static byte[] ComputeRipeMd160(byte[] data, byte[] key)
-        {
-            byte[] outData = new byte[20];
-            
-            if (key != null)
-            {
-                var ripeMd160Hmac = new HMac(new RipeMD160Digest());
-                ripeMd160Hmac.Init(new KeyParameter(key));
-                ripeMd160Hmac.BlockUpdate(data, 0, data.Length);
-                ripeMd160Hmac.DoFinal(outData, 0);
-            }
-            else
-            {
-                var ripe = new RipeMD160Digest();
-                ripe.BlockUpdate(data, 0, data.Length);
-                ripe.DoFinal(outData, 0);
-            }
-            
-            return outData;
-        }
-
-        /// <summary>
-        /// Whirlpool computation
-        /// </summary>
-        /// <param name="data">the data to hash</param>
-        /// <param name="key">optional hmac key</param>
-        /// <returns>the hash value</returns>
-        private static byte[] ComputeWhirlpool(byte[] data, byte[] key)
-        {
-            byte[] outData = new byte[64];
-
-            if (key != null)
-            {
-                var poolHmac = new HMac(new WhirlpoolDigest());
-                poolHmac.Init(new KeyParameter(key));
-                poolHmac.BlockUpdate(data, 0, data.Length);
-                poolHmac.DoFinal(outData, 0);
-            }
-            else
-            {
-                var digest = new WhirlpoolDigest();
-                digest.BlockUpdate(data, 0, data.Length);
-                digest.DoFinal(outData, 0);
-            }
-            
-            return outData;
-        }
-
-        /// <summary>
-        /// Tiger computation
-        /// </summary>
-        /// <param name="data">the data to hash</param>
-        /// <param name="key">optional hmac key</param>
-        /// <returns>the hash value</returns>
-        private static byte[] ComputeTiger(byte[] data, byte[] key)
-        {
-            byte[] outData = new byte[24];
-
-            if (key != null)
-            {
-                var tigerHmac = new HMac(new TigerDigest());
-                tigerHmac.Init(new KeyParameter(key));
-                tigerHmac.BlockUpdate(data, 0, data.Length);
-                tigerHmac.DoFinal(outData, 0);
-            }
-            else
-            {
-                var tiger = new TigerDigest();
-                tiger.BlockUpdate(data, 0, data.Length);
-                tiger.DoFinal(outData, 0);
-            }
-            
-            return outData;
-        }
-
-        /// <summary>
-        /// SHA1 computation
-        /// </summary>
-        /// <param name="data">the data to hash</param>
-        /// <param name="key">not usable</param>
-        /// <returns>the hash value</returns>
-        private static byte[] ComputeMd2(byte[] data, byte[] key)
-        {
-            byte[] outData = new byte[16];
-
-            if (key != null)
-            {
-                var md2Hmac = new HMac(new MD2Digest());
-                md2Hmac.Init(new KeyParameter(key));
-                md2Hmac.BlockUpdate(data, 0, data.Length);
-                md2Hmac.DoFinal(outData, 0);
-            }
-            else
-            {
-                var md2 = new MD2Digest();
-                md2.BlockUpdate(data, 0, data.Length);
-                md2.DoFinal(outData, 0);
-            }
-            
-            return outData;
-        }
-
-        /// <summary>
         /// SHA1 computation
         /// </summary>
         /// <param name="data">the data to hash</param>
@@ -345,45 +208,24 @@ namespace CryptoCalc.Core
         /// </summary>
         private static void SetupHashMethodsDictionary()
         {
-            foreach (HashAlgorithim algorithim in Enum.GetValues(typeof(HashAlgorithim)))
+            foreach (MsdnHashAlgorithim algorithim in Enum.GetValues(typeof(MsdnHashAlgorithim)))
             {
                 switch (algorithim)
                 {
-                    case HashAlgorithim.MD5:
+                    case MsdnHashAlgorithim.MD5:
                         hashMethods.Add(algorithim, ComputeMd5);
                         break;
-                    case HashAlgorithim.MD4:
-                        hashMethods.Add(algorithim, ComputeMd4);
-                        break;
-                    case HashAlgorithim.SHA1:
+                    case MsdnHashAlgorithim.SHA1:
                         hashMethods.Add(algorithim, ComputeSha1);
                         break;
-                    case HashAlgorithim.SHA256:
+                    case MsdnHashAlgorithim.SHA256:
                         hashMethods.Add(algorithim, ComputeSha256);
                         break;
-                    case HashAlgorithim.SHA384:
+                    case MsdnHashAlgorithim.SHA384:
                         hashMethods.Add(algorithim, ComputeSha384);
                         break;
-                    case HashAlgorithim.SHA512:
+                    case MsdnHashAlgorithim.SHA512:
                         hashMethods.Add(algorithim, ComputeSha512);
-                        break;
-                    case HashAlgorithim.RIPEMD160:
-                        hashMethods.Add(algorithim, ComputeRipeMd160);
-                        break;
-                    case HashAlgorithim.WHIRLPOOL:
-                        hashMethods.Add(algorithim, ComputeWhirlpool);
-                        break;
-                    case HashAlgorithim.TIGER:
-                        hashMethods.Add(algorithim, ComputeTiger);
-                        break;
-                    case HashAlgorithim.MD2:
-                        hashMethods.Add(algorithim, ComputeMd2);
-                        break;
-                    case HashAlgorithim.ADLER32:
-                        hashMethods.Add(algorithim, ComputeAdler32);
-                        break;
-                    case HashAlgorithim.CRC32:
-                        hashMethods.Add(algorithim, ComputeCrc32);
                         break;
                     default:
                         Debugger.Break();
