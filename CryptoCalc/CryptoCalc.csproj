@@ -69,7 +69,10 @@
     <Compile Update="Pages\HashPages\BouncyHashPage.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Pages\SymmetricCipherPage.xaml.cs">
+    <Compile Update="Pages\SymmetricPages\MsdnSymmetricPage.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Pages\SymmetricPages\SymmetricCipherPage.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -117,7 +120,10 @@
     <Page Update="Pages\HashPages\BouncyHashPage.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Pages\SymmetricCipherPage.xaml">
+    <Page Update="Pages\SymmetricPages\MsdnSymmetricPage.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Pages\SymmetricPages\SymmetricCipherPage.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Styles\CheckBoxes.xaml">

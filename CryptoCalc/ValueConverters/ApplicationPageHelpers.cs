@@ -1,8 +1,5 @@
 ﻿using CryptoCalc.Core;
-using System;
 using System.Diagnostics;
-using System.Globalization;
-using System.Runtime.CompilerServices;
 
 namespace CryptoCalc
 {
@@ -25,6 +22,7 @@ namespace CryptoCalc
                 case ApplicationPage.MSDNHash:
                     return new MsdnHashPage(viewModel as MsdnHashViewModel);
                 case ApplicationPage.MSDNSymmetricEncryption:
+                    return new MsdnSymmetricPage(viewModel as MsdnSymmetricViewModel);
                 case ApplicationPage.MSDNPublicKeyEncryption:
                 case ApplicationPage.MSDNDigitalSignature:
                 case ApplicationPage.MSDNKeyExchange:
@@ -50,7 +48,7 @@ namespace CryptoCalc
         {
             if (page is MsdnHashPage)
                 return ApplicationPage.MSDNHash;
-            if (page is MsdnHashPage)
+            if (page is MsdnSymmetricPage)
                 return ApplicationPage.MSDNSymmetricEncryption;
             if (page is MsdnHashPage)
                 return ApplicationPage.MSDNPublicKeyEncryption;
