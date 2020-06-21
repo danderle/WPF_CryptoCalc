@@ -5,10 +5,16 @@ using System.Windows.Input;
 namespace CryptoCalc.Core
 {
     /// <summary>
-    /// The view model for the hash page
+    /// The view model for the Msdn Hash page
     /// </summary>
     public class HashViewModel : BaseViewModel
     {
+        #region Private Fields
+
+        private bool useBouncyApi = false;
+
+        #endregion
+
         #region Properties
 
         /// <summary>
@@ -19,7 +25,7 @@ namespace CryptoCalc.Core
         /// <summary>
         /// The view model that holds all the hashing methods
         /// </summary>
-        public HashItemListViewModel HashList { get; set; } = new HashItemListViewModel();
+        public HashItemListViewModel HashList { get; set; }
 
         #endregion
 
@@ -55,7 +61,19 @@ namespace CryptoCalc.Core
             HelpCommand = new RelayCommand(HelpAsync);
         }
 
-        
+        public HashViewModel(bool bouncyApi)
+            : base()
+        {
+            useBouncyApi = bouncyApi;
+            if(useBouncyApi)
+            {
+                HashList = new HashItemListViewModel(useBouncyApi);
+            }
+            else
+            {
+                HashList = new HashItemListViewModel(false);
+            }
+        }
 
         #endregion
 
@@ -100,7 +118,7 @@ namespace CryptoCalc.Core
             {
                 if(item.IsChecked)
                 {
-                    item.CalculateHash(data, key);
+                    item.CalculateHash(data, key, useBouncyApi);
                 }
             }
         }

@@ -12,7 +12,12 @@ namespace CryptoCalc.Core
         /// <summary>
         /// The hash algorithim to use when calculating the hash value
         /// </summary>
-        private HashAlgorithim hashAlgorithim => (HashAlgorithim)Enum.Parse(typeof(HashAlgorithim), HashName);
+        private MsdnHashAlgorithim msdnHashAlgorithim => (MsdnHashAlgorithim)Enum.Parse(typeof(MsdnHashAlgorithim), HashName);
+
+        /// <summary>
+        /// The hash algorithim to use when calculating the hash value
+        /// </summary>
+        private BouncyHashAlgorithim bouncyHashAlgorithim => (BouncyHashAlgorithim)Enum.Parse(typeof(BouncyHashAlgorithim), HashName);
 
         #endregion
 
@@ -57,10 +62,18 @@ namespace CryptoCalc.Core
         /// Calcualte the hash value according to the set hash algorithim and set the hash value
         /// </summary>
         /// <param name="data"></param>
-        public void CalculateHash(byte[] data, byte[] key)
+        public void CalculateHash(byte[] data, byte[] key, bool bouncyApi)
         {
-            var value = Hash.Compute(hashAlgorithim, data, key);
-            HashValue = BitConverter.ToString(value).Replace("-", string.Empty);
+            if(!bouncyApi)
+            {
+                var value = MsdnHash.Compute(msdnHashAlgorithim, data, key);
+                HashValue = BitConverter.ToString(value).Replace("-", string.Empty);
+            }
+            else
+            {
+                var value = BouncyHash.Compute(bouncyHashAlgorithim, data, key);
+                HashValue = BitConverter.ToString(value).Replace("-", string.Empty);
+            }
         }
 
         #endregion
