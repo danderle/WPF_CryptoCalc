@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents all the available hashing algorithims
     /// </summary>
-    public enum HashAlgorithim
+    public enum BouncyHashAlgorithim
     {
         MD5 = 0,
         MD4,
@@ -15,7 +15,5 @@
         WHIRLPOOL,
         TIGER,
         MD2,
-        ADLER32,
-        CRC32,
     }
 }
