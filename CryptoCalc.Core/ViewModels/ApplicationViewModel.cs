@@ -10,7 +10,9 @@
         /// <summary>
         /// The current page of the application
         /// </summary>
-        public ApplicationPage CurrentPage { get; private set; } = ApplicationPage.AsymmetricCiphers;
+        public ApplicationPage CurrentPage { get; private set; } = ApplicationPage.MSDNHash;
+
+        public PageOptionListItemViewModel PageList { get; set; } = new PageOptionListItemViewModel();
 
         /// <summary>
         /// The view model to use for the current page when the CurrentPage changes
