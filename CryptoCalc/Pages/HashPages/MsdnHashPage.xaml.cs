@@ -3,16 +3,16 @@
 namespace CryptoCalc
 {
     /// <summary>
-    /// Interaction logic for HashPage.xaml
+    /// Interaction logic for MsdnHashPage.xaml
     /// </summary>
-    public partial class HashPage : BasePage<HashViewModel>
+    public partial class MsdnHashPage : BasePage<MsdnHashViewModel>
     {
         #region Constructor
 
         /// <summary>
         /// Default constructor
         /// </summary>
-        public HashPage()
+        public MsdnHashPage()
         {
             InitializeComponent();
         }
@@ -20,7 +20,7 @@ namespace CryptoCalc
         /// <summary>
         /// Constructor with a specific view model
         /// </summary>
-        public HashPage(HashViewModel specificViewModel) : base(specificViewModel)
+        public MsdnHashPage(MsdnHashViewModel specificViewModel) : base(specificViewModel)
         {
             InitializeComponent();
         }

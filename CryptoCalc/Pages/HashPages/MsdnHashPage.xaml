@@ -1,4 +1,4 @@
-﻿<local:BasePage x:TypeArguments="core:HashViewModel"  x:Class="CryptoCalc.HashPage"
+﻿<local:BasePage x:TypeArguments="core:MsdnHashViewModel"  x:Class="CryptoCalc.MsdnHashPage"
                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -11,11 +11,18 @@
     <Grid Background="{StaticResource WhiteBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Border Style="{StaticResource SectionBorder}" VerticalAlignment="Bottom">
+        <TextBlock Text="MSDN Hash Algorithims" 
+                   HorizontalAlignment="Center"
+                   FontWeight="Bold"/>
+
+        <Border Style="{StaticResource SectionBorder}" 
+                VerticalAlignment="Bottom"
+                Grid.Row="1">
             <!--Data formatting options and data to be hashed entry-->
             <local:DataFormatControl DataContext="{Binding DataFormatSetup}" 
                                      HmacSelected="{Binding HmacChecked}"
@@ -24,7 +31,7 @@
                                      />
         </Border>
 
-        <Border Grid.Row="1"
+        <Border Grid.Row="2"
                 Style="{StaticResource SectionBorder}"
                 Padding="0 8">
             <!--List of hashing algorithims-->
@@ -34,7 +41,7 @@
                                        local:HmacSelectedProperty.Value="{Binding ElementName=DataFormatOptions, Path=HmacSelected}"/>
         </Border>
 
-        <Grid Grid.Row="2"
+        <Grid Grid.Row="3"
               Margin="0 8">
             <Grid.ColumnDefinitions>
                 <!--TradeMark-->
