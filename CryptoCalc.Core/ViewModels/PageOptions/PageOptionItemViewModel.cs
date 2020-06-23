@@ -45,9 +45,9 @@ namespace CryptoCalc.Core
 
         private void PageSelected()
         {
-            var s = PageName.Replace(" ", "");
+            var api = PageName.Contains("MSDN") ? CryptographyApi.MSDN : CryptographyApi.BouncyCastle;
             SelectedPage = (ApplicationPage)Enum.Parse(typeof(ApplicationPage), PageName.Replace(" ", ""));
-            
+           
             Ioc.Application.GoToPage(SelectedPage);
         }
 

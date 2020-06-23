@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
-using System.Windows.Input;
+﻿using System.Collections.Generic;
 
 namespace CryptoCalc.Core
 {
@@ -30,6 +26,7 @@ namespace CryptoCalc.Core
                 new PageOptionItemViewModel
                 {
                     PageName = "MSDN Hash",
+                    IsChecked = true,
                 },
                 new PageOptionItemViewModel
                 {
