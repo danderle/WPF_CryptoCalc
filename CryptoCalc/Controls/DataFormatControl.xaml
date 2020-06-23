@@ -7,76 +7,78 @@
              xmlns:core="clr-namespace:CryptoCalc.Core;assembly=CryptoCalc.Core"
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="400">
-    
+
     <Grid Background="{StaticResource WhiteBrush}"
           d:DataContext="{x:Static core:DataFormatDesignModel.Instance}">
-                <Grid.ColumnDefinitions>
-                    <!--Option to select what type of format to hash-->
-                    <ColumnDefinition Width="Auto" />
-                    <!--The data that will be hashed plus optional entries-->
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
+        <Grid.ColumnDefinitions>
+            <!--Option to select what type of format to hash-->
+            <ColumnDefinition Width="Auto" />
+            <!--The data that will be hashed plus optional entries-->
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
 
-                <!--Column 0-->
-                <StackPanel Margin="5">
-                    <!--ComboBox of what type of format to hash-->
-                    <TextBlock Text="Data Format:" />
-                    <ComboBox ItemsSource="{Binding DataFormatOptions}"
+        <!--Column 0-->
+        <StackPanel Margin="5">
+            <!--ComboBox of what type of format to hash-->
+            <TextBlock Text="Data Format:" />
+            <ComboBox ItemsSource="{Binding DataFormatOptions}"
                               SelectedIndex="{Binding DataFormatSelected, Converter={local:DataHashFormatEnumToInt}}"
                               local:ComboBoxElementsMaxWidthProperty.Value="True"/>
 
-                    <!--The HMAC option-->
-                    <CheckBox Content="HMAC"
+            <!--The HMAC option-->
+            <CheckBox Content="HMAC"
                               Margin="0 10 0 0"
                               Name="hmacCheck"
                               IsChecked="{Binding HmacChecked}"
                               Command="{Binding HmacOptionCommand}"/>
-                </StackPanel>
+        </StackPanel>
 
-                <!--Column 1-->
-                <StackPanel Grid.Column="1"
+        <!--Column 1-->
+        <StackPanel Grid.Column="1"
                             Margin="5">
-                    <!--Data to be hashed-->
-                    <TextBlock Text="Data:" />
+            <!--Data to be hashed-->
+            <TextBlock Text="Data:" />
             <Grid >
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="30*" />
+                    <ColumnDefinition Width="233*"/>
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <TextBox Text="{Binding Data, UpdateSourceTrigger=PropertyChanged}"
-                             local:DragDropProperty.Value="{Binding DropCommand}"
-                         VerticalContentAlignment="Center"/>
-                <Button Grid.Column="1"
-                        Margin="5 0 0 0"
+                         local:DragDropProperty.Value="{Binding DropCommand}"
+                         VerticalContentAlignment="Center"
+                         Grid.ColumnSpan="2"/>
+                <Button Grid.Column="2"
+                        Margin="5,0,0,0"
                         Padding="5 2"
                         Content="..." 
                         Command="{Binding OpenFolderDialogCommand}"/>
             </Grid>
-                    <Grid Margin="0 5">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        
-                        <!--Key format options, only enabled if HMAC is checked-->
-                        <StackPanel Margin="0 0 5 0">
-                            <TextBlock Text=" Key Format" />
-                            <ComboBox ItemsSource="{Binding KeyFormat}"
+            <Grid Margin="0 5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <!--Key format options, only enabled if HMAC is checked-->
+                <StackPanel Margin="0 0 5 0">
+                    <TextBlock Text=" Key Format" />
+                    <ComboBox ItemsSource="{Binding KeyFormat}"
                                       SelectedIndex="{Binding KeyFormatSelected, Converter={local:DataHashFormatEnumToInt}}"
                                       local:ComboBoxElementsMaxWidthProperty.Value="True"
                                       IsEnabled="{Binding ElementName=hmacCheck, Path=IsChecked}"/>
-                        </StackPanel>
-                        
-                        <!--Key entry, only enabled if HMAC is checked-->
-                        <StackPanel Grid.Column="1"
+                </StackPanel>
+
+                <!--Key entry, only enabled if HMAC is checked-->
+                <StackPanel Grid.Column="1"
                                     Margin="5 0 0 0"
                                     VerticalAlignment="Stretch">
-                            <TextBlock Text="Key" />
-                            <TextBox Text="{Binding Key, UpdateSourceTrigger=PropertyChanged}"
+                    <TextBlock Text="Key" />
+                    <TextBox Text="{Binding Key, UpdateSourceTrigger=PropertyChanged}"
                                      IsEnabled="{Binding ElementName=hmacCheck, Path=IsChecked}"/>
-                        </StackPanel>
-                    </Grid>
                 </StackPanel>
             </Grid>
-       
+        </StackPanel>
+    </Grid>
+
 </UserControl>

@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:CryptoCalc"
              xmlns:core="clr-namespace:CryptoCalc.Core;assembly=CryptoCalc.Core"
-             mc:Ignorable="d" >
+             mc:Ignorable="d" 
+             d:DesignHeight="150" d:DesignWidth="400">
 
     <Grid Background="{StaticResource WhiteBrush}"
           >
@@ -16,21 +17,12 @@
         
         <!--ComboBox of what type of format to hash-->
         <StackPanel Margin="0 0 5 0">
-            <TextBlock Text="Cryptography API" />
-            <ComboBox ItemsSource="{Binding CryptoApiOptions}"
-                      SelectedIndex="{Binding SelectedCryptoApi, Converter={local:CryptographyApiEnumToInt}}"
-                      local:SelectionChangedProperty.Value="{Binding ChangedApiCommand}" 
-                      HorizontalAlignment="Left"
-                      local:ComboBoxElementsMaxWidthProperty.Value="True"/>
             <TextBlock Text="Data Format:" />
             <ComboBox ItemsSource="{Binding DataFormatOptions}"
                       SelectedIndex="{Binding DataFormatSelected, Converter={local:DataHashFormatEnumToInt}}"
                       HorizontalAlignment="Left"
                       local:ComboBoxElementsMaxWidthProperty.Value="True"/>
-        </StackPanel>
-        
-        <!--Cipher algorithim option list-->
-        <StackPanel Grid.Column="1">
+            
             <TextBlock Text="Algorithim"/>
             <ComboBox ItemsSource="{Binding Algorithims}"
                       HorizontalAlignment="Left"
@@ -42,9 +34,34 @@
                       HorizontalAlignment="Left"
                       SelectedIndex="{Binding KeySizeIndex}"
                       local:ComboBoxElementsMaxWidthProperty.Value="True"/>
-            <!--Secret Key-->
-            <TextBlock Text="Password" />
-            <TextBox Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}" />
+        </StackPanel>
+        
+        <!--Cipher algorithim option list-->
+        <StackPanel Grid.Column="1">
+            <!--Data to be hashed-->
+            <TextBlock Text="Data:" />
+            <Grid >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="30*" />
+                    <ColumnDefinition Width="233*"/>
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBox Text="{Binding Data, UpdateSourceTrigger=PropertyChanged}"
+                         local:DragDropProperty.Value="True"
+                         VerticalContentAlignment="Center"
+                         Grid.ColumnSpan="2"/>
+                <Button Grid.Column="2"
+                        Margin="5,0,0,0"
+                        Padding="5 2"
+                        Content="..." 
+                        Command="{Binding OpenFolderDialogCommand}"/>
+            </Grid>
+            
+            <StackPanel>
+                <!--Secret Key-->
+                <TextBlock Text="Secret key" />
+                <TextBox Text="{Binding SecretKey, UpdateSourceTrigger=PropertyChanged}" />
+            </StackPanel>
         </StackPanel>
         
     </Grid>
