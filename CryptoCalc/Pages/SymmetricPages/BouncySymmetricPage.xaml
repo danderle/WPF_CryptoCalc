@@ -1,4 +1,4 @@
-﻿<local:BasePage x:TypeArguments="core:SymmetricViewModel"  x:Class="CryptoCalc.MsdnSymmetricPage"
+﻿<local:BasePage x:TypeArguments="core:SymmetricViewModel"  x:Class="CryptoCalc.BouncySymmetricPage"
                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -11,7 +11,7 @@
             Padding="5">
 
         <StackPanel>
-            <TextBlock Text="MSDN Symmetric Ciphers"
+            <TextBlock Text="Bouncy Castle Symmetric Ciphers"
                        FontWeight="Bold"
                        HorizontalAlignment="Center" />
             <local:CipherSetupControl DataContext="{Binding}"/>

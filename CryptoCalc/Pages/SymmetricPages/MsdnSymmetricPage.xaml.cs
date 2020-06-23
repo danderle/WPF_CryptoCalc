@@ -5,7 +5,7 @@ namespace CryptoCalc
     /// <summary>
     /// Interaction logic for MsdnSymmetricPage.xaml
     /// </summary>
-    public partial class MsdnSymmetricPage : BasePage<MsdnSymmetricViewModel>
+    public partial class MsdnSymmetricPage : BasePage<SymmetricViewModel>
     {
         #region Constructor
 
@@ -20,7 +20,7 @@ namespace CryptoCalc
         /// <summary>
         /// Constructor with a specific view model
         /// </summary>
-        public MsdnSymmetricPage(MsdnSymmetricViewModel specificViewModel) : base(specificViewModel)
+        public MsdnSymmetricPage(SymmetricViewModel specificViewModel) : base(specificViewModel)
         {
             InitializeComponent();
         }

@@ -5,7 +5,7 @@ namespace CryptoCalc
     /// <summary>
     /// Interaction logic for BouncyHashPage.xaml
     /// </summary>
-    public partial class BouncyHashPage : BasePage<BouncyHashViewModel>
+    public partial class BouncyHashPage : BasePage<HashViewModel>
     {
         #region Constructor
 
@@ -20,7 +20,7 @@ namespace CryptoCalc
         /// <summary>
         /// Constructor with a specific view model
         /// </summary>
-        public BouncyHashPage(BouncyHashViewModel specificViewModel) : base(specificViewModel)
+        public BouncyHashPage(HashViewModel specificViewModel) : base(specificViewModel)
         {
             InitializeComponent();
         }

@@ -30,6 +30,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Controls\HashControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Controls\PageOptionListItemControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -42,7 +45,7 @@
     <Compile Update="Controls\SignatureInputControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Controls\CipherInputControl.xaml.cs">
+    <Compile Update="Controls\CipherOutputControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Controls\CipherSetupControl.xaml.cs">
@@ -69,15 +72,18 @@
     <Compile Update="Pages\HashPages\BouncyHashPage.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Pages\SymmetricPages\MsdnSymmetricPage.xaml.cs">
+    <Compile Update="Pages\SymmetricPages\BouncySymmetricPage.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Pages\SymmetricPages\SymmetricCipherPage.xaml.cs">
+    <Compile Update="Pages\SymmetricPages\MsdnSymmetricPage.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
 
   <ItemGroup>
+    <Page Update="Controls\HashControl.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Controls\PageOptionListItemControl.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -90,7 +96,7 @@
     <Page Update="Controls\SignatureInputControl.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Controls\CipherInputControl.xaml">
+    <Page Update="Controls\CipherOutputControl.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Controls\CipherSetupControl.xaml">
@@ -120,10 +126,10 @@
     <Page Update="Pages\HashPages\BouncyHashPage.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Pages\SymmetricPages\MsdnSymmetricPage.xaml">
+    <Page Update="Pages\SymmetricPages\BouncySymmetricPage.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Pages\SymmetricPages\SymmetricCipherPage.xaml">
+    <Page Update="Pages\SymmetricPages\MsdnSymmetricPage.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Styles\CheckBoxes.xaml">
