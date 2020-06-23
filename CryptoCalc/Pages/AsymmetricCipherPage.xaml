@@ -23,7 +23,7 @@
             <local:CipherSetupControl DataContext="{Binding}"/>
             <local:KeyPairCreatorControl Grid.Row="1"
                                          DataContext="{Binding}" />
-            <local:CipherInputControl Grid.Row="2" 
+            <local:CipherOutputControl Grid.Row="2" 
                                       DataContext="{Binding}" />
             <local:SignatureInputControl Grid.Row="3"
                                          DataContext="{Binding}" />
