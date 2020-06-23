@@ -11,16 +11,19 @@ namespace CryptoCalc.Core
     {
         #region Private Fields
 
-        private bool useBouncyApi = false;
+        private CryptographyApi crpytoApi;
 
         #endregion
 
         #region Properties
 
+
+        public string HashPageHeader { get; set; }
+
         /// <summary>
         /// The view model to setup the hashing process
         /// </summary>
-        public DataFormatViewModel DataFormatSetup { get; set; } = Ioc.Get<DataFormatViewModel>();
+        public DataFormatViewModel DataFormatSetup { get; set; } = new DataFormatViewModel();
 
         /// <summary>
         /// The view model that holds all the hashing methods
@@ -61,18 +64,20 @@ namespace CryptoCalc.Core
             HelpCommand = new RelayCommand(HelpAsync);
         }
 
-        public HashViewModel(bool bouncyApi)
+        public HashViewModel(CryptographyApi api)
             : base()
         {
-            useBouncyApi = bouncyApi;
-            if(useBouncyApi)
+            crpytoApi = api;
+            switch(crpytoApi)
             {
-                HashList = new HashItemListViewModel(useBouncyApi);
+                case CryptographyApi.MSDN:
+                    HashPageHeader = "MSDN Hash Algorithims";
+                    break;
+                case CryptographyApi.BouncyCastle:
+                    HashPageHeader = "Bouncy Castle Hash Algorithims";
+                    break;
             }
-            else
-            {
-                HashList = new HashItemListViewModel(false);
-            }
+            HashList = new HashItemListViewModel(crpytoApi);
         }
 
         #endregion
@@ -118,7 +123,7 @@ namespace CryptoCalc.Core
             {
                 if(item.IsChecked)
                 {
-                    item.CalculateHash(data, key, useBouncyApi);
+                    item.CalculateHash(data, key, crpytoApi);
                 }
             }
         }

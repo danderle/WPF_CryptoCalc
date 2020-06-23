@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace CryptoCalc.Core
@@ -28,30 +29,32 @@ namespace CryptoCalc.Core
             
         }
 
-        public HashItemListViewModel(bool getBouncyHashes)
+        public HashItemListViewModel(CryptographyApi api)
         {
-            
-            if(getBouncyHashes)
+            switch(api)
             {
-                foreach (var item in Enum.GetValues(typeof(BouncyHashAlgorithim)).Cast<BouncyHashAlgorithim>().ToList())
-                {
-                    Items.Add(new HashItemViewModel
+                case CryptographyApi.MSDN:
+                    foreach (var item in Enum.GetValues(typeof(MsdnHashAlgorithim)).Cast<MsdnHashAlgorithim>().ToList())
                     {
-                        HashName = item.ToString(),
-                    });
-                }
-            }
-            else
-            {
-                foreach (var item in Enum.GetValues(typeof(MsdnHashAlgorithim)).Cast<MsdnHashAlgorithim>().ToList())
-                {
-                    Items.Add(new HashItemViewModel
+                        Items.Add(new HashItemViewModel
+                        {
+                            HashName = item.ToString(),
+                        });
+                    }
+                    break;
+                case CryptographyApi.BouncyCastle:
+                    foreach (var item in Enum.GetValues(typeof(BouncyHashAlgorithim)).Cast<BouncyHashAlgorithim>().ToList())
                     {
-                        HashName = item.ToString(),
-                    });
-                }
+                        Items.Add(new HashItemViewModel
+                        {
+                            HashName = item.ToString(),
+                        });
+                    }
+                    break;
+                default:
+                    Debugger.Break();
+                    break;
             }
-            
         }
 
         #endregion

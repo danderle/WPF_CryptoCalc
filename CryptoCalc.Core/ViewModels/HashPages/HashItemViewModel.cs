@@ -62,17 +62,19 @@ namespace CryptoCalc.Core
         /// Calcualte the hash value according to the set hash algorithim and set the hash value
         /// </summary>
         /// <param name="data"></param>
-        public void CalculateHash(byte[] data, byte[] key, bool bouncyApi)
+        public void CalculateHash(byte[] data, byte[] key, CryptographyApi api)
         {
-            if(!bouncyApi)
+            byte[] value = null;
+            switch(api)
             {
-                var value = MsdnHash.Compute(msdnHashAlgorithim, data, key);
-                HashValue = BitConverter.ToString(value).Replace("-", string.Empty);
-            }
-            else
-            {
-                var value = BouncyHash.Compute(bouncyHashAlgorithim, data, key);
-                HashValue = BitConverter.ToString(value).Replace("-", string.Empty);
+                case CryptographyApi.MSDN:
+                    value = MsdnHash.Compute(msdnHashAlgorithim, data, key);
+                    HashValue = BitConverter.ToString(value).Replace("-", string.Empty);
+                    break;
+                case CryptographyApi.BouncyCastle:
+                    value = BouncyHash.Compute(bouncyHashAlgorithim, data, key);
+                    HashValue = BitConverter.ToString(value).Replace("-", string.Empty);
+                    break;
             }
         }
 
