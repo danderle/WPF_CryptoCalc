@@ -54,11 +54,6 @@ namespace CryptoCalc.Core
         #region Commands
 
         /// <summary>
-        /// The command to execute a drag and drop
-        /// </summary>
-        public ICommand DropCommand { get; set; }
-
-        /// <summary>
         /// The command to open a folder dialog window
         /// </summary>
         public ICommand OpenFolderDialogCommand { get; set; }
@@ -73,7 +68,6 @@ namespace CryptoCalc.Core
         public DataFormatViewModel()
         {
             //Initialize commands
-            DropCommand = new RelayParameterizedCommand(Drop);
             OpenFolderDialogCommand = new RelayCommand(OpenFolderDialogAsync);
 
             // Adds the formats to the lists
@@ -93,19 +87,7 @@ namespace CryptoCalc.Core
         private async void OpenFolderDialogAsync()
         {
             await Ioc.UI.ShowFolderDialog(new FolderBrowserDialogViewModel());
-        }
-
-        /// <summary>
-        /// The commands method to evaluate the dropped file path
-        /// </summary>
-        /// <param name="obj"></param>
-        private void Drop(object obj)
-        {
-            string[] paths = (string[])obj;
-            if (File.Exists(paths[0]))
-            {
-                Data = paths[0];
-            }
+            Data = Ioc.Application.FilePathFromDialogSelection;
         }
 
         #endregion
