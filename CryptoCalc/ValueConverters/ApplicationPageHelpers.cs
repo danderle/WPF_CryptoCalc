@@ -20,16 +20,16 @@ namespace CryptoCalc
             switch (page)
             {
                 case ApplicationPage.MSDNHash:
-                    return new MsdnHashPage(viewModel as MsdnHashViewModel);
+                    return new MsdnHashPage(viewModel == null ? new HashViewModel(CryptographyApi.MSDN) : viewModel as HashViewModel);
                 case ApplicationPage.MSDNSymmetricEncryption:
-                    return new MsdnSymmetricPage(viewModel as MsdnSymmetricViewModel);
+                    return new MsdnSymmetricPage(viewModel == null ? new SymmetricViewModel(CryptographyApi.MSDN) : viewModel as SymmetricViewModel);
                 case ApplicationPage.MSDNPublicKeyEncryption:
                 case ApplicationPage.MSDNDigitalSignature:
                 case ApplicationPage.MSDNKeyExchange:
-
                 case ApplicationPage.BouncyCastleHash:
-                    return new BouncyHashPage(viewModel as BouncyHashViewModel);
+                    return new BouncyHashPage(viewModel == null ? new HashViewModel(CryptographyApi.BouncyCastle) : viewModel as HashViewModel);
                 case ApplicationPage.BouncyCastleSymmetricEncryption:
+                    return new BouncySymmetricPage(viewModel == null ? new SymmetricViewModel(CryptographyApi.BouncyCastle) : viewModel as SymmetricViewModel);
                 case ApplicationPage.BouncyCastlePublicKeyEncryption:
                 case ApplicationPage.BouncyCastleDigitalSignature:
                 case ApplicationPage.BouncyCastleKeyExchange:
@@ -50,22 +50,22 @@ namespace CryptoCalc
                 return ApplicationPage.MSDNHash;
             if (page is MsdnSymmetricPage)
                 return ApplicationPage.MSDNSymmetricEncryption;
-            if (page is MsdnHashPage)
-                return ApplicationPage.MSDNPublicKeyEncryption;
-            if (page is MsdnHashPage)
-                return ApplicationPage.MSDNDigitalSignature;
-            if (page is MsdnHashPage)
-                return ApplicationPage.MSDNKeyExchange;
+            //if (page is MsdnHashPage)
+            //    return ApplicationPage.MSDNPublicKeyEncryption;
+            //if (page is MsdnHashPage)
+            //    return ApplicationPage.MSDNDigitalSignature;
+            //if (page is MsdnHashPage)
+            //    return ApplicationPage.MSDNKeyExchange;
             if (page is BouncyHashPage)
                 return ApplicationPage.BouncyCastleHash;
-            if (page is MsdnHashPage)
+            if (page is BouncySymmetricPage)
                 return ApplicationPage.BouncyCastleSymmetricEncryption;
-            if (page is MsdnHashPage)
-                return ApplicationPage.BouncyCastlePublicKeyEncryption;
-            if (page is MsdnHashPage)
-                return ApplicationPage.BouncyCastleDigitalSignature;
-            if (page is MsdnHashPage)
-                return ApplicationPage.BouncyCastleKeyExchange;
+            //if (page is MsdnHashPage)
+            //    return ApplicationPage.BouncyCastlePublicKeyEncryption;
+            //if (page is MsdnHashPage)
+            //    return ApplicationPage.BouncyCastleDigitalSignature;
+            //if (page is MsdnHashPage)
+            //    return ApplicationPage.BouncyCastleKeyExchange;
 
             //Alert developer
             Debugger.Break();
