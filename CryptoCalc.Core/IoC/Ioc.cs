@@ -31,7 +31,7 @@ namespace CryptoCalc.Core
 
         #endregion
 
-        #region Conbstruction
+        #region Construction
 
         /// <summary>
         /// Sets up the Ioc container, binds all information required and is ready for use
