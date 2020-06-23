@@ -70,7 +70,7 @@ namespace CryptoCalc.Core
         private void FileSelected(object obj)
         {
             SelectedFilePath = (string)obj;
-            Ioc.DataFormat.Data = SelectedFilePath;
+            Ioc.Application.FilePathFromDialogSelection = SelectedFilePath;
         }
 
         #endregion
