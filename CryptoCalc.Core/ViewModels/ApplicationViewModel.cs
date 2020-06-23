@@ -12,12 +12,20 @@
         /// </summary>
         public ApplicationPage CurrentPage { get; private set; } = ApplicationPage.MSDNHash;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public PageOptionListItemViewModel PageList { get; set; } = new PageOptionListItemViewModel();
 
         /// <summary>
         /// The view model to use for the current page when the CurrentPage changes
         /// </summary>
         public BaseViewModel CurrentPageViewModel { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string FilePathFromDialogSelection { get; set; }
 
         #endregion
 
@@ -32,7 +40,6 @@
         {
             // Set the view model
             CurrentPageViewModel = viewModel;
-
 
             // Set the current page
             CurrentPage = page;
