@@ -7,7 +7,7 @@ namespace CryptoCalc
     /// <summary>
     /// Enables dragging and dropping files onto any framework element
     /// </summary>
-    public class DragDropProperty : BaseAttachedProperty<DragDropProperty, ICommand>
+    public class DragDropProperty : BaseAttachedProperty<DragDropProperty, bool>
     {
         /// <summary>
         /// Fires when a new command is set
@@ -41,15 +41,10 @@ namespace CryptoCalc
             //set the element as a framework element
             TextBox element = (TextBox)sender;
 
-            //Get the bound value from the element
-            ICommand command = GetValue(element);
-
             // Get the paths from the file/s dropped
             string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
 
             element.Text = files[0];
-
-            //Pass the object to the bound command method
         }
 
     }
