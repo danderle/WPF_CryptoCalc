@@ -12,7 +12,7 @@
           >
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="4*" />
         </Grid.ColumnDefinitions>
         
         <!--ComboBox of what type of format to hash-->
@@ -20,20 +20,17 @@
             <TextBlock Text="Data Format:" />
             <ComboBox ItemsSource="{Binding DataFormatOptions}"
                       SelectedIndex="{Binding DataFormatSelected, Converter={local:DataHashFormatEnumToInt}}"
-                      HorizontalAlignment="Left"
-                      local:ComboBoxElementsMaxWidthProperty.Value="True"/>
+                      HorizontalAlignment="Stretch"/>
             
             <TextBlock Text="Algorithim"/>
             <ComboBox ItemsSource="{Binding Algorithims}"
-                      HorizontalAlignment="Left"
                       SelectedIndex ="{Binding SelectedAlgorithim}"
                       local:SelectionChangedProperty.Value="{Binding ChangedAlgorithimCommand}" 
-                      local:ComboBoxElementsMaxWidthProperty.Value="True"/>
+                      HorizontalAlignment="Stretch"/>
             <TextBlock Text="Key Size" />
             <ComboBox ItemsSource="{Binding KeySizes}"
-                      HorizontalAlignment="Left"
                       SelectedIndex="{Binding KeySizeIndex}"
-                      local:ComboBoxElementsMaxWidthProperty.Value="True"/>
+                      HorizontalAlignment="Stretch"/>
         </StackPanel>
         
         <!--Cipher algorithim option list-->
