@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Text;
 using System.Windows.Input;
 
@@ -59,14 +60,15 @@ namespace CryptoCalc.Core
         public HashViewModel()
         {
             //Initialize the commands
-            CalculateCommand = new RelayCommand(Calculate);
-            CloseCommand = new RelayCommand(Close);
-            HelpCommand = new RelayCommand(HelpAsync);
+            InitializeCommands();
         }
 
+        
+
         public HashViewModel(CryptographyApi api)
-            : base()
         {
+            //Initialize the commands
+            InitializeCommands();
             crpytoApi = api;
             switch(crpytoApi)
             {
@@ -157,6 +159,17 @@ namespace CryptoCalc.Core
                     break;
             }
             return bytes;
+        }
+
+        #endregion
+
+        #region MyRegion
+
+        private void InitializeCommands()
+        {
+            CalculateCommand = new RelayCommand(Calculate);
+            CloseCommand = new RelayCommand(Close);
+            HelpCommand = new RelayCommand(HelpAsync);
         }
 
         #endregion
