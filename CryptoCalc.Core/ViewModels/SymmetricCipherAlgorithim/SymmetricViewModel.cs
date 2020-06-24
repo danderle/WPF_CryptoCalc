@@ -54,7 +54,7 @@ namespace CryptoCalc.Core
         /// <summary>
         /// Currently selected algorithim
         /// </summary>
-        public int SelectedAlgorithim { get; set; }
+        public int SelectedAlgorithim { get; set; } = 0;
 
         /// <summary>
         /// Currently selected data format
@@ -80,6 +80,8 @@ namespace CryptoCalc.Core
         /// The list of all the different key size options
         /// </summary>
         public ObservableCollection<int> KeySizes { get; set; } = new ObservableCollection<int>();
+
+        public ISymmetricCipher SelectedCipherApi { get; set; }
 
         #endregion
 
@@ -108,38 +110,39 @@ namespace CryptoCalc.Core
         #endregion
 
         #region Constructor
+
+        /// <summary>
+        /// Default Constructor
+        /// </summary>
         public SymmetricViewModel()
         {
-            //Initialize commands
-            OpenFolderDialogCommand = new RelayCommand(OpenFolderDialogAsync);
-            ChangedAlgorithimCommand = new RelayCommand(ChangedAlgorithim);
-            EncryptCommand = new RelayCommand(Encrypt);
-            DecryptCommand = new RelayCommand(Decrypt);
-
+            //Initialize the commands
+            InitializeCommands();
         }
+        
         /// <summary>
-        /// Default constructor
+        /// Overloaded constructor
         /// </summary>
         public SymmetricViewModel(CryptographyApi api)
-            : base()
         {
+            //Initialize the commands
+            InitializeCommands();
             Api = api;
             switch(Api)
             {
                 case CryptographyApi.MSDN:
-                    Algorithims = Enum.GetValues(typeof(SymmetricMsdnCipher)).Cast<SymmetricMsdnCipher>().Select(t => t.ToString()).ToList();
-                    SelectedAlgorithim = (int)SymmetricMsdnCipher.RC2;
-                    KeySizes = SymmetricCipher.GetKeySizes(CryptographyApi.MSDN, SelectedAlgorithim);
+                    SelectedCipherApi = new MsdnSymmetricCipher();
                     break;
                 case CryptographyApi.BouncyCastle:
-                    Algorithims = Enum.GetValues(typeof(SymmetricBouncyCastleCipher)).Cast<SymmetricBouncyCastleCipher>().Select(t => t.ToString()).ToList();
-                    SelectedAlgorithim = (int)SymmetricBouncyCastleCipher.THREEFISH_1024;
-                    KeySizes = SymmetricCipher.GetKeySizes(CryptographyApi.BouncyCastle, SelectedAlgorithim);
+                    SelectedCipherApi = new BouncySymmetricCipher();
                     break;
                 default:
                     Debugger.Break();
                     break;
             }
+
+            Algorithims = SelectedCipherApi.GetAlgorthims();
+            KeySizes = SelectedCipherApi.GetKeySizes(SelectedAlgorithim);
 
             // Adds the formats to the lists
             DataFormatOptions.Add(Format.File.ToString());
@@ -158,7 +161,6 @@ namespace CryptoCalc.Core
         {
             await Ioc.UI.ShowFolderDialog(new FolderBrowserDialogViewModel());
             Data = Ioc.Application.FilePathFromDialogSelection;
-
         }
 
         /// <summary>
@@ -166,7 +168,7 @@ namespace CryptoCalc.Core
         /// </summary>
         private void ChangedAlgorithim()
         {
-            KeySizes = SymmetricCipher.GetKeySizes(Api, SelectedAlgorithim);
+            KeySizes = SelectedCipherApi.GetKeySizes(SelectedAlgorithim);
             KeySizeIndex = 0;
         }
 
@@ -184,14 +186,14 @@ namespace CryptoCalc.Core
                     if (File.Exists(Data))
                     {
                         var plainBytes = File.ReadAllBytes(Data);
-                        var encryptedBytes = SymmetricCipher.EncryptBytes(Api, SelectedAlgorithim, KeySizes[KeySizeIndex], secretKey, plainBytes);
+                        var encryptedBytes = SelectedCipherApi.EncryptBytes(SelectedAlgorithim, KeySizes[KeySizeIndex], secretKey, plainBytes);
                         var extension = Path.GetExtension(Data);
                         EncryptedFilePath = Path.Combine(Directory.GetParent(Data).ToString(), Path.GetFileNameWithoutExtension(Data) + ".Encrypted" + extension);
                         File.WriteAllBytes(EncryptedFilePath, encryptedBytes);
                     }
                     break;
                 case Format.TextString:
-                    encrypted = SymmetricCipher.EncryptText(Api, SelectedAlgorithim, KeySizes[KeySizeIndex], secretKey, Data);
+                    encrypted = SelectedCipherApi.EncryptText(SelectedAlgorithim, KeySizes[KeySizeIndex], secretKey, Data);
                     EncryptedText = ByteConvert.BytesToHexString(encrypted);
                     break;
             }
@@ -209,16 +211,28 @@ namespace CryptoCalc.Core
             {
                 case Format.File:
                     encrypted = ByteConvert.FileToBytes(EncryptedFilePath);
-                    var decryptedBytes = SymmetricCipher.DecryptToBytes(Api, SelectedAlgorithim, KeySizes[KeySizeIndex], secretKey, encrypted);
+                    var decryptedBytes = SelectedCipherApi.DecryptToBytes(SelectedAlgorithim, KeySizes[KeySizeIndex], secretKey, encrypted);
                     var extension = Path.GetExtension(EncryptedFilePath);
                     DecryptedFilePath = Path.Combine(Directory.GetParent(EncryptedFilePath).ToString(), Path.GetFileNameWithoutExtension(EncryptedFilePath) + ".Decrypted" + extension);
                     File.WriteAllBytes(DecryptedFilePath, decryptedBytes);
                     break;
                 case Format.TextString:
                     encrypted = ByteConvert.HexStringToBytes(EncryptedText);
-                    DecryptedText = SymmetricCipher.DecryptToText(Api, SelectedAlgorithim, KeySizes[KeySizeIndex], secretKey, encrypted);
+                    DecryptedText = SelectedCipherApi.DecryptToText(SelectedAlgorithim, KeySizes[KeySizeIndex], secretKey, encrypted);
                     break;
             }
+        }
+
+        #endregion
+
+        #region MyRegion
+
+        private void InitializeCommands()
+        {
+            OpenFolderDialogCommand = new RelayCommand(OpenFolderDialogAsync);
+            ChangedAlgorithimCommand = new RelayCommand(ChangedAlgorithim);
+            EncryptCommand = new RelayCommand(Encrypt);
+            DecryptCommand = new RelayCommand(Decrypt);
         }
 
         #endregion
