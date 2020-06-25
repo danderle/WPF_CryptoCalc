@@ -16,6 +16,8 @@ namespace CryptoCalc.Core
     {
         #region Public Properties
 
+        public bool HasIv => IvSize > 0;
+
         /// <summary>
         /// The data to be hashed <see cref="Format"/> for hash data format options
         /// </summary>
@@ -25,6 +27,11 @@ namespace CryptoCalc.Core
         /// The secret key
         /// </summary>
         public string SecretKey { get; set; } = string.Empty;
+
+        /// <summary>
+        /// The initial value
+        /// </summary>
+        public string IV { get; set; } = string.Empty;
 
         /// <summary>
         /// The encrypted file path
@@ -50,6 +57,11 @@ namespace CryptoCalc.Core
         /// The currently selected key size index
         /// </summary>
         public int KeySizeIndex { get; set; }
+
+        /// <summary>
+        /// The iv size in bits
+        /// </summary>
+        public int IvSize { get; set; }
 
         /// <summary>
         /// Currently selected algorithim
@@ -143,6 +155,7 @@ namespace CryptoCalc.Core
 
             Algorithims = SelectedCipherApi.GetAlgorthims();
             KeySizes = SelectedCipherApi.GetKeySizes(SelectedAlgorithim);
+            IvSize = SelectedCipherApi.GetIvSize(SelectedAlgorithim);
 
             // Adds the formats to the lists
             DataFormatOptions.Add(Format.File.ToString());
@@ -170,6 +183,7 @@ namespace CryptoCalc.Core
         {
             KeySizes = SelectedCipherApi.GetKeySizes(SelectedAlgorithim);
             KeySizeIndex = 0;
+            IvSize = SelectedCipherApi.GetIvSize(SelectedAlgorithim);
         }
 
         /// <summary>
@@ -179,6 +193,7 @@ namespace CryptoCalc.Core
         {
             byte[] encrypted;
             var secretKey = ByteConvert.HexStringToBytes(SecretKey);
+            var iv = ByteConvert.HexStringToBytes(IV);
 
             switch (DataFormatSelected)
             {
@@ -186,14 +201,14 @@ namespace CryptoCalc.Core
                     if (File.Exists(Data))
                     {
                         var plainBytes = File.ReadAllBytes(Data);
-                        var encryptedBytes = SelectedCipherApi.EncryptBytes(SelectedAlgorithim, KeySizes[KeySizeIndex], secretKey, plainBytes);
+                        var encryptedBytes = SelectedCipherApi.EncryptBytes(SelectedAlgorithim, KeySizes[KeySizeIndex], secretKey, iv, plainBytes);
                         var extension = Path.GetExtension(Data);
                         EncryptedFilePath = Path.Combine(Directory.GetParent(Data).ToString(), Path.GetFileNameWithoutExtension(Data) + ".Encrypted" + extension);
                         File.WriteAllBytes(EncryptedFilePath, encryptedBytes);
                     }
                     break;
                 case Format.TextString:
-                    encrypted = SelectedCipherApi.EncryptText(SelectedAlgorithim, KeySizes[KeySizeIndex], secretKey, Data);
+                    encrypted = SelectedCipherApi.EncryptText(SelectedAlgorithim, KeySizes[KeySizeIndex], secretKey, iv, Data);
                     EncryptedText = ByteConvert.BytesToHexString(encrypted);
                     break;
             }
@@ -206,19 +221,20 @@ namespace CryptoCalc.Core
         {
             byte[] encrypted;
             var secretKey = ByteConvert.HexStringToBytes(SecretKey);
+            var iv = ByteConvert.HexStringToBytes(IV);
 
             switch (DataFormatSelected)
             {
                 case Format.File:
                     encrypted = ByteConvert.FileToBytes(EncryptedFilePath);
-                    var decryptedBytes = SelectedCipherApi.DecryptToBytes(SelectedAlgorithim, KeySizes[KeySizeIndex], secretKey, encrypted);
+                    var decryptedBytes = SelectedCipherApi.DecryptToBytes(SelectedAlgorithim, KeySizes[KeySizeIndex], secretKey, iv, encrypted);
                     var extension = Path.GetExtension(EncryptedFilePath);
                     DecryptedFilePath = Path.Combine(Directory.GetParent(EncryptedFilePath).ToString(), Path.GetFileNameWithoutExtension(EncryptedFilePath) + ".Decrypted" + extension);
                     File.WriteAllBytes(DecryptedFilePath, decryptedBytes);
                     break;
                 case Format.TextString:
                     encrypted = ByteConvert.HexStringToBytes(EncryptedText);
-                    DecryptedText = SelectedCipherApi.DecryptToText(SelectedAlgorithim, KeySizes[KeySizeIndex], secretKey, encrypted);
+                    DecryptedText = SelectedCipherApi.DecryptToText(SelectedAlgorithim, KeySizes[KeySizeIndex], secretKey, iv, encrypted);
                     break;
             }
         }
