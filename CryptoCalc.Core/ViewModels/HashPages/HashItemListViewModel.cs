@@ -26,9 +26,12 @@ namespace CryptoCalc.Core
         /// </summary>
         public HashItemListViewModel()
         {
-            
         }
 
+        /// <summary>
+        /// Adds all the hash algorithims strings to the list
+        /// </summary>
+        /// <param name="api"></param>
         public HashItemListViewModel(CryptographyApi api)
         {
             switch(api)
