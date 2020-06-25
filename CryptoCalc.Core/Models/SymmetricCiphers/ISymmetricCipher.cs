@@ -12,40 +12,40 @@ namespace CryptoCalc.Core
         /// </summary>
         /// <param name="algorithim">the algorithim to use, will be cast to enum</param>
         /// <param name="keySize">the key size to use</param>
-        /// <param name="password">the passsword which will be hashed to the specified key size</param>
+        /// <param name="secretKey">the secret key for the algorithim</param>
         /// <param name="plainText">the plain text to encrypt</param>
         /// <returns>the encrypted bytes</returns>
-        public byte[] EncryptText(int algorithim, int keySize, byte[] password, string plainText);
+        public byte[] EncryptText(int algorithim, int keySize, byte[] secretKey, byte[] iv, string plainText);
 
         /// <summary>
         /// Method for encrypting plain bytes
         /// </summary>
         /// <param name="algorithim">the algorithim to use, will be cast to enum</param>
         /// <param name="keySize">the key size to use</param>
-        /// <param name="password">the passsword which will be hashed to the specified key size</param>
+        /// <param name="secretKey">the secret key for the algorithim</param>
         /// <param name="plain">the plain bytes to encrypt</param>
         /// <returns>the encrypted bytes</returns>
-        public byte[] EncryptBytes(int algorithim, int keySize, byte[] password, byte[] plain);
+        public byte[] EncryptBytes(int algorithim, int keySize, byte[] secretKey, byte[] iv, byte[] plain);
 
         /// <summary>
         /// Method for decrypting to text
         /// </summary>
         /// <param name="algorithim">the algorithim to use, will be cast to enum</param>
         /// <param name="keySize">the key size to use</param>
-        /// <param name="password">the passsword which will be hashed to the specified key size</param>
+        /// <param name="secretKey">the secret key for the algorithim</param>
         /// <param name="encrypted">the encrypted bytes</param>
         /// <returns>decrypted text</returns>
-        public string DecryptToText(int algorithim, int keySize, byte[] password, byte[] encrypted);
+        public string DecryptToText(int algorithim, int keySize, byte[] secretKey, byte[] iv, byte[] encrypted);
 
         /// <summary>
         /// Method for decrypting to bytes
         /// </summary>
         /// <param name="algorithim">the algorithim to use, will be cast to enum</param>
         /// <param name="keySize">the key size to use</param>
-        /// <param name="password">the passsword which will be hashed to the specified key size</param>
+        /// <param name="secretKey">the secret key for the algorithim</param>
         /// <param name="encrypted">the encrypted bytes</param>
         /// <returns>decrypted bytes</returns>
-        public byte[] DecryptToBytes(int algorithim, int keySize, byte[] password, byte[] encrypted);
+        public byte[] DecryptToBytes(int algorithim, int keySize, byte[] secretKey, byte[] iv, byte[] encrypted);
 
         /// <summary>
         /// Return the available key sizes for the given algorithim
@@ -59,6 +59,12 @@ namespace CryptoCalc.Core
         /// </summary>
         /// <returns></returns>
         public List<string> GetAlgorthims();
+
+        /// <summary>
+        /// Gets the Iv size in bits
+        /// </summary>
+        /// <returns></returns>
+        public int GetIvSize(int selectedAlgorithim);
 
         #endregion
     }

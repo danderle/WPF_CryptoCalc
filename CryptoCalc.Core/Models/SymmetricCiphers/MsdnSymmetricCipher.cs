@@ -10,12 +10,12 @@ namespace CryptoCalc.Core
 {
     public class MsdnSymmetricCipher : ISymmetricCipher
     {
-        #region Public Properties
+        #region Private Fields
 
         /// <summary>
         /// The symmetric cipher algorithim to use for en-/decryption 
         /// </summary>
-        public SymmetricAlgorithm MsdnCipher { get; set; }
+        private SymmetricAlgorithm cipher { get; set; }
 
         #endregion
 
@@ -35,16 +35,17 @@ namespace CryptoCalc.Core
         /// <summary>
         /// Method for encrypting plain text
         /// </summary>
-        /// <param name="algorithim">the algorithim to use, will be cast to enum</param>
+        /// <param name="selectedAlgorithim">the algorithim to use, will be cast to enum</param>
         /// <param name="keySize">the key size to use</param>
-        /// <param name="password">the passsword which will be hashed to the specified key size</param>
+        /// <param name="secretKey">the secret key for the algorithim</param>
         /// <param name="plainText">the plain text to encrypt</param>
         /// <returns>the encrypted bytes</returns>
-        public byte[] EncryptText(int algorithim, int keySize, byte[] password, string plainText)
+        public byte[] EncryptText(int selectedAlgorithim, int keySize, byte[] secretKey, byte[] iv, string plainText)
         {
-            MsdnCipher = GetMsdnCipher((SymmetricMsdnCipher)algorithim);
-            MsdnCipher.KeySize = keySize;
-            SetKeyAndIV(password);
+            var algorithim = (SymmetricMsdnCipher)selectedAlgorithim;
+            cipher = SymmetricAlgorithm.Create(algorithim.ToString());
+            cipher.KeySize = keySize;
+            SetKeyAndIV(secretKey, iv);
             CheckCipherSetup(plainText);
             return Encrypt(plainText);
         }
@@ -52,16 +53,17 @@ namespace CryptoCalc.Core
         /// <summary>
         /// Method for encrypting plain bytes
         /// </summary>
-        /// <param name="algorithim">the algorithim to use, will be cast to enum</param>
+        /// <param name="selectedAlgorithim">the algorithim to use, will be cast to enum</param>
         /// <param name="keySize">the key size to use</param>
-        /// <param name="password">the passsword which will be hashed to the specified key size</param>
+        /// <param name="secretKey">the secret key for the algorithim</param>
         /// <param name="plain">the plain bytes to encrypt</param>
         /// <returns>the encrypted bytes</returns>
-        public byte[] EncryptBytes(int algorithim, int keySize, byte[] password, byte[] plain)
+        public byte[] EncryptBytes(int selectedAlgorithim, int keySize, byte[] secretKey, byte[] iv, byte[] plain)
         {
-            MsdnCipher = GetMsdnCipher((SymmetricMsdnCipher)algorithim);
-            MsdnCipher.KeySize = keySize;
-            SetKeyAndIV(password);
+            var algorithim = (SymmetricMsdnCipher)selectedAlgorithim;
+            cipher = SymmetricAlgorithm.Create(algorithim.ToString());
+            cipher.KeySize = keySize;
+            SetKeyAndIV(secretKey, iv);
             CheckCipherSetup(plain);
             return Encrypt(plain);
         }
@@ -69,16 +71,17 @@ namespace CryptoCalc.Core
         /// <summary>
         /// Method for decrypting to text
         /// </summary>
-        /// <param name="algorithim">the algorithim to use, will be cast to enum</param>
+        /// <param name="selectedAlgorithim">the algorithim to use, will be cast to enum</param>
         /// <param name="keySize">the key size to use</param>
-        /// <param name="password">the passsword which will be hashed to the specified key size</param>
+        /// <param name="secretKey">the secret key for the algorithim</param>
         /// <param name="encrypted">the encrypted bytes</param>
         /// <returns>decrypted text</returns>
-        public string DecryptToText(int algorithim, int keySize, byte[] password, byte[] encrypted)
+        public string DecryptToText(int selectedAlgorithim, int keySize, byte[] secretKey, byte[] iv, byte[] encrypted)
         {
-            MsdnCipher = GetMsdnCipher((SymmetricMsdnCipher)algorithim);
-            MsdnCipher.KeySize = keySize;
-            SetKeyAndIV(password);
+            var algorithim = (SymmetricMsdnCipher)selectedAlgorithim;
+            cipher = SymmetricAlgorithm.Create(algorithim.ToString());
+            cipher.KeySize = keySize;
+            SetKeyAndIV(secretKey, iv);
             CheckCipherSetup(encrypted);
             return DecryptToText(encrypted);
         }
@@ -88,14 +91,15 @@ namespace CryptoCalc.Core
         /// </summary>
         /// <param name="algorithim">the algorithim to use, will be cast to enum</param>
         /// <param name="keySize">the key size to use</param>
-        /// <param name="password">the passsword which will be hashed to the specified key size</param>
+        /// <param name="secretKey">the secret key for the algorithim</param>
         /// <param name="encrypted">the encrypted bytes</param>
         /// <returns>decrypted bytes</returns>
-        public byte[] DecryptToBytes(int algorithim, int keySize, byte[] password, byte[] encrypted)
+        public byte[] DecryptToBytes(int selectedAlgorithim, int keySize, byte[] secretKey, byte[] iv, byte[] encrypted)
         {
-            MsdnCipher = GetMsdnCipher((SymmetricMsdnCipher)algorithim);
-            MsdnCipher.KeySize = keySize;
-            SetKeyAndIV(password);
+            var algorithim = (SymmetricMsdnCipher)selectedAlgorithim;
+            cipher = SymmetricAlgorithm.Create(algorithim.ToString());
+            cipher.KeySize = keySize;
+            SetKeyAndIV(secretKey, iv);
             CheckCipherSetup(encrypted);
             return DecryptToByte(encrypted);
         }
@@ -108,8 +112,8 @@ namespace CryptoCalc.Core
         public ObservableCollection<int> GetKeySizes(int selectedAlgorithim)
         {
             var keySizes = new ObservableCollection<int>();
-            var symmetricMsdnCipher = (SymmetricMsdnCipher)selectedAlgorithim;
-            var cipher = SymmetricAlgorithm.Create(symmetricMsdnCipher.ToString());
+            var algortihim = (SymmetricMsdnCipher)selectedAlgorithim;
+            var cipher = SymmetricAlgorithm.Create(algortihim.ToString());
             foreach (var legalkeySize in cipher.LegalKeySizes)
             {
                 int keySize = legalkeySize.MinSize;
@@ -133,22 +137,33 @@ namespace CryptoCalc.Core
             return Enum.GetValues(typeof(SymmetricMsdnCipher)).Cast<SymmetricMsdnCipher>().Select(t => t.ToString()).ToList();
         }
 
+        /// <summary>
+        /// Gets the iv size for the selected cipher
+        /// </summary>
+        /// <returns></returns>
+        public int GetIvSize(int selectedAlgorithim)
+        {
+            var algorithim = (SymmetricMsdnCipher)selectedAlgorithim;
+            cipher = SymmetricAlgorithm.Create(algorithim.ToString());
+            return cipher.BlockSize;
+        }
+
         #endregion
 
         #region Private Methods
 
         /// <summary>
-        /// Hashes a password to the given key size
+        /// Hashes a secretKey to the given key size
         /// </summary>
-        /// <param name="password"></param>
+        /// <param name="secretKey"></param>
         /// <param name="sizeInBit"></param>
         /// <returns></returns>
-        private byte[] HashToSize(byte[] password, int sizeInBit)
+        private byte[] HashToSize(byte[] secretKey, int sizeInBit)
         {
             byte[] sizedHash = new byte[sizeInBit / 8];
             List<byte> hash = new List<byte>();
             int b = 0;
-            var bytes = MsdnHash.Compute(MsdnHashAlgorithim.SHA512, password);
+            var bytes = MsdnHash.Compute(MsdnHashAlgorithim.SHA512, secretKey);
             for (int i = 0; i < sizedHash.Length; i++)
             {
                 if (!(b < bytes.Length))
@@ -167,14 +182,14 @@ namespace CryptoCalc.Core
         /// </summary>
         /// <param name="algorithim"></param>
         /// <returns></returns>
-        private SymmetricAlgorithm GetMsdnCipher(SymmetricMsdnCipher algorithim)
+        private SymmetricAlgorithm Getcipher(SymmetricMsdnCipher algorithim)
         {
             switch (algorithim)
             {
                 case SymmetricMsdnCipher.Aes:
                     return Aes.Create();
                 case SymmetricMsdnCipher.DES:
-                    return DES.Create();
+                    return  DES.Create();
                 case SymmetricMsdnCipher.TripleDES:
                     return TripleDES.Create();
                 case SymmetricMsdnCipher.RC2:
@@ -199,7 +214,7 @@ namespace CryptoCalc.Core
             string plaintext = null;
 
             // Create a decryptor to perform the stream transform.
-            ICryptoTransform decryptor = MsdnCipher.CreateDecryptor(MsdnCipher.Key, MsdnCipher.IV);
+            ICryptoTransform decryptor = cipher.CreateDecryptor(cipher.Key, cipher.IV);
 
             // Create the streams used for decryption.
             using (MemoryStream msDecrypt = new MemoryStream(encrypted))
@@ -230,7 +245,7 @@ namespace CryptoCalc.Core
             byte[] plainBytes = null;
 
             // Create a decryptor to perform the stream transform.
-            ICryptoTransform decryptor = MsdnCipher.CreateDecryptor(MsdnCipher.Key, MsdnCipher.IV);
+            ICryptoTransform decryptor = cipher.CreateDecryptor(cipher.Key, cipher.IV);
 
             // Create the streams used for decryption.
             using (MemoryStream msDecrypt = new MemoryStream())
@@ -258,7 +273,7 @@ namespace CryptoCalc.Core
             byte[] encrypted;
 
             // Create an encryptor to perform the stream transform.
-            ICryptoTransform encryptor = MsdnCipher.CreateEncryptor(MsdnCipher.Key, MsdnCipher.IV);
+            ICryptoTransform encryptor = cipher.CreateEncryptor(cipher.Key, cipher.IV);
 
             // Create the streams used for encryption.
             using (MemoryStream msEncrypt = new MemoryStream())
@@ -288,7 +303,7 @@ namespace CryptoCalc.Core
             byte[] encrypted;
 
             // Create an encryptor to perform the stream transform.
-            ICryptoTransform encryptor = MsdnCipher.CreateEncryptor(MsdnCipher.Key, MsdnCipher.IV);
+            ICryptoTransform encryptor = cipher.CreateEncryptor(cipher.Key, cipher.IV);
 
             // Create the streams used for encryption.
             using (MemoryStream msEncrypt = new MemoryStream())
@@ -309,15 +324,13 @@ namespace CryptoCalc.Core
         }
 
         /// <summary>
-        /// Takes in the users password and hashes it to create the secret key and iv for the set key size
+        /// Sets the secret key and iv
         /// </summary>
-        /// <param name="password"></param>
-        private void SetKeyAndIV(byte[] password)
+        /// <param name="secretKey"></param>
+        private void SetKeyAndIV(byte[] secretKey, byte[] iv)
         {
-            var secretKey = HashToSize(password, MsdnCipher.KeySize);
-            byte[] iv = HashToSize(secretKey, MsdnCipher.BlockSize);
-            MsdnCipher.Key = secretKey;
-            MsdnCipher.IV = iv;
+            cipher.Key = secretKey;
+            cipher.IV = iv;
         }
 
         /// <summary>
@@ -339,9 +352,9 @@ namespace CryptoCalc.Core
                 if (inputb.Length == 0)
                     throw new ArgumentNullException("plain");
             }
-            if (MsdnCipher.Key == null || MsdnCipher.Key.Length <= 0)
+            if (cipher.Key == null || cipher.Key.Length <= 0)
                 throw new ArgumentNullException("key");
-            if (MsdnCipher.IV == null || MsdnCipher.IV.Length <= 0)
+            if (cipher.IV == null || cipher.IV.Length <= 0)
                 throw new ArgumentNullException("iV");
         }
 
