@@ -58,7 +58,18 @@
                 <!--Secret Key-->
                 <TextBlock Text="Secret key" />
                 <TextBox Text="{Binding SecretKey, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock>
+                    <Run Text="Initial value" />
+                    <Run Text="(" />
+                    <Run Text="{Binding IvSize}" />
+                    <Run Text=" bits)" />
+                </TextBlock>
+                    <TextBox Text="{Binding IV, UpdateSourceTrigger=PropertyChanged}" 
+                                IsEnabled="{Binding HasIv}"
+                                Background="{Binding HasIv, Converter={local:HasIvToColor}}"/>
             </StackPanel>
+            <Button Content="Generate key" 
+                    Command="{Binding GenerateKeyCommand}"/>
         </StackPanel>
         
     </Grid>
