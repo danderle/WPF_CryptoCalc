@@ -24,8 +24,11 @@ namespace CryptoCalc
                 case ApplicationPage.MSDNSymmetricEncryption:
                     return new MsdnSymmetricPage(viewModel == null ? new SymmetricViewModel(CryptographyApi.MSDN) : viewModel as SymmetricViewModel);
                 case ApplicationPage.MSDNPublicKeyEncryption:
+                    return new MsdnPkEncryptionPage(viewModel == null ? new AsymmetricViewModel(CryptographyApi.MSDN, AsymmetricOperation.Encryption) : viewModel as AsymmetricViewModel);
                 case ApplicationPage.MSDNDigitalSignature:
+                    return new MsdnPkSignaturePage(viewModel == null ? new AsymmetricViewModel(CryptographyApi.MSDN, AsymmetricOperation.Signature) : viewModel as AsymmetricViewModel);
                 case ApplicationPage.MSDNKeyExchange:
+                    return new MsdnPkKeyExchangePage(viewModel == null ? new AsymmetricViewModel(CryptographyApi.MSDN, AsymmetricOperation.KeyExchange) : viewModel as AsymmetricViewModel);
                 case ApplicationPage.BouncyCastleHash:
                     return new BouncyHashPage(viewModel == null ? new HashViewModel(CryptographyApi.BouncyCastle) : viewModel as HashViewModel);
                 case ApplicationPage.BouncyCastleSymmetricEncryption:
@@ -50,12 +53,12 @@ namespace CryptoCalc
                 return ApplicationPage.MSDNHash;
             if (page is MsdnSymmetricPage)
                 return ApplicationPage.MSDNSymmetricEncryption;
-            //if (page is MsdnHashPage)
-            //    return ApplicationPage.MSDNPublicKeyEncryption;
-            //if (page is MsdnHashPage)
-            //    return ApplicationPage.MSDNDigitalSignature;
-            //if (page is MsdnHashPage)
-            //    return ApplicationPage.MSDNKeyExchange;
+            if (page is MsdnPkEncryptionPage)
+                return ApplicationPage.MSDNPublicKeyEncryption;
+            if (page is MsdnPkSignaturePage)
+                return ApplicationPage.MSDNDigitalSignature;
+            if (page is MsdnPkKeyExchangePage)
+                return ApplicationPage.MSDNKeyExchange;
             if (page is BouncyHashPage)
                 return ApplicationPage.BouncyCastleHash;
             if (page is BouncySymmetricPage)
