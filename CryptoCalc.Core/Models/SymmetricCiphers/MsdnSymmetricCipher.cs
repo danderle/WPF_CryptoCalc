@@ -148,6 +148,19 @@ namespace CryptoCalc.Core
             return cipher.BlockSize;
         }
 
+        public List<byte[]> GenerateKey(int selectedAlgorithim, int keySize)
+        {
+            var algorithim = (SymmetricMsdnCipher)selectedAlgorithim;
+            cipher = SymmetricAlgorithm.Create(algorithim.ToString());
+            cipher.KeySize = keySize;
+            cipher.GenerateKey();
+            cipher.GenerateIV();
+            var keyAndIv = new List<byte[]>();
+            keyAndIv.Add(cipher.Key);
+            keyAndIv.Add(cipher.IV);
+            return keyAndIv;
+        }
+
         #endregion
 
         #region Private Methods

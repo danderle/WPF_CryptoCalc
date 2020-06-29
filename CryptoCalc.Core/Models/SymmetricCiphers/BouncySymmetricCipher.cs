@@ -13,11 +13,6 @@ namespace CryptoCalc.Core
     {
         #region Private Fields
 
-        /// <summary>
-        /// The size of the iv in bytes
-        /// </summary>
-        private int ivSize;
-
         // <summary>
         /// The buffered cipher to use for en- / decryption
         /// </summary>
@@ -48,10 +43,10 @@ namespace CryptoCalc.Core
         /// <returns>the encrypted bytes</returns>
         public byte[] EncryptText(int selectedAlgorithim, int keySize, byte[] secretKey, byte[] iv, string plainText)
         {
-            var algorithim = ((SymmetricBouncyCastleCipher)selectedAlgorithim).ToString();
+            var algorithim = ((SymmetricBouncyCastleCipher)selectedAlgorithim).ToString().Replace("_","-");;
             bufferedCipher = CipherUtilities.GetCipher(algorithim);
             var plain = ByteConvert.StringToAsciiBytes(plainText);
-            if (iv.Length == ivSize)
+            if (GetIvSize(selectedAlgorithim) > 0)
             {
                 var kp = new KeyParameter(secretKey);
                 var ivp = new ParametersWithIV(kp, iv);
@@ -74,9 +69,9 @@ namespace CryptoCalc.Core
         /// <returns>the encrypted bytes</returns>
         public byte[] EncryptBytes(int selectedAlgorithim, int keySize, byte[] secretKey, byte[] iv, byte[] plain)
         {
-            var algorithim = ((SymmetricBouncyCastleCipher)selectedAlgorithim).ToString();
+            var algorithim = ((SymmetricBouncyCastleCipher)selectedAlgorithim).ToString().Replace("_","-");;
             bufferedCipher = CipherUtilities.GetCipher(algorithim);
-            if(iv.Length == ivSize)
+            if (GetIvSize(selectedAlgorithim) > 0)
             {
                 var kp = new KeyParameter(secretKey);
                 var ivp = new ParametersWithIV(kp, iv);
@@ -99,9 +94,9 @@ namespace CryptoCalc.Core
         /// <returns>decrypted text</returns>
         public string DecryptToText(int selectedAlgorithim, int keySize, byte[] secretKey, byte[] iv, byte[] encrypted)
         {
-            var algorithim = ((SymmetricBouncyCastleCipher)selectedAlgorithim).ToString();
+            var algorithim = ((SymmetricBouncyCastleCipher)selectedAlgorithim).ToString().Replace("_","-");;
             bufferedCipher = CipherUtilities.GetCipher(algorithim);
-            if (iv.Length == ivSize)
+            if (GetIvSize(selectedAlgorithim) > 0)
             {
                 var kp = new KeyParameter(secretKey);
                 var ivp = new ParametersWithIV(kp, iv);
@@ -125,9 +120,9 @@ namespace CryptoCalc.Core
         /// <returns>decrypted bytes</returns>
         public byte[] DecryptToBytes(int selectedAlgorithim, int keySize, byte[] secretKey, byte[] iv, byte[] encrypted)
         {
-            var algorithim = ((SymmetricBouncyCastleCipher)selectedAlgorithim).ToString();
+            var algorithim = ((SymmetricBouncyCastleCipher)selectedAlgorithim).ToString().Replace("_","-");;
             bufferedCipher = CipherUtilities.GetCipher(algorithim) as PaddedBufferedBlockCipher;
-            if (iv.Length == ivSize)
+            if (GetIvSize(selectedAlgorithim) > 0)
             {
                 var kp = new KeyParameter(secretKey);
                 var ivp = new ParametersWithIV(kp, iv);
@@ -148,7 +143,6 @@ namespace CryptoCalc.Core
         public ObservableCollection<int> GetKeySizes(int selectedAlgorithim)
         {
             var keySizes = new ObservableCollection<int>(); 
-            ivSize = -1;
             int keySkipSize;
             int maxKeySize;
             var algorithim = (SymmetricBouncyCastleCipher)selectedAlgorithim;
@@ -217,13 +211,11 @@ namespace CryptoCalc.Core
                     return keySizes;
                 case SymmetricBouncyCastleCipher.CHACHA:
                 case SymmetricBouncyCastleCipher.SALSA20:
-                    ivSize = 8;
                     return new ObservableCollection<int> { 128, 256 };
                 case SymmetricBouncyCastleCipher.CHACHA7539:
                 case SymmetricBouncyCastleCipher.HC256:
                 case SymmetricBouncyCastleCipher.VMPC:
                 case SymmetricBouncyCastleCipher.VMPC_KSA3:
-                    ivSize = 16;
                     return new ObservableCollection<int> { 256 };
                 case SymmetricBouncyCastleCipher.GOST28147:
                 case SymmetricBouncyCastleCipher.THREEFISH_256:
@@ -233,8 +225,6 @@ namespace CryptoCalc.Core
                 case SymmetricBouncyCastleCipher.DESEDE:
                     return new ObservableCollection<int> { 128, 192 };
                 case SymmetricBouncyCastleCipher.HC128:
-                    ivSize = 16;
-                    return new ObservableCollection<int> { 128 };
                 case SymmetricBouncyCastleCipher.IDEA:
                 case SymmetricBouncyCastleCipher.NOEKEON:
                 case SymmetricBouncyCastleCipher.SEED:
@@ -268,38 +258,47 @@ namespace CryptoCalc.Core
         /// <returns></returns>
         public int GetIvSize(int selectedAlgorithim)
         {
-            var size = ivSize * 8;
-            return size > 0 ? size : 0;
+            var algorithim = (SymmetricBouncyCastleCipher)selectedAlgorithim;
+            switch (algorithim)
+            {
+                case SymmetricBouncyCastleCipher.CHACHA:
+                case SymmetricBouncyCastleCipher.SALSA20:
+                    return 64;
+                case SymmetricBouncyCastleCipher.CHACHA7539:
+                    return 96;
+                case SymmetricBouncyCastleCipher.HC256:
+                case SymmetricBouncyCastleCipher.VMPC:
+                case SymmetricBouncyCastleCipher.VMPC_KSA3:
+                case SymmetricBouncyCastleCipher.HC128:
+                    return 128;
+                default:
+                    return 0;
+            }
+        }
+
+        public List<byte[]> GenerateKey(int selectedAlgorithim, int keySize)
+        {
+            var keyAndIv = new List<byte[]>();
+            var algorithim = ((SymmetricBouncyCastleCipher)selectedAlgorithim).ToString().Replace("_","-");
+            var keyGenerator = GeneratorUtilities.GetKeyGenerator(algorithim);
+            var keyParameters = new KeyGenerationParameters(new SecureRandom(), keySize);
+            keyGenerator.Init(keyParameters);
+            keyAndIv.Add(keyGenerator.GenerateKey());
+            var ivSize = GetIvSize(selectedAlgorithim);
+            if (ivSize > 0)
+            {
+                algorithim = ((SymmetricBouncyCastleCipher)selectedAlgorithim).ToString().Replace("_","-");
+                keyGenerator = GeneratorUtilities.GetKeyGenerator(algorithim);
+                keyParameters = new KeyGenerationParameters(new SecureRandom(), ivSize);
+                keyGenerator.Init(keyParameters);
+                keyAndIv.Add(keyGenerator.GenerateKey());
+            }
+            return keyAndIv;
         }
 
         #endregion
 
         #region Private Methods
-
-        /// </summary>
-        /// <param name="secretKey"></param>
-        /// <param name="sizeInBit"></param>
-        /// <returns></returns>
-        private static byte[] HashToSize(byte[] secretKey, int sizeInBit)
-        {
-            byte[] sizedHash = new byte[sizeInBit / 8];
-            List<byte> hash = new List<byte>();
-            int b = 0;
-            var bytes = MsdnHash.Compute(MsdnHashAlgorithim.SHA512, secretKey);
-            for (int i = 0; i < sizedHash.Length; i++)
-            {
-                if (!(b < bytes.Length))
-                {
-                    b = 0;
-                }
-                hash.Add(bytes[b]);
-                b++;
-            }
-            Array.Copy(hash.ToArray(), sizedHash, sizedHash.Length);
-            return sizedHash;
-        }
-
-        
 
         #endregion
     }
