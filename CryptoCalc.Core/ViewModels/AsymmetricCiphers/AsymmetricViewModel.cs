@@ -12,7 +12,7 @@ namespace CryptoCalc.Core
     /// <summary>
     /// The view model for the Asymmetric cipher page
     /// </summary>
-    public class AsymmetricCipherViewModel : BaseViewModel
+    public class AsymmetricViewModel : BaseViewModel
     {
         #region Private fields
 
@@ -23,14 +23,9 @@ namespace CryptoCalc.Core
         #region Public Properties
 
         /// <summary>
-        /// The file path to encrypt
+        /// The data to be hashed <see cref="Format"/> for hash data format options
         /// </summary>
-        public string FilePath { get; set; }
-
-        /// <summary>
-        /// The plain text to encrypt
-        /// </summary>
-        public string PlainText { get; set; }
+        public string Data { get; set; } = string.Empty;
 
         /// <summary>
         /// The encrypted file path
@@ -62,19 +57,13 @@ namespace CryptoCalc.Core
         /// </summary>
         public bool SignatureVerified { get; set; }
 
-
         /// <summary>
-        /// The password which will be hashed to set the secret key and iv
-        /// </summary>
-        public string Password { get; set; }
-
-        /// <summary>
-        /// 
+        /// The name to save the public and private key pair to
         /// </summary>
         public string KeyName { get; set; }
 
         /// <summary>
-        /// 
+        /// The path to the private key file
         /// </summary>
         public string PrivateKeyPath { get; set; }
 
@@ -89,19 +78,24 @@ namespace CryptoCalc.Core
         public int KeySizeIndex { get; set; }
 
         /// <summary>
+        /// Currently selected algorithim
+        /// </summary>
+        public ushort SelectedAlgorithimIndex { get; set; } = 0;
+
+        /// <summary>
         /// Currently selected data format
         /// </summary>
         public Format DataFormatSelected { get; set; }
 
         /// <summary>
-        /// Currently selected algorithim
+        /// The Public key operation to do
         /// </summary>
-        public int SelectedAlgorithim { get; set; }
+        public AsymmetricOperation SelectedOperation { get; set; }
 
         /// <summary>
-        /// 
+        /// The selectred crypto library
         /// </summary>
-        public CryptographyApi SelectedCryptoApi { get; set; }
+        public CryptographyApi Api { get; set; }
 
         /// <summary>
         /// The list off all symmetric algorithims
@@ -114,16 +108,14 @@ namespace CryptoCalc.Core
         public List<string> DataFormatOptions { get; set; } = new List<string>();
 
         /// <summary>
-        /// Holds the crypto api options
-        /// </summary>
-        public List<string> CryptoApiOptions { get; set; } = new List<string>();
-
-        /// <summary>
         /// The list of all the different key size options
         /// </summary>
         public ObservableCollection<int> KeySizes { get; set; } = new ObservableCollection<int>();
 
-        public IAsymmetricCipher Cipher { get; set; }
+        /// <summary>
+        /// The selected crypto cipher algorithim
+        /// </summary>
+        public IAsymmetricCipher SelectedCipher { get; set; }
 
         #endregion
 
@@ -148,12 +140,7 @@ namespace CryptoCalc.Core
         /// The command to when a cipher algorithim is selected
         /// </summary>
         public ICommand ChangedAlgorithimCommand { get; set; }
-
-        /// <summary>
-        /// The command to when the api is changed
-        /// </summary>
-        public ICommand ChangedApiCommand { get; set; }
-
+        public ICommand ChangedOperationCommand { get; set; }
         public ICommand CreateKeyPairCommand { get; set; }
         public ICommand SaveKeyPairCommand { get; set; }
         public ICommand DeleteKeyPairCommand { get; set; }
@@ -167,20 +154,44 @@ namespace CryptoCalc.Core
         /// <summary>
         /// Default constructor
         /// </summary>
-        public AsymmetricCipherViewModel()
+        public AsymmetricViewModel()
         {
             //Initialize the commands
             InitializeCommands();
 
-            CryptoApiOptions = Enum.GetValues(typeof(CryptographyApi)).Cast<CryptographyApi>().Select(t => t.ToString()).ToList();
-            Algorithims = IAsymmetricCipher.GetMsdnAlgorthims();
-            SelectedAlgorithim = (int)AsymmetricMsdnCiphers.RSA;
-            Cipher = IAsymmetricCipher.GetCipher(AsymmetricMsdnCiphers.RSA);
-            KeySizes = Cipher.GetKeySizes(SelectedAlgorithim);
+            //Initialize lists
+            InitializeLists();
+        }
 
-            DataFormatOptions.Add(Format.File.ToString());
-            DataFormatOptions.Add(Format.TextString.ToString());
-            DataFormatSelected = Format.TextString;
+        /// <summary>
+        /// Overloaded constructor
+        /// </summary>
+        /// <param name="api">the selected crypto library</param>
+        /// <param name="operation">The selected crypto operation</param>
+        public AsymmetricViewModel(CryptographyApi api, AsymmetricOperation operation)
+        {
+            //Initialize the commands
+            InitializeCommands(); 
+            
+            Api = api;
+            SelectedOperation = operation;
+            switch (Api)
+            {
+                case CryptographyApi.MSDN:
+                    Algorithims = IAsymmetricCipher.GetMsdnAlgorthims(SelectedOperation);
+                    SelectedCipher = IAsymmetricCipher.GetMsdnCipher(Algorithims[SelectedAlgorithimIndex]);
+                    break;
+                case CryptographyApi.BouncyCastle:
+                    Algorithims = IAsymmetricCipher.GetMsdnAlgorthims(SelectedOperation);
+                    break;
+                default:
+                    Debugger.Break();
+                    break;
+            }
+            KeySizes = SelectedCipher.GetKeySizes();
+
+            //Initialize lists
+            InitializeLists();
         }
 
         private void InitializeCommands()
@@ -188,33 +199,65 @@ namespace CryptoCalc.Core
             EncryptCommand = new RelayCommand(Encrypt);
             DecryptCommand = new RelayCommand(Decrypt);
             ChangedAlgorithimCommand = new RelayCommand(ChangedAlgorithim);
-            ChangedApiCommand = new RelayCommand(ChangedApi);
             CreateKeyPairCommand = new RelayCommand(CreateKeyPair);
             SaveKeyPairCommand = new RelayCommand(SaveKeyPair);
             DeleteKeyPairCommand = new RelayCommand(DeleteKeyPair);
             SignCommand = new RelayCommand(Sign);
             VerifyCommand = new RelayCommand(Verify);
+            ChangedOperationCommand = new RelayCommand(ChangedOperation);
         }
 
+
+        #endregion
+
+        #region Command Methods
+
+        /// <summary>
+        /// The command method to verify a signature
+        /// </summary>
         private void Verify()
         {
             var pubKey = File.ReadAllBytes(PublicKeyPath);
-            var data = ByteConvert.StringToAsciiBytes(PlainText);
             var signature = ByteConvert.HexStringToBytes(OriginalSignature);
-            SignatureVerified = Cipher.Verify(signature, pubKey, data);
+            byte[] data = null;
+            switch(DataFormatSelected)
+            {
+                case Format.File:
+                    data = File.ReadAllBytes(Data);
+                    break;
+                case Format.TextString:
+                    data = ByteConvert.StringToAsciiBytes(Data);
+                    break;
+            }
+            SignatureVerified = SelectedCipher.Verify(signature, pubKey, data);
         }
 
+        /// <summary>
+        /// The command method to sign some data
+        /// </summary>
         private void Sign()
         {
             var privKey = File.ReadAllBytes(PrivateKeyPath);
-            var data = ByteConvert.StringToAsciiBytes(PlainText);
-            var signature = Cipher.Sign(privKey, data);
+            byte[] data = null;
+            switch (DataFormatSelected)
+            {
+                case Format.File:
+                    data = File.ReadAllBytes(Data);
+                    break;
+                case Format.TextString:
+                    data = ByteConvert.StringToAsciiBytes(Data);
+                    break;
+            }
+            var signature = SelectedCipher.Sign(privKey, data);
             OriginalSignature = ByteConvert.BytesToHexString(signature);
         }
 
+        /// <summary>
+        /// the command method to delete a key pair
+        /// </summary>
         private void DeleteKeyPair()
         {
-            if(File.Exists(PrivateKeyPath))
+            if (File.Exists(PrivateKeyPath))
             {
                 File.Delete(PrivateKeyPath);
             }
@@ -224,42 +267,24 @@ namespace CryptoCalc.Core
             }
         }
 
+        /// <summary>
+        /// The command method to save a key pair
+        /// </summary>
         private void SaveKeyPair()
         {
-            File.WriteAllBytes(PrivateKeyPath, Cipher.PrivateKey);
-            File.WriteAllBytes(PublicKeyPath, Cipher.PublicKey);
+            File.WriteAllBytes(PrivateKeyPath, SelectedCipher.GetPrivateKey());
+            File.WriteAllBytes(PublicKeyPath, SelectedCipher.GetPublicKey());
         }
 
+        /// <summary>
+        /// The command method to create a key pair
+        /// </summary>
         private void CreateKeyPair()
         {
             PrivateKeyPath = pKeyPath + "\\" + KeyName + "_PrivateKey.pkcs1";
             PublicKeyPath = pKeyPath + "\\" + KeyName + "_PublicKey.pkcs1";
-            Cipher.CreateKeyPair(KeySizes[KeySizeIndex]);
-            
-        }
+            SelectedCipher.CreateKeyPair(KeySizes[KeySizeIndex]);
 
-        #endregion
-
-        #region Command Methods
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private void ChangedApi()
-        {
-            switch(SelectedCryptoApi)
-            {
-                case CryptographyApi.MSDN:
-                    Algorithims = IAsymmetricCipher.GetMsdnAlgorthims();
-                    break;
-                case CryptographyApi.BouncyCastle:
-                    Algorithims = IAsymmetricCipher.GetMsdnAlgorthims();
-                    break;
-                default:
-                    Debugger.Break();
-                    break;
-            }
-            SelectedAlgorithim = 0;
         }
 
         /// <summary>
@@ -267,8 +292,13 @@ namespace CryptoCalc.Core
         /// </summary>
         private void ChangedAlgorithim()
         {
-            Cipher = IAsymmetricCipher.GetCipher((AsymmetricMsdnCiphers)SelectedAlgorithim);
-            KeySizes = Cipher.GetKeySizes(SelectedAlgorithim);
+            switch(Api)
+            {
+                case CryptographyApi.MSDN:
+                     SelectedCipher = IAsymmetricCipher.GetMsdnCipher(Algorithims[SelectedAlgorithimIndex]);
+                    break;
+            }
+            KeySizes = SelectedCipher.GetKeySizes();
             KeySizeIndex = 0;
         }
 
@@ -278,13 +308,12 @@ namespace CryptoCalc.Core
         private void Decrypt()
         {
             byte[] encrypted;
-            var password = ByteConvert.StringToAsciiBytes(Password);
             
             switch (DataFormatSelected)
             {
                 case Format.File:
                     encrypted = ByteConvert.FileToBytes(EncryptedFilePath);
-                    var decryptedBytes = Cipher.DecryptToBytes(SelectedAlgorithim, KeySizes[KeySizeIndex], password, encrypted);
+                    var decryptedBytes = SelectedCipher.DecryptToBytes(Algorithims[SelectedAlgorithimIndex], KeySizes[KeySizeIndex], encrypted);
                     var extension = Path.GetExtension(EncryptedFilePath);
                     DecryptedFilePath = Path.Combine(Directory.GetParent(EncryptedFilePath).ToString(), Path.GetFileNameWithoutExtension(EncryptedFilePath) + ".Decrypted" + extension);
                     File.WriteAllBytes(DecryptedFilePath, decryptedBytes);
@@ -292,7 +321,7 @@ namespace CryptoCalc.Core
                 case Format.TextString:
                     encrypted = ByteConvert.HexStringToBytes(EncryptedText);
                     var privateKey = File.ReadAllBytes(PrivateKeyPath);
-                    DecryptedText = Cipher.DecryptToText(privateKey, encrypted);
+                    DecryptedText = SelectedCipher.DecryptToText(privateKey, encrypted);
                     break;
             }
         }
@@ -303,24 +332,23 @@ namespace CryptoCalc.Core
         private void Encrypt()
         {
             byte[] encrypted;
-            var password = ByteConvert.StringToAsciiBytes(Password);
             
             switch (DataFormatSelected)
             {
                 case Format.File:
-                    if (File.Exists(FilePath))
+                    if (File.Exists(Data))
                     {
-                        var plainBytes = File.ReadAllBytes(FilePath);
+                        var plainBytes = File.ReadAllBytes(Data);
 
-                        var encryptedBytes = Cipher.EncryptBytes(SelectedAlgorithim, KeySizes[KeySizeIndex], password, plainBytes);
-                        var extension = Path.GetExtension(FilePath);
-                        EncryptedFilePath = Path.Combine(Directory.GetParent(FilePath).ToString(), Path.GetFileNameWithoutExtension(FilePath) + ".Encrypted" + extension);
+                        var encryptedBytes = SelectedCipher.EncryptBytes(Algorithims[SelectedAlgorithimIndex], KeySizes[KeySizeIndex], plainBytes);
+                        var extension = Path.GetExtension(Data);
+                        EncryptedFilePath = Path.Combine(Directory.GetParent(Data).ToString(), Path.GetFileNameWithoutExtension(Data) + ".Encrypted" + extension);
                         File.WriteAllBytes(EncryptedFilePath, encryptedBytes);
                     }
                 break;
                 case Format.TextString:
                     var pubKey = File.ReadAllBytes(PublicKeyPath);
-                    encrypted = Cipher.EncryptText(pubKey, PlainText);
+                    encrypted = SelectedCipher.EncryptText(pubKey, Data);
                     EncryptedText = ByteConvert.BytesToHexString(encrypted);
                     break;
             }
@@ -330,7 +358,13 @@ namespace CryptoCalc.Core
 
         #region Private Methods
 
-        
+        private void InitializeLists()
+        {
+            //Set the data format options
+            DataFormatOptions.Add(Format.File.ToString());
+            DataFormatOptions.Add(Format.TextString.ToString());
+        }
+
         #endregion
     }
 }

@@ -3,16 +3,16 @@
 namespace CryptoCalc
 {
     /// <summary>
-    /// Interaction logic for AsymmetricCipherPage.xaml
+    /// Interaction logic for MsdnPkKeyExchangePage.xaml
     /// </summary>
-    public partial class AsymmetricCipherPage : BasePage<AsymmetricCipherViewModel>
+    public partial class MsdnPkKeyExchangePage : BasePage<AsymmetricViewModel>
     {
         #region Constructor
 
         /// <summary>
         /// Default constructor
         /// </summary>
-        public AsymmetricCipherPage()
+        public MsdnPkKeyExchangePage()
         {
             InitializeComponent();
         }
@@ -20,7 +20,7 @@ namespace CryptoCalc
         /// <summary>
         /// Constructor with a specific view model
         /// </summary>
-        public AsymmetricCipherPage(AsymmetricCipherViewModel specificViewModel) : base(specificViewModel)
+        public MsdnPkKeyExchangePage(AsymmetricViewModel specificViewModel) : base(specificViewModel)
         {
             InitializeComponent();
         }
