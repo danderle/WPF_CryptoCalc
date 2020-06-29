@@ -119,6 +119,11 @@ namespace CryptoCalc.Core
         /// </summary>
         public ICommand DecryptCommand { get; set; }
 
+        /// <summary>
+        /// The command to generate a symmetric key
+        /// </summary>
+        public ICommand GenerateKeyCommand { get; set; }
+
         #endregion
 
         #region Constructor
@@ -166,6 +171,16 @@ namespace CryptoCalc.Core
         #endregion
 
         #region Command Methods
+
+        private void GenerateKey()
+        {
+            var keyAndIv = SelectedCipherApi.GenerateKey(SelectedAlgorithim, KeySizes[KeySizeIndex]);
+            SecretKey = ByteConvert.BytesToHexString(keyAndIv[0]);
+            if(keyAndIv.Count > 1)
+            {
+                IV = ByteConvert.BytesToHexString(keyAndIv[1]);
+            }
+        }
 
         /// <summary>
         /// The command method to show a Folder dialog window and saves the selected file path
@@ -241,7 +256,7 @@ namespace CryptoCalc.Core
 
         #endregion
 
-        #region MyRegion
+        #region Private Methods
 
         private void InitializeCommands()
         {
@@ -249,8 +264,10 @@ namespace CryptoCalc.Core
             ChangedAlgorithimCommand = new RelayCommand(ChangedAlgorithim);
             EncryptCommand = new RelayCommand(Encrypt);
             DecryptCommand = new RelayCommand(Decrypt);
+            GenerateKeyCommand = new RelayCommand(GenerateKey);
         }
 
+        
         #endregion
     }
 }
