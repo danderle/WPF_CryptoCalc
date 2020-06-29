@@ -15,17 +15,6 @@
         <StackPanel >
             <!--File encryption input / output-->
             <StackPanel >
-                <TextBlock Text="File Path"
-                           Visibility="{Binding DataFormatSelected, Converter={local:DataFormatsToVisibility}, ConverterParameter=File}"/>
-                <TextBox Text="{Binding FilePath, UpdateSourceTrigger=PropertyChanged}"  
-                         local:DragDropProperty.Value="{Binding DropCommand}"
-                         Visibility="{Binding DataFormatSelected, Converter={local:DataFormatsToVisibility}, ConverterParameter=File}"/>
-                
-                <TextBlock Text="Plain Text"
-                           Visibility="{Binding DataFormatSelected, Converter={local:DataFormatsToVisibility}, ConverterParameter=TextString}"/>
-                <TextBox Text="{Binding PlainText, UpdateSourceTrigger=PropertyChanged}"  
-                         Visibility="{Binding DataFormatSelected, Converter={local:DataFormatsToVisibility}, ConverterParameter=TextString}"/>
-
                 <TextBlock Text="Original Signature" />
                 <TextBox Text="{Binding OriginalSignature, UpdateSourceTrigger=PropertyChanged}" />
 
