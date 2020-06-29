@@ -1,19 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Security.Cryptography;
-using System.IO;
-using System.Diagnostics;
-using Org.BouncyCastle;
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Crypto.Engines;
-using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Crypto.Paddings;
-using Org.BouncyCastle.Bcpg;
-using Org.BouncyCastle.Security;
-using System.Linq;
 using System.Collections.ObjectModel;
-using System.Security.Cryptography.X509Certificates;
 
 namespace CryptoCalc.Core
 {
@@ -21,15 +8,8 @@ namespace CryptoCalc.Core
     {
         #region Private Fields
 
-        public RSACryptoServiceProvider cipher { get; set; }
+        private RSACryptoServiceProvider cipher { get; set; } = new RSACryptoServiceProvider();
 
-        #endregion
-
-        #region Public Properties
-
-        public byte[] PublicKey { get; set; }
-        public byte[] PrivateKey { get; set; }
-        public bool AbleToEncrypt => true;
         #endregion
 
         #region Constructor
@@ -76,7 +56,7 @@ namespace CryptoCalc.Core
             return cipher.Encrypt(plain, false);
         }
 
-        public byte[] EncryptBytes(int selectedAlgorithim, int keySize, byte[] password, byte[] plainBytes)
+        public byte[] EncryptBytes(string selectedAlgorithim, int keySize, byte[] plainBytes)
         {
             throw new NotImplementedException();
         }
@@ -89,7 +69,7 @@ namespace CryptoCalc.Core
             return ByteConvert.BytesToAsciiString(decrypted);
         }
 
-        public byte[] DecryptToBytes(int selectedAlgorithim, int keySize, byte[] password, byte[] encrypted)
+        public byte[] DecryptToBytes(string selectedAlgorithim, int keySize, byte[] encrypted)
         {
             throw new NotImplementedException();
         }
@@ -97,8 +77,7 @@ namespace CryptoCalc.Core
         public void CreateKeyPair(int keySize)
         {
             cipher = new RSACryptoServiceProvider(keySize);
-            PrivateKey = cipher.ExportRSAPrivateKey();
-            PublicKey = cipher.ExportRSAPublicKey();
+            
         }
 
         public byte[] Sign(byte[] privKey, byte[] data)
@@ -115,6 +94,16 @@ namespace CryptoCalc.Core
             cipher.ImportRSAPublicKey(pubKey, out bytesRead);
             var hash = MsdnHash.Compute(MsdnHashAlgorithim.SHA1, data);
             return cipher.VerifyHash(hash, originalSignature, HashAlgorithmName.SHA1, RSASignaturePadding.Pkcs1);
+        }
+
+        public byte[] GetPrivateKey()
+        {
+            return cipher.ExportRSAPrivateKey();
+        }
+
+        public byte[] GetPublicKey()
+        {
+            return cipher.ExportRSAPublicKey();
         }
 
         #endregion

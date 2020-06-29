@@ -24,7 +24,7 @@
 
             <TextBlock Text="Algorithim"/>
             <ComboBox ItemsSource="{Binding Algorithims}"
-                      SelectedIndex ="{Binding SelectedAlgorithimIndex, Converter={local:UshortToInt}}"
+                      SelectedIndex ="{Binding SelectedAlgorithimIndex}"
                       local:SelectionChangedProperty.Value="{Binding ChangedAlgorithimCommand}" 
                       HorizontalAlignment="Stretch"/>
             <TextBlock Text="Key Size" />

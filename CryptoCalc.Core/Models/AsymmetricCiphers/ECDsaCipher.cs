@@ -8,7 +8,10 @@ namespace CryptoCalc.Core
     {
         #region Private Fields
 
-        public ECDsa cipher { get; set; }
+        /// <summary>
+        /// The cipher algorithim for this class
+        /// </summary>
+        public ECDsa cipher { get; set; } = ECDsa.Create();
 
         #endregion
 
@@ -16,7 +19,7 @@ namespace CryptoCalc.Core
 
         public byte[] PublicKey { get; set; }
         public byte[] PrivateKey { get; set; }
-        public bool AbleToEncrypt => false;
+
         #endregion
 
         #region Constructor
@@ -60,7 +63,7 @@ namespace CryptoCalc.Core
             throw new NotImplementedException();
         }
 
-        public byte[] EncryptBytes(int selectedAlgorithim, int keySize, byte[] password, byte[] plainBytes)
+        public byte[] EncryptBytes(string selectedAlgorithim, int keySize, byte[] plainBytes)
         {
             throw new NotImplementedException();
         }
@@ -70,17 +73,17 @@ namespace CryptoCalc.Core
             throw new NotImplementedException();
         }
 
-        public byte[] DecryptToBytes(int selectedAlgorithim, int keySize, byte[] password, byte[] encrypted)
+        public byte[] DecryptToBytes(string selectedAlgorithim, int keySize, byte[] encrypted)
         {
             throw new NotImplementedException();
         }
+
 
         public void CreateKeyPair(int keySize)
         {
             cipher = ECDsa.Create("ECDsa");
             cipher.KeySize = keySize;
-            PrivateKey = cipher.ExportPkcs8PrivateKey();
-            PublicKey = cipher.ExportSubjectPublicKeyInfo();
+            
         }
 
         public byte[] Sign(byte[] privKey, byte[] data)
@@ -97,6 +100,16 @@ namespace CryptoCalc.Core
             cipher.ImportSubjectPublicKeyInfo(pubKey, out bytesRead);
             var hash = MsdnHash.Compute(MsdnHashAlgorithim.SHA512, data);
             return cipher.VerifyHash(hash, originalSignature);
+        }
+
+        public byte[] GetPrivateKey()
+        {
+            return cipher.ExportPkcs8PrivateKey();
+        }
+
+        public byte[] GetPublicKey()
+        {
+            return cipher.ExportSubjectPublicKeyInfo();
         }
 
         #endregion

@@ -80,7 +80,7 @@ namespace CryptoCalc.Core
         /// <summary>
         /// Currently selected algorithim
         /// </summary>
-        public ushort SelectedAlgorithimIndex { get; set; } = 0;
+        public int SelectedAlgorithimIndex { get; set; } = 0;
 
         /// <summary>
         /// Currently selected data format
@@ -204,7 +204,6 @@ namespace CryptoCalc.Core
             DeleteKeyPairCommand = new RelayCommand(DeleteKeyPair);
             SignCommand = new RelayCommand(Sign);
             VerifyCommand = new RelayCommand(Verify);
-            ChangedOperationCommand = new RelayCommand(ChangedOperation);
         }
 
 

@@ -8,15 +8,8 @@ namespace CryptoCalc.Core
     {
         #region Private Fields
 
-        public ECDiffieHellman cipher { get; set; }
+        public ECDiffieHellman cipher { get; set; } = ECDiffieHellman.Create();
 
-        #endregion
-
-        #region Public Properties
-
-        public byte[] PublicKey { get; set; }
-        public byte[] PrivateKey { get; set; }
-        public bool AbleToEncrypt => false;
         #endregion
 
         #region Constructor
@@ -60,7 +53,7 @@ namespace CryptoCalc.Core
             throw new NotImplementedException();
         }
 
-        public byte[] EncryptBytes(int selectedAlgorithim, int keySize, byte[] password, byte[] plainBytes)
+        public byte[] EncryptBytes(string selectedAlgorithim, int keySize, byte[] plainBytes)
         {
             throw new NotImplementedException();
         }
@@ -70,7 +63,7 @@ namespace CryptoCalc.Core
             throw new NotImplementedException();
         }
 
-        public byte[] DecryptToBytes(int selectedAlgorithim, int keySize, byte[] password, byte[] encrypted)
+        public byte[] DecryptToBytes(string selectedAlgorithim, int keySize, byte[] encrypted)
         {
             throw new NotImplementedException();
         }
@@ -88,6 +81,16 @@ namespace CryptoCalc.Core
         public bool Verify(byte[] originalSignature, byte[] pubKey, byte[] data)
         {
             return false;
+        }
+
+        public byte[] GetPrivateKey()
+        {
+            throw new NotImplementedException();
+        }
+
+        public byte[] GetPublicKey()
+        {
+            throw new NotImplementedException();
         }
 
         #endregion
