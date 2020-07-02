@@ -83,7 +83,6 @@ namespace CryptoCalc.Core
         {
             cipher = ECDsa.Create("ECDsa");
             cipher.KeySize = keySize;
-            
         }
 
         public byte[] Sign(byte[] privKey, byte[] data)
@@ -110,6 +109,11 @@ namespace CryptoCalc.Core
         public byte[] GetPublicKey()
         {
             return cipher.ExportSubjectPublicKeyInfo();
+        }
+
+        public byte[] DeriveKey(byte[] myPrivateKey, int cipherKeySize, byte[] otherPartyPublicKey)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

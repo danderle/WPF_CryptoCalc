@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
+using System.Security.Cryptography;
 
 namespace CryptoCalc.Core
 {
@@ -66,6 +67,8 @@ namespace CryptoCalc.Core
         public byte[] DecryptToBytes(string selectedAlgorithim, int keySize, byte[] encrypted);
 
         public void CreateKeyPair(int keySize);
+
+        public byte[] DeriveKey(byte[] myPrivateKey, int cipherKeySize, byte[] otherPartyPublicKey);
 
         public byte[] Sign(byte[] privKey, byte[] data);
 
