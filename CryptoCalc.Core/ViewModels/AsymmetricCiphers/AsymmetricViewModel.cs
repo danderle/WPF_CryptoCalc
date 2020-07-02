@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
@@ -209,20 +208,7 @@ namespace CryptoCalc.Core
             InitializeLists();
         }
 
-        private void InitializeCommands()
-        {
-            EncryptCommand = new RelayCommand(Encrypt);
-            DecryptCommand = new RelayCommand(Decrypt);
-            ChangedAlgorithimCommand = new RelayCommand(ChangedAlgorithim);
-            CreateKeyPairCommand = new RelayCommand(CreateKeyPair);
-            SaveKeyPairCommand = new RelayCommand(SaveKeyPair);
-            DeleteKeyPairCommand = new RelayCommand(DeleteKeyPair);
-            SignCommand = new RelayCommand(Sign);
-            VerifyCommand = new RelayCommand(Verify);
-            DeriveKeyCommand = new RelayCommand(DeriveKey);
-            LoadPrivateKeyCommand = new RelayCommand(LoadPrivateKey);
-        }
-
+        
 
 
         #endregion
@@ -248,7 +234,7 @@ namespace CryptoCalc.Core
         {
             var otherPartyPublicKey = ByteConvert.HexStringToBytes(OtherPartyPublicKey.Replace(" ", string.Empty));
             var privateKey = File.ReadAllBytes(PrivateKeyPath);
-            var derivedKey = SelectedCipher.DeriveKey(privateKey, KeySizes[KeySizeIndex], otherPartyPublicKey);
+            var derivedKey = ((IAsymmetricKeyExchange)SelectedCipher).DeriveKey(privateKey, KeySizes[KeySizeIndex], otherPartyPublicKey);
             DerivedKey = ByteConvert.BytesToHexString(derivedKey);
         }
 
@@ -269,7 +255,7 @@ namespace CryptoCalc.Core
                     data = ByteConvert.StringToAsciiBytes(Data);
                     break;
             }
-            SignatureVerified = SelectedCipher.Verify(signature, pubKey, data);
+            SignatureVerified = ((IAsymmetricSignature)SelectedCipher).Verify(signature, pubKey, data);
         }
 
         /// <summary>
@@ -288,7 +274,7 @@ namespace CryptoCalc.Core
                     data = ByteConvert.StringToAsciiBytes(Data);
                     break;
             }
-            var signature = SelectedCipher.Sign(privKey, data);
+            var signature = ((IAsymmetricSignature)SelectedCipher).Sign(privKey, data);
             OriginalSignature = ByteConvert.BytesToHexString(signature);
         }
 
@@ -353,7 +339,7 @@ namespace CryptoCalc.Core
             {
                 case Format.File:
                     encrypted = ByteConvert.FileToBytes(EncryptedFilePath);
-                    var decryptedBytes = SelectedCipher.DecryptToBytes(Algorithims[SelectedAlgorithimIndex], KeySizes[KeySizeIndex], encrypted);
+                    var decryptedBytes = ((IAsymmetricEncryption)SelectedCipher).DecryptToBytes(Algorithims[SelectedAlgorithimIndex], KeySizes[KeySizeIndex], encrypted);
                     var extension = Path.GetExtension(EncryptedFilePath);
                     DecryptedFilePath = Path.Combine(Directory.GetParent(EncryptedFilePath).ToString(), Path.GetFileNameWithoutExtension(EncryptedFilePath) + ".Decrypted" + extension);
                     File.WriteAllBytes(DecryptedFilePath, decryptedBytes);
@@ -361,7 +347,7 @@ namespace CryptoCalc.Core
                 case Format.TextString:
                     encrypted = ByteConvert.HexStringToBytes(EncryptedText);
                     var privateKey = File.ReadAllBytes(PrivateKeyPath);
-                    DecryptedText = SelectedCipher.DecryptToText(privateKey, encrypted);
+                    DecryptedText = ((IAsymmetricEncryption)SelectedCipher).DecryptToText(privateKey, encrypted);
                     break;
             }
         }
@@ -380,7 +366,7 @@ namespace CryptoCalc.Core
                     {
                         var plainBytes = File.ReadAllBytes(Data);
 
-                        var encryptedBytes = SelectedCipher.EncryptBytes(Algorithims[SelectedAlgorithimIndex], KeySizes[KeySizeIndex], plainBytes);
+                        var encryptedBytes = ((IAsymmetricEncryption)SelectedCipher).EncryptBytes(Algorithims[SelectedAlgorithimIndex], KeySizes[KeySizeIndex], plainBytes);
                         var extension = Path.GetExtension(Data);
                         EncryptedFilePath = Path.Combine(Directory.GetParent(Data).ToString(), Path.GetFileNameWithoutExtension(Data) + ".Encrypted" + extension);
                         File.WriteAllBytes(EncryptedFilePath, encryptedBytes);
@@ -388,7 +374,7 @@ namespace CryptoCalc.Core
                 break;
                 case Format.TextString:
                     var pubKey = File.ReadAllBytes(PublicKeyPath);
-                    encrypted = SelectedCipher.EncryptText(pubKey, Data);
+                    encrypted = ((IAsymmetricEncryption)SelectedCipher).EncryptText(pubKey, Data);
                     EncryptedText = ByteConvert.BytesToHexString(encrypted);
                     break;
             }
@@ -403,6 +389,20 @@ namespace CryptoCalc.Core
             //Set the data format options
             DataFormatOptions.Add(Format.File.ToString());
             DataFormatOptions.Add(Format.TextString.ToString());
+        }
+
+        private void InitializeCommands()
+        {
+            EncryptCommand = new RelayCommand(Encrypt);
+            DecryptCommand = new RelayCommand(Decrypt);
+            ChangedAlgorithimCommand = new RelayCommand(ChangedAlgorithim);
+            CreateKeyPairCommand = new RelayCommand(CreateKeyPair);
+            SaveKeyPairCommand = new RelayCommand(SaveKeyPair);
+            DeleteKeyPairCommand = new RelayCommand(DeleteKeyPair);
+            SignCommand = new RelayCommand(Sign);
+            VerifyCommand = new RelayCommand(Verify);
+            DeriveKeyCommand = new RelayCommand(DeriveKey);
+            LoadPrivateKeyCommand = new RelayCommand(LoadPrivateKey);
         }
 
         #endregion

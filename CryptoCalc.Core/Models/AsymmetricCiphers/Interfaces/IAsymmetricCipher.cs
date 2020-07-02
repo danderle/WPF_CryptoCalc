@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Collections.ObjectModel;
-using System.Security.Cryptography;
+using System.Diagnostics;
 
 namespace CryptoCalc.Core
 {
@@ -58,21 +57,7 @@ namespace CryptoCalc.Core
         /// <returns></returns>
         public ObservableCollection<int> GetKeySizes();
 
-        public byte[] EncryptText(byte[] publicKey, string plainText);
-
-        public byte[] EncryptBytes(string selectedAlgorithim, int keySize, byte[] plainBytes);
-
-        public string DecryptToText(byte[] privateKey, byte[] encrypted);
-
-        public byte[] DecryptToBytes(string selectedAlgorithim, int keySize, byte[] encrypted);
-
         public void CreateKeyPair(int keySize);
-
-        public byte[] DeriveKey(byte[] myPrivateKey, int cipherKeySize, byte[] otherPartyPublicKey);
-
-        public byte[] Sign(byte[] privKey, byte[] data);
-
-        public bool Verify(byte[] originalSignature, byte[] pubKey, byte[] data);
 
         public byte[] GetPrivateKey();
 

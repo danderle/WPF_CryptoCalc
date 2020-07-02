@@ -1,10 +1,9 @@
-﻿using System;
+﻿using System.Collections.ObjectModel;
 using System.Security.Cryptography;
-using System.Collections.ObjectModel;
 
 namespace CryptoCalc.Core
 {
-    public class ECDsaCipher : IAsymmetricCipher
+    public class ECDsaCipher : IAsymmetricSignature
     {
         #region Private Fields
 
@@ -58,27 +57,6 @@ namespace CryptoCalc.Core
         }
 
 
-        public byte[] EncryptText(byte[] publicKey, string plainText)
-        {
-            throw new NotImplementedException();
-        }
-
-        public byte[] EncryptBytes(string selectedAlgorithim, int keySize, byte[] plainBytes)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string DecryptToText(byte[] privateKey, byte[] encrypted)
-        {
-            throw new NotImplementedException();
-        }
-
-        public byte[] DecryptToBytes(string selectedAlgorithim, int keySize, byte[] encrypted)
-        {
-            throw new NotImplementedException();
-        }
-
-
         public void CreateKeyPair(int keySize)
         {
             cipher = ECDsa.Create("ECDsa");
@@ -109,11 +87,6 @@ namespace CryptoCalc.Core
         public byte[] GetPublicKey()
         {
             return cipher.ExportSubjectPublicKeyInfo();
-        }
-
-        public byte[] DeriveKey(byte[] myPrivateKey, int cipherKeySize, byte[] otherPartyPublicKey)
-        {
-            throw new NotImplementedException();
         }
 
         #endregion

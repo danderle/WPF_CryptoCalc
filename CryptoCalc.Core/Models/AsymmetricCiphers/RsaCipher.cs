@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Security.Cryptography;
 using System.Collections.ObjectModel;
+using System.Security.Cryptography;
 
 namespace CryptoCalc.Core
 {
-    public class RsaCipher : IAsymmetricCipher
+    public class RsaCipher : IAsymmetricCipher, IAsymmetricEncryption, IAsymmetricSignature
     {
         #region Private Fields
 
@@ -103,11 +103,6 @@ namespace CryptoCalc.Core
         public byte[] GetPublicKey()
         {
             return cipher.ExportRSAPublicKey();
-        }
-
-        public byte[] DeriveKey(byte[] myPrivateKey, int cipherKeySize, byte[] otherPartyPublicKey)
-        {
-            throw new NotImplementedException();
         }
 
         #endregion
