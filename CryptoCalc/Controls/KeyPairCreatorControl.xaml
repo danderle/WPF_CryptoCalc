@@ -15,10 +15,10 @@
             <Button Content="Create" 
                     HorizontalAlignment="Center"
                     Command="{Binding CreateKeyPairCommand}"/>
-            <TextBlock Text="Private Key" />
+            <TextBlock Text="Private Key Path" />
             <TextBox Text="{Binding PrivateKeyPath, UpdateSourceTrigger=PropertyChanged}" 
                      local:DragDropProperty.Value="{Binding DropCommand}"/>
-            <TextBlock Text="Public Key" />
+            <TextBlock Text="Public Key Path" />
             <TextBox Text="{Binding PublicKeyPath, UpdateSourceTrigger=PropertyChanged}" 
                      local:DragDropProperty.Value="{Binding DropCommand}"/>
             <StackPanel Orientation="Horizontal"

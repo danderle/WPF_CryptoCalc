@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Security.Cryptography;
 using System.Windows.Input;
 
 namespace CryptoCalc.Core
@@ -71,6 +69,21 @@ namespace CryptoCalc.Core
         /// 
         /// </summary>
         public string PublicKeyPath { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string PrivateKey { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string OtherPartyPublicKey { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string DerivedKey { get; set; }
 
         /// <summary>
         /// The currently selected key size index
@@ -143,9 +156,11 @@ namespace CryptoCalc.Core
         public ICommand ChangedOperationCommand { get; set; }
         public ICommand CreateKeyPairCommand { get; set; }
         public ICommand SaveKeyPairCommand { get; set; }
+        public ICommand LoadPrivateKeyCommand { get; set; }
         public ICommand DeleteKeyPairCommand { get; set; }
         public ICommand SignCommand { get; set; }
         public ICommand VerifyCommand { get; set; }
+        public ICommand DeriveKeyCommand { get; set; }
 
         #endregion
 
@@ -204,12 +219,38 @@ namespace CryptoCalc.Core
             DeleteKeyPairCommand = new RelayCommand(DeleteKeyPair);
             SignCommand = new RelayCommand(Sign);
             VerifyCommand = new RelayCommand(Verify);
+            DeriveKeyCommand = new RelayCommand(DeriveKey);
+            LoadPrivateKeyCommand = new RelayCommand(LoadPrivateKey);
         }
+
 
 
         #endregion
 
         #region Command Methods
+
+        /// <summary>
+        /// The command method to load a private key from file if it existss
+        /// </summary>
+        private void LoadPrivateKey()
+        {
+            if (File.Exists(PrivateKeyPath))
+            {
+                var privateKey = File.ReadAllBytes(PrivateKeyPath);
+                PrivateKey = ByteConvert.BytesToHexString(privateKey);
+            }
+        }
+
+        /// <summary>
+        /// The command method to derived a shared secret key from the other party public key and our own keys
+        /// </summary>
+        private void DeriveKey()
+        {
+            var otherPartyPublicKey = ByteConvert.HexStringToBytes(OtherPartyPublicKey.Replace(" ", string.Empty));
+            var privateKey = File.ReadAllBytes(PrivateKeyPath);
+            var derivedKey = SelectedCipher.DeriveKey(privateKey, KeySizes[KeySizeIndex], otherPartyPublicKey);
+            DerivedKey = ByteConvert.BytesToHexString(derivedKey);
+        }
 
         /// <summary>
         /// The command method to verify a signature
