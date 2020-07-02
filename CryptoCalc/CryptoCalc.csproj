@@ -45,6 +45,9 @@
     <Compile Update="Controls\SideMenuControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Controls\DeriveKeyControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Controls\SignatureInputControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -97,6 +100,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Controls\SideMenuControl.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\DeriveKeyControl.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Controls\SignatureInputControl.xaml">
