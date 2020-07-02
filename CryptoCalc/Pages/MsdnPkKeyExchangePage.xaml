@@ -15,8 +15,7 @@
                        FontWeight="Bold"
                        HorizontalAlignment="Center" />
             <local:AsymmetricSetupControl DataContext="{Binding}"/>
-            <local:CipherOutputControl DataContext="{Binding}" />
-            <local:SignatureInputControl DataContext="{Binding}" />
+            <local:DeriveKeyControl DataContext="{Binding}" />
         </StackPanel>
     </Border>
 </local:BasePage>
