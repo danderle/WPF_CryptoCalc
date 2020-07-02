@@ -66,6 +66,12 @@ namespace CryptoCalc.Core
         /// <returns></returns>
         public int GetIvSize(int selectedAlgorithim);
 
+        /// <summary>
+        /// Generates a secret key according to the selected algorithim and the keysize
+        /// </summary>
+        /// <param name="selectedAlgorithim"></param>
+        /// <param name="keySize"></param>
+        /// <returns></returns>
         public List<byte[]> GenerateKey(int selectedAlgorithim, int keySize);
 
         #endregion

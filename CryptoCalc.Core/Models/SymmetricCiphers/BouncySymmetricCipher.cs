@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Crypto.Parameters;
+﻿using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Paddings;
+using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Security;
-using System.Linq;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace CryptoCalc.Core
 {
@@ -276,6 +276,12 @@ namespace CryptoCalc.Core
             }
         }
 
+        /// <summary>
+        /// Generates a secret key according to the selected algorithim and the keysize
+        /// </summary>
+        /// <param name="selectedAlgorithim"></param>
+        /// <param name="keySize"></param>
+        /// <returns></returns>
         public List<byte[]> GenerateKey(int selectedAlgorithim, int keySize)
         {
             var keyAndIv = new List<byte[]>();

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Security.Cryptography;
-using System.IO;
-using System.Diagnostics;
-using System.Linq;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Security.Cryptography;
 
 namespace CryptoCalc.Core
 {
@@ -148,6 +148,12 @@ namespace CryptoCalc.Core
             return cipher.BlockSize;
         }
 
+        /// <summary>
+        /// Generates a secret key according to the selected algorithim and the keysize
+        /// </summary>
+        /// <param name="selectedAlgorithim"></param>
+        /// <param name="keySize"></param>
+        /// <returns></returns>
         public List<byte[]> GenerateKey(int selectedAlgorithim, int keySize)
         {
             var algorithim = (SymmetricMsdnCipher)selectedAlgorithim;
