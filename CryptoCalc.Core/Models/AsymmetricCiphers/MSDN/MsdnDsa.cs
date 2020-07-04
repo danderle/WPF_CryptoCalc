@@ -1,14 +1,14 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.Security.Cryptography;
+using System.Collections.ObjectModel;
 
 namespace CryptoCalc.Core
 {
-    public class RsaCipher : IAsymmetricCipher, IAsymmetricEncryption, IAsymmetricSignature
+    public class MsdnDsa : IAsymmetricSignature
     {
         #region Private Fields
 
-        private RSACryptoServiceProvider cipher { get; set; } = new RSACryptoServiceProvider();
+        public DSACryptoServiceProvider cipher { get; set; } = new DSACryptoServiceProvider();
 
         #endregion
 
@@ -17,7 +17,7 @@ namespace CryptoCalc.Core
         /// <summary>
         /// Default constructor
         /// </summary>
-        public RsaCipher()
+        public MsdnDsa()
         {
         }
 
@@ -48,61 +48,35 @@ namespace CryptoCalc.Core
         }
 
 
-        public byte[] EncryptText(byte[] publicKey, string plainText)
-        {
-            int bytesRead;
-            cipher.ImportRSAPublicKey(publicKey, out bytesRead);
-            var plain = ByteConvert.StringToAsciiBytes(plainText);
-            return cipher.Encrypt(plain, false);
-        }
-
-        public byte[] EncryptBytes(string selectedAlgorithim, int keySize, byte[] plainBytes)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string DecryptToText(byte[] privateKey, byte[] encrypted)
-        {
-            int byteRead;
-            cipher.ImportRSAPrivateKey(privateKey, out byteRead);
-            var decrypted = cipher.Decrypt(encrypted, false);
-            return ByteConvert.BytesToAsciiString(decrypted);
-        }
-
-        public byte[] DecryptToBytes(string selectedAlgorithim, int keySize, byte[] encrypted)
-        {
-            throw new NotImplementedException();
-        }
-
         public void CreateKeyPair(int keySize)
         {
-            cipher = new RSACryptoServiceProvider(keySize);
+            cipher = new DSACryptoServiceProvider(keySize);
         }
 
         public byte[] Sign(byte[] privKey, byte[] data)
         {
             int bytesRead;
-            cipher.ImportRSAPrivateKey(privKey, out bytesRead);
+            cipher.ImportPkcs8PrivateKey(privKey, out bytesRead);
             var hash = MsdnHash.Compute(MsdnHashAlgorithim.SHA1, data);
-            return cipher.SignHash(hash, HashAlgorithmName.SHA1, RSASignaturePadding.Pkcs1);
+            return cipher.SignHash(hash, HashAlgorithmName.SHA1.ToString());
         }
 
         public bool Verify(byte[] originalSignature, byte[] pubKey, byte[] data)
         {
             int bytesRead;
-            cipher.ImportRSAPublicKey(pubKey, out bytesRead);
+            cipher.ImportSubjectPublicKeyInfo(pubKey, out bytesRead);
             var hash = MsdnHash.Compute(MsdnHashAlgorithim.SHA1, data);
-            return cipher.VerifyHash(hash, originalSignature, HashAlgorithmName.SHA1, RSASignaturePadding.Pkcs1);
+            return cipher.VerifyHash(hash,  HashAlgorithmName.SHA1.ToString(), originalSignature);
         }
 
         public byte[] GetPrivateKey()
         {
-            return cipher.ExportRSAPrivateKey();
+            return cipher.ExportPkcs8PrivateKey();
         }
 
         public byte[] GetPublicKey()
         {
-            return cipher.ExportRSAPublicKey();
+            return cipher.ExportSubjectPublicKeyInfo();
         }
 
         #endregion

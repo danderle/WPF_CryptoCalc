@@ -3,11 +3,10 @@ using System.Security.Cryptography;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Text;
-using Org.BouncyCastle.Math.EC;
 
 namespace CryptoCalc.Core
 {
-    public class ECDiffieHellmanCipher : IAsymmetricCipher
+    public class MsdnECDH : IAsymmetricCipher
     {
         #region Private Fields
 
@@ -20,7 +19,7 @@ namespace CryptoCalc.Core
         /// <summary>
         /// Default constructor
         /// </summary>
-        public ECDiffieHellmanCipher()
+        public MsdnECDH()
         {
         }
 

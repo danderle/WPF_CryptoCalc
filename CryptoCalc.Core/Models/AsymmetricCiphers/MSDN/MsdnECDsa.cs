@@ -3,7 +3,7 @@ using System.Security.Cryptography;
 
 namespace CryptoCalc.Core
 {
-    public class ECDsaCipher : IAsymmetricSignature
+    public class MsdnECDsa : IAsymmetricSignature
     {
         #region Private Fields
 
@@ -26,7 +26,7 @@ namespace CryptoCalc.Core
         /// <summary>
         /// Default constructor
         /// </summary>
-        public ECDsaCipher()
+        public MsdnECDsa()
         {
         }
 
