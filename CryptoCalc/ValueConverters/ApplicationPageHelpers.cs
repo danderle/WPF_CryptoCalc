@@ -34,6 +34,7 @@ namespace CryptoCalc
                 case ApplicationPage.BouncyCastleSymmetricEncryption:
                     return new BouncySymmetricPage(viewModel == null ? new SymmetricViewModel(CryptographyApi.BouncyCastle) : viewModel as SymmetricViewModel);
                 case ApplicationPage.BouncyCastlePublicKeyEncryption:
+                    return new BouncyPkEncryptionPage(viewModel == null ? new AsymmetricViewModel(CryptographyApi.BouncyCastle, AsymmetricOperation.Encryption) : viewModel as AsymmetricViewModel);
                 case ApplicationPage.BouncyCastleDigitalSignature:
                 case ApplicationPage.BouncyCastleKeyExchange:
                 default:
@@ -63,8 +64,8 @@ namespace CryptoCalc
                 return ApplicationPage.BouncyCastleHash;
             if (page is BouncySymmetricPage)
                 return ApplicationPage.BouncyCastleSymmetricEncryption;
-            //if (page is MsdnHashPage)
-            //    return ApplicationPage.BouncyCastlePublicKeyEncryption;
+            if (page is BouncyPkEncryptionPage)
+                return ApplicationPage.BouncyCastlePublicKeyEncryption;
             //if (page is MsdnHashPage)
             //    return ApplicationPage.BouncyCastleDigitalSignature;
             //if (page is MsdnHashPage)
