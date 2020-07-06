@@ -197,6 +197,7 @@ namespace CryptoCalc.Core
                     break;
                 case CryptographyApi.BouncyCastle:
                     Algorithims = IAsymmetricCipher.GetMsdnAlgorthims(SelectedOperation);
+                    SelectedCipher = IAsymmetricCipher.GetBouncyCipher(Algorithims[SelectedAlgorithimIndex]);
                     break;
                 default:
                     Debugger.Break();
@@ -335,18 +336,18 @@ namespace CryptoCalc.Core
         {
             byte[] encrypted;
             
+            var privateKey = File.ReadAllBytes(PrivateKeyPath);
             switch (DataFormatSelected)
             {
                 case Format.File:
                     encrypted = ByteConvert.FileToBytes(EncryptedFilePath);
-                    var decryptedBytes = ((IAsymmetricEncryption)SelectedCipher).DecryptToBytes(Algorithims[SelectedAlgorithimIndex], KeySizes[KeySizeIndex], encrypted);
+                    var decryptedBytes = ((IAsymmetricEncryption)SelectedCipher).DecryptToBytes(privateKey, encrypted);
                     var extension = Path.GetExtension(EncryptedFilePath);
                     DecryptedFilePath = Path.Combine(Directory.GetParent(EncryptedFilePath).ToString(), Path.GetFileNameWithoutExtension(EncryptedFilePath) + ".Decrypted" + extension);
                     File.WriteAllBytes(DecryptedFilePath, decryptedBytes);
                     break;
                 case Format.TextString:
                     encrypted = ByteConvert.HexStringToBytes(EncryptedText);
-                    var privateKey = File.ReadAllBytes(PrivateKeyPath);
                     DecryptedText = ((IAsymmetricEncryption)SelectedCipher).DecryptToText(privateKey, encrypted);
                     break;
             }
@@ -358,22 +359,20 @@ namespace CryptoCalc.Core
         private void Encrypt()
         {
             byte[] encrypted;
-            
+            var pubKey = File.ReadAllBytes(PublicKeyPath);
             switch (DataFormatSelected)
             {
                 case Format.File:
                     if (File.Exists(Data))
                     {
                         var plainBytes = File.ReadAllBytes(Data);
-
-                        var encryptedBytes = ((IAsymmetricEncryption)SelectedCipher).EncryptBytes(Algorithims[SelectedAlgorithimIndex], KeySizes[KeySizeIndex], plainBytes);
+                        var encryptedBytes = ((IAsymmetricEncryption)SelectedCipher).EncryptBytes(pubKey, plainBytes);
                         var extension = Path.GetExtension(Data);
                         EncryptedFilePath = Path.Combine(Directory.GetParent(Data).ToString(), Path.GetFileNameWithoutExtension(Data) + ".Encrypted" + extension);
                         File.WriteAllBytes(EncryptedFilePath, encryptedBytes);
                     }
                 break;
                 case Format.TextString:
-                    var pubKey = File.ReadAllBytes(PublicKeyPath);
                     encrypted = ((IAsymmetricEncryption)SelectedCipher).EncryptText(pubKey, Data);
                     EncryptedText = ByteConvert.BytesToHexString(encrypted);
                     break;
