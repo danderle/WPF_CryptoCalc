@@ -154,6 +154,7 @@ namespace CryptoCalc.Core
             var signer = new RsaDigestSigner(new Sha1Digest());
             var privKey = CreatePrivateKeyParameterFromBytes(privateKey);
             signer.Init(true, privKey);
+            signer.BlockUpdate(data, 0, data.Length);
             return signer.GenerateSignature();
         }
 
@@ -169,6 +170,7 @@ namespace CryptoCalc.Core
             var signer = new RsaDigestSigner(new Sha1Digest());
             var pubKey = CreatePublicKeyParameterFromBytes(publicKey);
             signer.Init(false, pubKey);
+            signer.BlockUpdate(data, 0, data.Length);
             return signer.VerifySignature(originalSignature);
         }
 
