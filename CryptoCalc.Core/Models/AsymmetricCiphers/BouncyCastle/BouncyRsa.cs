@@ -12,16 +12,29 @@ using System.Collections.ObjectModel;
 
 namespace CryptoCalc.Core
 {
-    public class BouncyRsa : IAsymmetricEncryption, IAsymmetricSignature
+    public class BouncyRsa : IAsymmetricEncryption, IAsymmetricSignature, INonECAlgorithims
     {
         #region Private Fields
 
+        /// <summary>
+        /// The cipher object for this class
+        /// </summary>
         private IAsymmetricBlockCipher cipher = new RsaEngine();
         
-        private KeyGenerationParameters parameters;
-
+        /// <summary>
+        /// The generated key pair object for this class
+        /// </summary>
         private AsymmetricCipherKeyPair keyPair;
-        
+
+        #endregion
+
+        #region Public Properties
+
+        /// <summary>
+        /// A flag for knowing if the algorithim uses elliptical curves
+        /// </summary>
+        public bool UsesEcCurves => false;
+
         #endregion
 
         #region Constructor
@@ -59,7 +72,7 @@ namespace CryptoCalc.Core
         /// <param name="keySize">the key size in bits</param>
         public void CreateKeyPair(int keySize)
         {
-            parameters = new KeyGenerationParameters(new SecureRandom(), keySize);
+            var parameters = new KeyGenerationParameters(new SecureRandom(), keySize);
             var keyGenerator = new RsaKeyPairGenerator();
             keyGenerator.Init(parameters);
             keyPair = keyGenerator.GenerateKeyPair();

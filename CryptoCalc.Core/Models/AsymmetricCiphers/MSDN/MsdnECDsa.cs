@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Security.Cryptography;
 
 namespace CryptoCalc.Core
@@ -6,14 +7,28 @@ namespace CryptoCalc.Core
     /// <summary>
     /// The ECDsa algorithim provided by the MSDN library
     /// </summary>
-    public class MsdnECDsa : IAsymmetricSignature
+    public class MsdnECDsa : IAsymmetricSignature, IECAlgorithims
     {
         #region Private Fields
 
         /// <summary>
+        /// Holds all the available ec curves
+        /// </summary>
+        Dictionary<string, ECCurve> ecCurves = new Dictionary<string, ECCurve>();
+
+        /// <summary>
         /// The cipher algorithim object for this class
         /// </summary>
-        public ECDsa cipher { get; set; } = ECDsa.Create();
+        private ECDsa cipher { get; set; } = ECDsa.Create();
+
+        #endregion
+
+        #region Public Properties
+
+        /// <summary>
+        /// A flag for knowing if the algorithim uses elliptical curves
+        /// </summary>
+        public bool UsesEcCurves => true;
 
         #endregion
 
@@ -24,6 +39,7 @@ namespace CryptoCalc.Core
         /// </summary>
         public MsdnECDsa()
         {
+            GetAllAvailableEcCurves();
         }
 
         #endregion
@@ -31,35 +47,23 @@ namespace CryptoCalc.Core
         #region Public Methods
 
         /// <summary>
-        /// Return the available key sizes for the given algorithim
+        /// Ges a list ofr all available ec curves
         /// </summary>
-        /// <param name="selectedAlgorithim"></param>
-        /// <returns></returns>
-        public ObservableCollection<int> GetKeySizes()
+        /// <returns>the list of all ec curves</returns>
+        public ObservableCollection<string> GetEcCurves()
         {
-            var keySizes = new ObservableCollection<int>();
-            foreach (var legalkeySize in cipher.LegalKeySizes)
-            {
-                int keySize = legalkeySize.MinSize;
-                while (keySize <= legalkeySize.MaxSize)
-                {
-                    keySizes.Add(keySize);
-                    if (legalkeySize.SkipSize == 0)
-                        break;
-                    keySize += legalkeySize.SkipSize;
-                }
-            }
-            return keySizes;
+            return new ObservableCollection<string>(ecCurves.Keys);
         }
 
         /// <summary>
-        /// Create a key pair for according to the key size
+        /// Create a key pair by using a given ec curve
         /// </summary>
-        /// <param name="keySize">the key size in bits</param>
-        public void CreateKeyPair(int keySize)
+        /// <param name="curveName">the curve to use for key creation</param>
+        public void CreateKeyPair(string curveName)
         {
-            cipher = ECDsa.Create("ECDsa");
-            cipher.KeySize = keySize;
+            ECCurve curve;
+            ecCurves.TryGetValue(curveName, out curve);
+            cipher = ECDsa.Create(curve);
         }
 
         /// <summary>
@@ -107,6 +111,35 @@ namespace CryptoCalc.Core
             cipher.ImportSubjectPublicKeyInfo(pubKey, out bytesRead);
             var hash = MsdnHash.Compute(MsdnHashAlgorithim.SHA512, data);
             return cipher.VerifyHash(hash, originalSignature);
+        }
+
+
+        #endregion
+
+        #region Private Methods
+
+        /// <summary>
+        /// Creates a a dictionary for all the available ec curves
+        /// </summary>
+        private void GetAllAvailableEcCurves()
+        {
+            ecCurves.Add(nameof(ECCurve.NamedCurves.brainpoolP160r1), ECCurve.NamedCurves.brainpoolP160r1);
+            ecCurves.Add(nameof(ECCurve.NamedCurves.brainpoolP160t1), ECCurve.NamedCurves.brainpoolP160t1);
+            ecCurves.Add(nameof(ECCurve.NamedCurves.brainpoolP192r1), ECCurve.NamedCurves.brainpoolP192r1);
+            ecCurves.Add(nameof(ECCurve.NamedCurves.brainpoolP192t1), ECCurve.NamedCurves.brainpoolP192t1);
+            ecCurves.Add(nameof(ECCurve.NamedCurves.brainpoolP224r1), ECCurve.NamedCurves.brainpoolP224r1);
+            ecCurves.Add(nameof(ECCurve.NamedCurves.brainpoolP224t1), ECCurve.NamedCurves.brainpoolP224t1);
+            ecCurves.Add(nameof(ECCurve.NamedCurves.brainpoolP256r1), ECCurve.NamedCurves.brainpoolP256r1);
+            ecCurves.Add(nameof(ECCurve.NamedCurves.brainpoolP256t1), ECCurve.NamedCurves.brainpoolP256t1);
+            ecCurves.Add(nameof(ECCurve.NamedCurves.brainpoolP320r1), ECCurve.NamedCurves.brainpoolP320r1);
+            ecCurves.Add(nameof(ECCurve.NamedCurves.brainpoolP320t1), ECCurve.NamedCurves.brainpoolP320t1);
+            ecCurves.Add(nameof(ECCurve.NamedCurves.brainpoolP384r1), ECCurve.NamedCurves.brainpoolP384r1);
+            ecCurves.Add(nameof(ECCurve.NamedCurves.brainpoolP384t1), ECCurve.NamedCurves.brainpoolP384t1);
+            ecCurves.Add(nameof(ECCurve.NamedCurves.brainpoolP512r1), ECCurve.NamedCurves.brainpoolP512r1);
+            ecCurves.Add(nameof(ECCurve.NamedCurves.brainpoolP512t1), ECCurve.NamedCurves.brainpoolP512t1);
+            ecCurves.Add(nameof(ECCurve.NamedCurves.nistP256), ECCurve.NamedCurves.nistP256);
+            ecCurves.Add(nameof(ECCurve.NamedCurves.nistP384), ECCurve.NamedCurves.nistP384);
+            ecCurves.Add(nameof(ECCurve.NamedCurves.nistP521), ECCurve.NamedCurves.nistP521);
         }
 
         #endregion

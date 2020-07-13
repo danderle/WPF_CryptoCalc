@@ -6,7 +6,7 @@ namespace CryptoCalc.Core
     /// <summary>
     /// The RSA algorithim provided by the MSDN library
     /// </summary>
-    public class MsdnRsa : IAsymmetricEncryption, IAsymmetricSignature
+    public class MsdnRsa : IAsymmetricEncryption, IAsymmetricSignature, INonECAlgorithims
     {
         #region Private Fields
 
@@ -14,6 +14,12 @@ namespace CryptoCalc.Core
         /// The RSA cipher object
         /// </summary>
         private RSACryptoServiceProvider cipher { get; set; } = new RSACryptoServiceProvider();
+
+        #endregion
+
+        #region Public Properties
+
+        public bool UsesEcCurves => false;
 
         #endregion
 

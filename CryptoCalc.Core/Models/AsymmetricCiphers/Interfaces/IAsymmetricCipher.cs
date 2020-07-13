@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 
 namespace CryptoCalc.Core
@@ -10,8 +9,17 @@ namespace CryptoCalc.Core
     /// </summary>
     public interface IAsymmetricCipher
     {
+        #region Public Properties
+
+        /// <summary>
+        /// A flag for knowing if the algorithim uses elliptical curves
+        /// </summary>
+        public bool UsesEcCurves { get; }
+
+        #endregion
+
         #region Public Static Methods
-        
+
         /// <summary>
         /// Returns a MSDN cipher object
         /// </summary>
@@ -49,11 +57,10 @@ namespace CryptoCalc.Core
                 case AsymmetricBouncyCiphers.RSA:
                     return new BouncyRsa();
                 case AsymmetricBouncyCiphers.DSA:
-                    return new MsdnDsa();
+                    return new BouncyDsa();
                 case AsymmetricBouncyCiphers.ECDsa:
-                    return new MsdnECDsa();
+                    return new BouncyECDsa();
                 case AsymmetricBouncyCiphers.ECDifiieHellman:
-                    return new MsdnECDH();
                 default:
                     Debugger.Break();
                     return null;
@@ -83,22 +90,31 @@ namespace CryptoCalc.Core
             }
         }
 
+        /// <summary>
+        /// Gets a list of possible Bouncy castle asymmetric cipher algorithims accoridng to a selected operation
+        /// </summary>
+        /// <param name="operation">The type of operation</param>
+        /// <returns>The list of cipher algorithims according the selected operation</returns>
+        public static List<string> GetBouncyAlgorthims(AsymmetricOperation operation)
+        {
+            switch (operation)
+            {
+                case AsymmetricOperation.Encryption:
+                    return new List<string> { AsymmetricBouncyCiphers.RSA.ToString() };
+
+                case AsymmetricOperation.Signature:
+                    return new List<string> { AsymmetricBouncyCiphers.RSA.ToString(), AsymmetricBouncyCiphers.DSA.ToString(), AsymmetricBouncyCiphers.ECDsa.ToString() };
+
+                case AsymmetricOperation.KeyExchange:
+                    return new List<string> { AsymmetricBouncyCiphers.ECDifiieHellman.ToString() };
+                default:
+                    Debugger.Break();
+                    return null;
+            }
+        }
         #endregion
 
         #region Public Methods
-
-        /// <summary>
-        /// Return the available key sizes for the given algorithim
-        /// </summary>
-        /// <param name="selectedAlgorithim"></param>
-        /// <returns></returns>
-        public ObservableCollection<int> GetKeySizes();
-
-        /// <summary>
-        /// Create a key pair for according to the key size
-        /// </summary>
-        /// <param name="keySize">the key size in bits</param>
-        public void CreateKeyPair(int keySize);
 
         /// <summary>
         /// Returns the private key

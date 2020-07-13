@@ -90,6 +90,11 @@ namespace CryptoCalc.Core
         public int KeySizeIndex { get; set; }
 
         /// <summary>
+        /// 
+        /// </summary>
+        public int EcCurveIndex { get; set; }
+
+        /// <summary>
         /// Currently selected algorithim
         /// </summary>
         public int SelectedAlgorithimIndex { get; set; } = 0;
@@ -118,6 +123,11 @@ namespace CryptoCalc.Core
         /// Holds the data format options
         /// </summary>
         public List<string> DataFormatOptions { get; set; } = new List<string>();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public ObservableCollection<string> EcCurves { get; set; } = new ObservableCollection<string>();
 
         /// <summary>
         /// The list of all the different key size options
@@ -193,17 +203,15 @@ namespace CryptoCalc.Core
             {
                 case CryptographyApi.MSDN:
                     Algorithims = IAsymmetricCipher.GetMsdnAlgorthims(SelectedOperation);
-                    SelectedCipher = IAsymmetricCipher.GetMsdnCipher(Algorithims[SelectedAlgorithimIndex]);
                     break;
                 case CryptographyApi.BouncyCastle:
-                    Algorithims = IAsymmetricCipher.GetMsdnAlgorthims(SelectedOperation);
-                    SelectedCipher = IAsymmetricCipher.GetBouncyCipher(Algorithims[SelectedAlgorithimIndex]);
+                    Algorithims = IAsymmetricCipher.GetBouncyAlgorthims(SelectedOperation);
                     break;
                 default:
                     Debugger.Break();
                     break;
             }
-            KeySizes = SelectedCipher.GetKeySizes();
+            ChangedAlgorithim();
 
             //Initialize lists
             InitializeLists();
@@ -310,8 +318,15 @@ namespace CryptoCalc.Core
         {
             PrivateKeyPath = pKeyPath + "\\" + KeyName + "_PrivateKey.pkcs1";
             PublicKeyPath = pKeyPath + "\\" + KeyName + "_PublicKey.pkcs1";
-            SelectedCipher.CreateKeyPair(KeySizes[KeySizeIndex]);
-
+            
+            if(SelectedCipher.UsesEcCurves)
+            {
+                ((IECAlgorithims)SelectedCipher).CreateKeyPair(EcCurves[EcCurveIndex]);
+            }
+            else
+            {
+                ((INonECAlgorithims)SelectedCipher).CreateKeyPair(KeySizes[KeySizeIndex]);
+            }
         }
 
         /// <summary>
@@ -324,9 +339,20 @@ namespace CryptoCalc.Core
                 case CryptographyApi.MSDN:
                      SelectedCipher = IAsymmetricCipher.GetMsdnCipher(Algorithims[SelectedAlgorithimIndex]);
                     break;
+                case CryptographyApi.BouncyCastle:
+                    SelectedCipher = IAsymmetricCipher.GetBouncyCipher(Algorithims[SelectedAlgorithimIndex]);
+                    break;
             }
-            KeySizes = SelectedCipher.GetKeySizes();
-            KeySizeIndex = 0;
+            if (SelectedCipher.UsesEcCurves)
+            {
+                EcCurves = ((IECAlgorithims)SelectedCipher).GetEcCurves();
+                EcCurveIndex = 0;
+            }
+            else
+            {
+                KeySizes = ((INonECAlgorithims)SelectedCipher).GetKeySizes();
+                KeySizeIndex = 0;
+            }
         }
 
         /// <summary>
