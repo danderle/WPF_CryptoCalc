@@ -60,6 +60,8 @@ namespace CryptoCalc.Core
                     return new BouncyDsa();
                 case AsymmetricBouncyCiphers.ECDsa:
                     return new BouncyECDsa();
+                case AsymmetricBouncyCiphers.ECGost3410:
+                    return new BouncyECGost3410();
                 case AsymmetricBouncyCiphers.ECDifiieHellman:
                 default:
                     Debugger.Break();
@@ -103,7 +105,13 @@ namespace CryptoCalc.Core
                     return new List<string> { AsymmetricBouncyCiphers.RSA.ToString() };
 
                 case AsymmetricOperation.Signature:
-                    return new List<string> { AsymmetricBouncyCiphers.RSA.ToString(), AsymmetricBouncyCiphers.DSA.ToString(), AsymmetricBouncyCiphers.ECDsa.ToString() };
+                    return new List<string> 
+                    { 
+                        AsymmetricBouncyCiphers.RSA.ToString(), 
+                        AsymmetricBouncyCiphers.DSA.ToString(), 
+                        AsymmetricBouncyCiphers.ECDsa.ToString(),
+                        AsymmetricBouncyCiphers.ECGost3410.ToString(),
+                    };
 
                 case AsymmetricOperation.KeyExchange:
                     return new List<string> { AsymmetricBouncyCiphers.ECDifiieHellman.ToString() };
