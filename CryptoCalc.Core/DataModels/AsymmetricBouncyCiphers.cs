@@ -6,8 +6,9 @@
     public enum AsymmetricBouncyCiphers
     {
         DSA = 0,
-        ECDifiieHellman,
-        ECDsa,
         RSA,
+        ECDsa,
+        ECGost3410,
+        ECDifiieHellman,
     }
 }
