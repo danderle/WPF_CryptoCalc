@@ -24,19 +24,20 @@
             <TextBlock Text="Algorithim"/>
             <ComboBox ItemsSource="{Binding Algorithims}"
                       SelectedIndex ="{Binding SelectedAlgorithimIndex}"
-                      local:SelectionChangedProperty.Value="{Binding ChangedAlgorithimCommand}" 
-                      HorizontalAlignment="Stretch"/>
-            <StackPanel Visibility="{Binding SelectKeys, Converter={local:BoolToVisibility}}">
+                      local:SelectionChangedProperty.Value="{Binding ChangedAlgorithimCommand}"/>
+            <StackPanel Visibility="{Binding UsesEcCurves, Converter={local:BoolToVisibility}, ConverterParameter=false}">
                 <TextBlock Text="Key Size" />
                 <ComboBox ItemsSource="{Binding KeySizes}"
-                      SelectedIndex="{Binding KeySizeIndex}"
-                      HorizontalAlignment="Stretch"/>
+                      SelectedIndex="{Binding KeySizeIndex}"/>
             </StackPanel>
-            <StackPanel>
+            <StackPanel Visibility="{Binding UsesEcCurves, Converter={local:BoolToVisibility}}">
+                <TextBlock Text="Curve Provider"/>
+                <ComboBox ItemsSource="{Binding Providers}"
+                          SelectedIndex ="{Binding ProviderIndex}"
+                          local:SelectionChangedProperty.Value="{Binding ChangedAlgorithimCommand}"/>
                 <TextBlock Text="EC Curve" />
                 <ComboBox ItemsSource="{Binding EcCurves}"
-                      SelectedIndex="{Binding EcCurveIndex}"
-                      HorizontalAlignment="Stretch"/>
+                      SelectedIndex="{Binding EcCurveIndex}"/>
             </StackPanel>
         </StackPanel>
         

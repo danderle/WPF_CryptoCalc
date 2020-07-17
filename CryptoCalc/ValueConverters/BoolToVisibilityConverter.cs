@@ -14,7 +14,7 @@ namespace CryptoCalc
             bool retVal = (bool)value;
             if(parameter != null)
             {
-                retVal &= (bool)parameter;
+                retVal = retVal == bool.Parse((string)parameter);
             }
             return retVal ? Visibility.Visible : Visibility.Collapsed;
         }

@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Windows.Input;
 
 namespace CryptoCalc.Core
@@ -18,6 +20,8 @@ namespace CryptoCalc.Core
         #endregion
 
         #region Public Properties
+
+        public bool UsesEcCurves { get; set; }
 
         /// <summary>
         /// The data to be hashed <see cref="Format"/> for hash data format options
@@ -95,6 +99,11 @@ namespace CryptoCalc.Core
         public int EcCurveIndex { get; set; }
 
         /// <summary>
+        /// 
+        /// </summary>
+        public int ProviderIndex { get; set; }
+
+        /// <summary>
         /// Currently selected algorithim
         /// </summary>
         public int SelectedAlgorithimIndex { get; set; } = 0;
@@ -123,6 +132,11 @@ namespace CryptoCalc.Core
         /// Holds the data format options
         /// </summary>
         public List<string> DataFormatOptions { get; set; } = new List<string>();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public ObservableCollection<string> Providers { get; set; } = new ObservableCollection<string>();
 
         /// <summary>
         /// 
@@ -163,6 +177,7 @@ namespace CryptoCalc.Core
         /// </summary>
         public ICommand ChangedAlgorithimCommand { get; set; }
         public ICommand ChangedOperationCommand { get; set; }
+        public ICommand ChangedProviderCommand { get; set; }
         public ICommand CreateKeyPairCommand { get; set; }
         public ICommand SaveKeyPairCommand { get; set; }
         public ICommand LoadPrivateKeyCommand { get; set; }
@@ -216,9 +231,6 @@ namespace CryptoCalc.Core
             //Initialize lists
             InitializeLists();
         }
-
-        
-
 
         #endregion
 
@@ -329,6 +341,13 @@ namespace CryptoCalc.Core
             }
         }
 
+        private void ChangedProvider()
+        {
+            var provider = (EcCurveProvider)Enum.Parse(typeof(EcCurveProvider), Providers[ProviderIndex]);
+            EcCurves = ((IECAlgorithims)SelectedCipher).GetEcCurves(provider);
+            EcCurveIndex = 0;
+        }
+
         /// <summary>
         /// The command method when a different algrithim is selected
         /// </summary>
@@ -343,9 +362,12 @@ namespace CryptoCalc.Core
                     SelectedCipher = IAsymmetricCipher.GetBouncyCipher(Algorithims[SelectedAlgorithimIndex]);
                     break;
             }
-            if (SelectedCipher.UsesEcCurves)
+            UsesEcCurves = SelectedCipher.UsesEcCurves;
+            if (UsesEcCurves)
             {
-                EcCurves = ((IECAlgorithims)SelectedCipher).GetEcCurves();
+                Providers = ((IECAlgorithims)SelectedCipher).GetEcProviders();
+                var provider = (EcCurveProvider)Enum.Parse(typeof(EcCurveProvider), Providers[ProviderIndex]);
+                EcCurves = ((IECAlgorithims)SelectedCipher).GetEcCurves(provider);
                 EcCurveIndex = 0;
             }
             else
@@ -428,7 +450,10 @@ namespace CryptoCalc.Core
             VerifyCommand = new RelayCommand(Verify);
             DeriveKeyCommand = new RelayCommand(DeriveKey);
             LoadPrivateKeyCommand = new RelayCommand(LoadPrivateKey);
+            ChangedProviderCommand = new RelayCommand(ChangedProvider);
         }
+
+        
 
         #endregion
     }
