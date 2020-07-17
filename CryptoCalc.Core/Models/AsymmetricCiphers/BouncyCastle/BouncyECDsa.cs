@@ -106,10 +106,18 @@ namespace CryptoCalc.Core
         public void CreateKeyPair(string curveName)
         {
             var oid = ECNamedCurveTable.GetOid(curveName);
-            var keyGenerationParameters = new ECKeyGenerationParameters(oid, new SecureRandom());
-            var keyGenerator = new ECKeyPairGenerator();
-            keyGenerator.Init(keyGenerationParameters);
-            keyPair = keyGenerator.GenerateKeyPair();
+            int xLength;
+            int yLength;
+            do
+            {
+                var keyGenerationParameters = new ECKeyGenerationParameters(oid, new SecureRandom());
+                var keyGenerator = new ECKeyPairGenerator();
+                keyGenerator.Init(keyGenerationParameters);
+                keyPair = keyGenerator.GenerateKeyPair();
+                xLength = ((ECPublicKeyParameters)keyPair.Public).Q.AffineXCoord.ToBigInteger().ToByteArrayUnsigned().Length;
+                yLength = ((ECPublicKeyParameters)keyPair.Public).Q.AffineYCoord.ToBigInteger().ToByteArrayUnsigned().Length;
+            }
+            while (xLength != yLength);
         }
 
         /// <summary>
@@ -134,12 +142,14 @@ namespace CryptoCalc.Core
         public byte[] GetPublicKey()
         {
             var der = ((ECPublicKeyParameters)keyPair.Public).PublicKeyParamSet.ToAsn1Object().GetDerEncoded();
-            var X = ((ECPublicKeyParameters)keyPair.Public).Q.AffineXCoord.ToBigInteger().ToByteArrayUnsigned();
-            var Y = ((ECPublicKeyParameters)keyPair.Public).Q.AffineYCoord.ToBigInteger().ToByteArrayUnsigned();
+            var Q = ((ECPublicKeyParameters)keyPair.Public).Q.GetEncoded();
+            //var X = ((ECPublicKeyParameters)keyPair.Public).Q.AffineXCoord.ToBigInteger().ToByteArrayUnsigned();
+            //var Y = ((ECPublicKeyParameters)keyPair.Public).Q.AffineYCoord.ToBigInteger().ToByteArrayUnsigned();
             var publicKey = new List<byte>();
             publicKey.AddRange(der);
-            publicKey.AddRange(X);
-            publicKey.AddRange(Y);
+            publicKey.AddRange(Q);
+            //publicKey.AddRange(X);
+            //publicKey.AddRange(Y);
             return publicKey.ToArray();
         }
 
@@ -202,9 +212,11 @@ namespace CryptoCalc.Core
             //The x an y split the rest length
             var x = new byte[restLength / 2];
             var y = new byte[restLength / 2];
+            var q = new byte[restLength];
             Array.Copy(publicKey, der, der.Length);
             Array.Copy(publicKey, der.Length, x, 0, x.Length);
             Array.Copy(publicKey, der.Length + x.Length, y, 0, y.Length);
+            Array.Copy(publicKey, der.Length, q, 0, q.Length);
 
             //Get the der object identifierer
             var derOid = DerObjectIdentifier.GetInstance(Asn1Object.FromByteArray(der));
@@ -215,8 +227,7 @@ namespace CryptoCalc.Core
             //Get the X and Y coordinates and then create the ECPoint
             var X = new BigInteger(1, x);
             var Y = new BigInteger(1, y);
-            var ecPoint = x9.Curve.CreatePoint(X, Y);
-
+            var ecPoint = x9.Curve.DecodePoint(q);
             return new ECPublicKeyParameters("EC", ecPoint, derOid);
         }
 
