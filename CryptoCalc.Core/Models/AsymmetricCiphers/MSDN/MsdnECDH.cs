@@ -47,10 +47,23 @@ namespace CryptoCalc.Core
         #region Public Methods
 
         /// <summary>
+        /// Gets the available ec curve providers
+        /// </summary>
+        /// <returns></returns>
+        public ObservableCollection<string> GetEcProviders()
+        {
+            return new ObservableCollection<string>
+            {
+                EcCurveProvider.NIST.ToString(),
+                EcCurveProvider.TELETRUST.ToString(),
+            };
+        }
+
+        /// <summary>
         /// Ges a list ofr all available ec curves
         /// </summary>
         /// <returns>the list of all ec curves</returns>
-        public ObservableCollection<string> GetEcCurves()
+        public ObservableCollection<string> GetEcCurves(EcCurveProvider provider)
         {
             return new ObservableCollection<string>(ecCurves.Keys);
         }

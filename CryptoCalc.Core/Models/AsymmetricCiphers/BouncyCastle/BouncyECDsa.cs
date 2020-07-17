@@ -1,4 +1,9 @@
 ﻿using Org.BouncyCastle.Asn1;
+using Org.BouncyCastle.Asn1.Anssi;
+using Org.BouncyCastle.Asn1.CryptoPro;
+using Org.BouncyCastle.Asn1.GM;
+using Org.BouncyCastle.Asn1.Nist;
+using Org.BouncyCastle.Asn1.Sec;
 using Org.BouncyCastle.Asn1.TeleTrust;
 using Org.BouncyCastle.Asn1.X9;
 using Org.BouncyCastle.Crypto;
@@ -8,8 +13,10 @@ using Org.BouncyCastle.Crypto.Signers;
 using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Security;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace CryptoCalc.Core
 {
@@ -47,12 +54,43 @@ namespace CryptoCalc.Core
         #region Public Methods
 
         /// <summary>
-        /// Ges a list ofr all available ec curves
+        /// Gets the available ec curve providers
+        /// </summary>
+        /// <returns></returns>
+        public ObservableCollection<string> GetEcProviders()
+        {
+            var list = Enum.GetValues(typeof(EcCurveProvider)).Cast<EcCurveProvider>().Select(t => t.ToString()).ToList();
+            return new ObservableCollection<string>(list);
+        }
+
+        /// <summary>
+        /// Gets a list of all available ec curves
         /// </summary>
         /// <returns>the list of all ec curves</returns>
-        public ObservableCollection<string> GetEcCurves()
+        public ObservableCollection<string> GetEcCurves(EcCurveProvider provider)
         {
-            var curves = TeleTrusTNamedCurves.Names.GetEnumerator();
+            IEnumerator curves = null;
+            switch(provider)
+            {
+                case EcCurveProvider.SEC:
+                    curves = SecNamedCurves.Names.GetEnumerator();
+                    break;
+                case EcCurveProvider.NIST:
+                    curves = NistNamedCurves.Names.GetEnumerator();
+                    break;
+                case EcCurveProvider.TELETRUST:
+                    curves = TeleTrusTNamedCurves.Names.GetEnumerator(); 
+                    break;
+                case EcCurveProvider.ANSSI:
+                    curves = AnssiNamedCurves.Names.GetEnumerator();
+                    break;
+                case EcCurveProvider.GOST3410:
+                    curves = ECGost3410NamedCurves.Names.GetEnumerator();
+                    break;
+                case EcCurveProvider.GM:
+                    curves = GMNamedCurves.Names.GetEnumerator();
+                    break;
+            }
             var list = new ObservableCollection<string>();
             while(curves.MoveNext())
             {
@@ -80,11 +118,11 @@ namespace CryptoCalc.Core
         /// <returns>private key in bytes</returns>
         public byte[] GetPrivateKey()
         {
-            var d = ((ECPrivateKeyParameters)keyPair.Private).D.ToByteArrayUnsigned();
             var der = ((ECPrivateKeyParameters)keyPair.Private).PublicKeyParamSet.ToAsn1Object().GetDerEncoded();
+            var d = ((ECPrivateKeyParameters)keyPair.Private).D.ToByteArrayUnsigned();
             var privateKey = new List<byte>();
-            privateKey.AddRange(d);
             privateKey.AddRange(der);
+            privateKey.AddRange(d);
 
             return privateKey.ToArray();
         }
@@ -95,14 +133,13 @@ namespace CryptoCalc.Core
         /// <returns>the public key in bytes</returns>
         public byte[] GetPublicKey()
         {
+            var der = ((ECPublicKeyParameters)keyPair.Public).PublicKeyParamSet.ToAsn1Object().GetDerEncoded();
             var X = ((ECPublicKeyParameters)keyPair.Public).Q.AffineXCoord.ToBigInteger().ToByteArrayUnsigned();
             var Y = ((ECPublicKeyParameters)keyPair.Public).Q.AffineYCoord.ToBigInteger().ToByteArrayUnsigned();
-            var der = ((ECPublicKeyParameters)keyPair.Public).PublicKeyParamSet.ToAsn1Object().GetDerEncoded();
             var publicKey = new List<byte>();
+            publicKey.AddRange(der);
             publicKey.AddRange(X);
             publicKey.AddRange(Y);
-            publicKey.AddRange(der);
-
             return publicKey.ToArray();
         }
 
@@ -158,20 +195,22 @@ namespace CryptoCalc.Core
         /// <returns>The public key parameter object</returns>
         private ECPublicKeyParameters CreatePublicKeyParameterFromBytes(byte[] publicKey)
         {
-            //der is always 11 bytes long and X, and Y are always equal
-            var der = new byte[11];
-            int restLength = publicKey.Length - 11;
+            //Get length of the DER ecnoded bytes plus 1 for the tag and length of the tlv
+            var der = new byte[publicKey[1] + 2];
+            int restLength = publicKey.Length - der.Length;
+
+            //The x an y split the rest length
             var x = new byte[restLength / 2];
             var y = new byte[restLength / 2];
-            Array.Copy(publicKey, x, x.Length);
-            Array.Copy(publicKey, x.Length, y, 0, y.Length);
-            Array.Copy(publicKey, x.Length + y.Length, der, 0, der.Length);
+            Array.Copy(publicKey, der, der.Length);
+            Array.Copy(publicKey, der.Length, x, 0, x.Length);
+            Array.Copy(publicKey, der.Length + x.Length, y, 0, y.Length);
 
             //Get the der object identifierer
             var derOid = DerObjectIdentifier.GetInstance(Asn1Object.FromByteArray(der));
 
             //Find the curve for the object identifier
-            var x9 = TeleTrusTNamedCurves.GetByOid(derOid);
+            var x9 = ECNamedCurveTable.GetByOid(derOid);
 
             //Get the X and Y coordinates and then create the ECPoint
             var X = new BigInteger(1, x);
@@ -188,11 +227,12 @@ namespace CryptoCalc.Core
         /// <returns>The private key parameter object</returns>
         private ECPrivateKeyParameters CreatePrivateKeyParameterFromBytes(byte[] privateKey)
         {
-            // der is always 11 bytes long
-            var der = new byte[11];
-            var d = new byte[privateKey.Length - 11];
-            Array.Copy(privateKey, d, d.Length);
-            Array.Copy(privateKey, d.Length, der, 0, der.Length);
+            //Get length of the DER ecnoded bytes plus 2 for the tag and length of the tlv
+            var der = new byte[privateKey[1] + 2];
+            int restLength = privateKey.Length - der.Length;
+            var d = new byte[restLength];
+            Array.Copy(privateKey, der, der.Length);
+            Array.Copy(privateKey, der.Length, d, 0, d.Length);
 
             var derObject = DerObjectIdentifier.GetInstance(Asn1Object.FromByteArray(der));
             var D = new BigInteger(1, d);
