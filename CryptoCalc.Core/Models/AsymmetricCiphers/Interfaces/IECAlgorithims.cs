@@ -8,10 +8,16 @@ namespace CryptoCalc.Core
     public interface IECAlgorithims : IAsymmetricCipher
     {
         /// <summary>
-        /// Ges a list ofr all available ec curves
+        /// Gets the available ec curve providers
+        /// </summary>
+        /// <returns></returns>
+        public ObservableCollection<string> GetEcProviders();
+
+        /// <summary>
+        /// Gets a list of all available ec curves
         /// </summary>
         /// <returns>the list of all ec curves</returns>
-        public ObservableCollection<string> GetEcCurves();
+        public ObservableCollection<string> GetEcCurves(EcCurveProvider provider);
 
         /// <summary>
         /// Create a key pair by using a given ec curve
