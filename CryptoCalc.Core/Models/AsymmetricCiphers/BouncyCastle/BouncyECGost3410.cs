@@ -20,6 +20,9 @@ using System.Linq;
 
 namespace CryptoCalc.Core
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class BouncyECGost3410 : IAsymmetricSignature, IECAlgorithims
     {
         #region Private Fields
@@ -36,7 +39,7 @@ namespace CryptoCalc.Core
         /// <summary>
         /// A flag for knowing if the algorithim uses elliptical curves
         /// </summary>
-        public bool UsesEcCurves => true;
+        public bool UsesCurves => true;
 
         #endregion
 
@@ -106,10 +109,18 @@ namespace CryptoCalc.Core
         public void CreateKeyPair(string curveName)
         {
             var oid = ECNamedCurveTable.GetOid(curveName);
-            var keyGenerationParameters = new Gost3410KeyGenerationParameters(new SecureRandom(), oid);
-            var keyGenerator = new Gost3410KeyPairGenerator();
-            keyGenerator.Init(keyGenerationParameters);
-            keyPair = keyGenerator.GenerateKeyPair();
+            int xLength;
+            int yLength;
+            do
+            {
+                var keyGenerationParameters = new ECKeyGenerationParameters(oid, new SecureRandom());
+                var keyGenerator = new ECKeyPairGenerator();
+                keyGenerator.Init(keyGenerationParameters);
+                keyPair = keyGenerator.GenerateKeyPair();
+                xLength = ((ECPublicKeyParameters)keyPair.Public).Q.AffineXCoord.ToBigInteger().ToByteArrayUnsigned().Length;
+                yLength = ((ECPublicKeyParameters)keyPair.Public).Q.AffineYCoord.ToBigInteger().ToByteArrayUnsigned().Length;
+            }
+            while (xLength != yLength);
         }
 
         /// <summary>
@@ -118,11 +129,11 @@ namespace CryptoCalc.Core
         /// <returns>private key in bytes</returns>
         public byte[] GetPrivateKey()
         {
-            var x = ((Gost3410PrivateKeyParameters)keyPair.Private).X.ToByteArrayUnsigned();
-            var der = ((Gost3410PrivateKeyParameters)keyPair.Private).PublicKeyParamSet.ToAsn1Object().GetDerEncoded();
+            var der = ((ECPrivateKeyParameters)keyPair.Private).PublicKeyParamSet.ToAsn1Object().GetDerEncoded();
+            var d = ((ECPrivateKeyParameters)keyPair.Private).D.ToByteArrayUnsigned();
             var privateKey = new List<byte>();
-            privateKey.AddRange(x);
             privateKey.AddRange(der);
+            privateKey.AddRange(d);
 
             return privateKey.ToArray();
         }
@@ -133,12 +144,11 @@ namespace CryptoCalc.Core
         /// <returns>the public key in bytes</returns>
         public byte[] GetPublicKey()
         {
-            var Y = ((Gost3410PublicKeyParameters)keyPair.Public).Y.ToByteArrayUnsigned();
-            var der = ((Gost3410PublicKeyParameters)keyPair.Public).PublicKeyParamSet.ToAsn1Object().GetDerEncoded();
+            var der = ((ECPublicKeyParameters)keyPair.Public).PublicKeyParamSet.ToAsn1Object().GetDerEncoded();
+            var Q = ((ECPublicKeyParameters)keyPair.Public).Q.GetEncoded();
             var publicKey = new List<byte>();
-            publicKey.AddRange(Y);
             publicKey.AddRange(der);
-
+            publicKey.AddRange(Q);
             return publicKey.ToArray();
         }
 
@@ -151,7 +161,7 @@ namespace CryptoCalc.Core
         /// <returns>the signature as a byte array</returns>
         public byte[] Sign(byte[] privateKey, byte[] data)
         {
-            var signer = new ECDsaSigner();
+            var signer = new ECGost3410Signer();
             var privKey = CreatePrivateKeyParameterFromBytes(privateKey);
             signer.Init(true, privKey);
             var bigIntSig = signer.GenerateSignature(data);
@@ -170,7 +180,7 @@ namespace CryptoCalc.Core
         /// <returns>true if signature is authentic, false if not</returns>
         public bool Verify(byte[] originalSignature, byte[] publicKey, byte[] data)
         {
-            var signer = new ECDsaSigner();
+            var signer = new ECGost3410Signer();
             var pubKey = CreatePublicKeyParameterFromBytes(publicKey);
             signer.Init(false, pubKey);
             var r = new byte[originalSignature.Length / 2];
@@ -194,26 +204,27 @@ namespace CryptoCalc.Core
         /// <returns>The public key parameter object</returns>
         private ECPublicKeyParameters CreatePublicKeyParameterFromBytes(byte[] publicKey)
         {
-            //der is always 11 bytes long and X, and Y are always equal
-            var der = new byte[11];
-            int restLength = publicKey.Length - 11;
+            //Get length of the DER ecnoded bytes plus 1 for the tag and length of the tlv
+            var der = new byte[publicKey[1] + 2];
+            int restLength = publicKey.Length - der.Length;
+
+            //The x an y split the rest length
             var x = new byte[restLength / 2];
             var y = new byte[restLength / 2];
-            Array.Copy(publicKey, x, x.Length);
-            Array.Copy(publicKey, x.Length, y, 0, y.Length);
-            Array.Copy(publicKey, x.Length + y.Length, der, 0, der.Length);
+            var q = new byte[restLength];
+            Array.Copy(publicKey, der, der.Length);
+            Array.Copy(publicKey, der.Length, x, 0, x.Length);
+            Array.Copy(publicKey, der.Length + x.Length, y, 0, y.Length);
+            Array.Copy(publicKey, der.Length, q, 0, q.Length);
 
             //Get the der object identifierer
             var derOid = DerObjectIdentifier.GetInstance(Asn1Object.FromByteArray(der));
 
             //Find the curve for the object identifier
-            var x9 = TeleTrusTNamedCurves.GetByOid(derOid);
+            var x9 = ECNamedCurveTable.GetByOid(derOid);
 
             //Get the X and Y coordinates and then create the ECPoint
-            var X = new BigInteger(1, x);
-            var Y = new BigInteger(1, y);
-            var ecPoint = x9.Curve.CreatePoint(X, Y);
-
+            var ecPoint = x9.Curve.DecodePoint(q);
             return new ECPublicKeyParameters("EC", ecPoint, derOid);
         }
 
@@ -224,11 +235,13 @@ namespace CryptoCalc.Core
         /// <returns>The private key parameter object</returns>
         private ECPrivateKeyParameters CreatePrivateKeyParameterFromBytes(byte[] privateKey)
         {
-            // der is always 11 bytes long
-            var der = new byte[11];
-            var d = new byte[privateKey.Length - 11];
-            Array.Copy(privateKey, d, d.Length);
-            Array.Copy(privateKey, d.Length, der, 0, der.Length);
+            //Get length of the DER ecnoded bytes plus 2 for the tag and length of the tlv
+            var der = new byte[privateKey[1] + 2];
+            int restLength = privateKey.Length - der.Length;
+            var d = new byte[restLength];
+
+            Array.Copy(privateKey, der, der.Length);
+            Array.Copy(privateKey, der.Length, d, 0, d.Length);
 
             var derObject = DerObjectIdentifier.GetInstance(Asn1Object.FromByteArray(der));
             var D = new BigInteger(1, d);
