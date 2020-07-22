@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Org.BouncyCastle.Crypto.Signers;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -14,7 +15,7 @@ namespace CryptoCalc.Core
         /// <summary>
         /// A flag for knowing if the algorithim uses elliptical curves
         /// </summary>
-        public bool UsesEcCurves { get; }
+        public bool UsesCurves { get; }
 
         #endregion
 
@@ -62,6 +63,12 @@ namespace CryptoCalc.Core
                     return new BouncyECDsa();
                 case AsymmetricBouncyCiphers.ECGost3410:
                     return new BouncyECGost3410();
+                case AsymmetricBouncyCiphers.Gost3410_94:
+                    return new BouncyGost3410_94();
+                case AsymmetricBouncyCiphers.ECNR:
+                    return new BouncyECNR();
+                case AsymmetricBouncyCiphers.ED25519CTX:
+                    return new BouncyEd25519ctx();
                 case AsymmetricBouncyCiphers.ECDifiieHellman:
                 default:
                     Debugger.Break();
@@ -111,6 +118,9 @@ namespace CryptoCalc.Core
                         AsymmetricBouncyCiphers.DSA.ToString(), 
                         AsymmetricBouncyCiphers.ECDsa.ToString(),
                         AsymmetricBouncyCiphers.ECGost3410.ToString(),
+                        AsymmetricBouncyCiphers.Gost3410_94.ToString(),
+                        AsymmetricBouncyCiphers.ECNR.ToString(),
+                        AsymmetricBouncyCiphers.ED25519CTX.ToString(),
                     };
 
                 case AsymmetricOperation.KeyExchange:
