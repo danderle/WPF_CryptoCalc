@@ -27,7 +27,7 @@ namespace CryptoCalc.Core
         /// <summary>
         /// A flag for knowing if the algorithim uses elliptical curves
         /// </summary>
-        public bool UsesEcCurves => false;
+        public bool UsesCurves => false;
 
         #endregion
 

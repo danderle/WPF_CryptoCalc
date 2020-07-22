@@ -19,7 +19,7 @@ namespace CryptoCalc.Core
 
         #region Public Properties
 
-        public bool UsesEcCurves => false;
+        public bool UsesCurves => false;
 
         #endregion
 

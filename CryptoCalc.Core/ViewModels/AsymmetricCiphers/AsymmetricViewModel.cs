@@ -331,7 +331,7 @@ namespace CryptoCalc.Core
             PrivateKeyPath = pKeyPath + "\\" + KeyName + "_PrivateKey.pkcs1";
             PublicKeyPath = pKeyPath + "\\" + KeyName + "_PublicKey.pkcs1";
             
-            if(SelectedCipher.UsesEcCurves)
+            if(SelectedCipher.UsesCurves)
             {
                 ((IECAlgorithims)SelectedCipher).CreateKeyPair(EcCurves[EcCurveIndex]);
             }
@@ -362,7 +362,7 @@ namespace CryptoCalc.Core
                     SelectedCipher = IAsymmetricCipher.GetBouncyCipher(Algorithims[SelectedAlgorithimIndex]);
                     break;
             }
-            UsesEcCurves = SelectedCipher.UsesEcCurves;
+            UsesEcCurves = SelectedCipher.UsesCurves;
             if (UsesEcCurves)
             {
                 Providers = ((IECAlgorithims)SelectedCipher).GetEcProviders();
