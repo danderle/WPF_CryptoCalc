@@ -16,7 +16,7 @@ namespace CryptoCalc.Core
     /// <summary>
     /// 
     /// </summary>
-    public class BouncyGost3410_94 : IAsymmetricSignature, IECAlgorithims
+    public class BouncyEd25519ctx : IAsymmetricSignature, IECAlgorithims
     {
         #region Private Fields
 
@@ -41,7 +41,7 @@ namespace CryptoCalc.Core
         /// <summary>
         /// Default constructor
         /// </summary>
-        public BouncyGost3410_94()
+        public BouncyEd25519ctx()
         {
         }
 
