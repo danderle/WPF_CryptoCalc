@@ -11,7 +11,7 @@
         Gost3410_94,
         ECGost3410,
         ECNR,
-        ED25519CTX,
+        ED25519,
         ECDifiieHellman,
     }
 }

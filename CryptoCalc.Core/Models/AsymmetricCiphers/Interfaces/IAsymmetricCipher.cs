@@ -67,8 +67,8 @@ namespace CryptoCalc.Core
                     return new BouncyGost3410_94();
                 case AsymmetricBouncyCiphers.ECNR:
                     return new BouncyECNR();
-                case AsymmetricBouncyCiphers.ED25519CTX:
-                    return new BouncyEd25519ctx();
+                case AsymmetricBouncyCiphers.ED25519:
+                    return new BouncyEd25519();
                 case AsymmetricBouncyCiphers.ECDifiieHellman:
                 default:
                     Debugger.Break();
@@ -120,7 +120,7 @@ namespace CryptoCalc.Core
                         AsymmetricBouncyCiphers.ECGost3410.ToString(),
                         AsymmetricBouncyCiphers.Gost3410_94.ToString(),
                         AsymmetricBouncyCiphers.ECNR.ToString(),
-                        AsymmetricBouncyCiphers.ED25519CTX.ToString(),
+                        AsymmetricBouncyCiphers.ED25519.ToString(),
                     };
 
                 case AsymmetricOperation.KeyExchange:
