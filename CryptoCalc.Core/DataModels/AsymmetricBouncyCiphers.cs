@@ -12,6 +12,7 @@
         ECGost3410,
         ECNR,
         ED25519,
+        ED448,
         ECDifiieHellman,
     }
 }

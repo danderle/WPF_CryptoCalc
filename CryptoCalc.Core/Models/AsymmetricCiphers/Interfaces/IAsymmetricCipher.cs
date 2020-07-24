@@ -69,6 +69,8 @@ namespace CryptoCalc.Core
                     return new BouncyECNR();
                 case AsymmetricBouncyCiphers.ED25519:
                     return new BouncyEd25519();
+                case AsymmetricBouncyCiphers.ED448:
+                    return new BouncyEd448();
                 case AsymmetricBouncyCiphers.ECDifiieHellman:
                 default:
                     Debugger.Break();
@@ -89,7 +91,12 @@ namespace CryptoCalc.Core
                     return new List<string> { AsymmetricMsdnCiphers.RSA.ToString() };
 
                 case AsymmetricOperation.Signature:
-                    return new List<string> { AsymmetricMsdnCiphers.RSA.ToString(), AsymmetricMsdnCiphers.DSA.ToString(), AsymmetricMsdnCiphers.ECDsa.ToString() };
+                    return new List<string> 
+                    { 
+                        AsymmetricMsdnCiphers.RSA.ToString(),
+                        AsymmetricMsdnCiphers.DSA.ToString(),
+                        AsymmetricMsdnCiphers.ECDsa.ToString()
+                    };
 
                 case AsymmetricOperation.KeyExchange:
                     return new List<string> { AsymmetricMsdnCiphers.ECDifiieHellman.ToString() };
@@ -109,7 +116,10 @@ namespace CryptoCalc.Core
             switch (operation)
             {
                 case AsymmetricOperation.Encryption:
-                    return new List<string> { AsymmetricBouncyCiphers.RSA.ToString() };
+                    return new List<string> 
+                    { 
+                        AsymmetricBouncyCiphers.RSA.ToString() ,
+                    };
 
                 case AsymmetricOperation.Signature:
                     return new List<string> 
@@ -121,6 +131,7 @@ namespace CryptoCalc.Core
                         AsymmetricBouncyCiphers.Gost3410_94.ToString(),
                         AsymmetricBouncyCiphers.ECNR.ToString(),
                         AsymmetricBouncyCiphers.ED25519.ToString(),
+                        AsymmetricBouncyCiphers.ED448.ToString(),
                     };
 
                 case AsymmetricOperation.KeyExchange:

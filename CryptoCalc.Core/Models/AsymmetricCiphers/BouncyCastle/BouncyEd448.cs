@@ -1,7 +1,5 @@
-﻿using Org.BouncyCastle.Asn1;
-using Org.BouncyCastle.Asn1.Anssi;
+﻿using Org.BouncyCastle.Asn1.Anssi;
 using Org.BouncyCastle.Asn1.CryptoPro;
-using Org.BouncyCastle.Asn1.EdEC;
 using Org.BouncyCastle.Asn1.GM;
 using Org.BouncyCastle.Asn1.Nist;
 using Org.BouncyCastle.Asn1.Sec;
@@ -10,7 +8,6 @@ using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Crypto.Signers;
-using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Security;
 using System;
 using System.Collections;
@@ -23,7 +20,7 @@ namespace CryptoCalc.Core
     /// <summary>
     /// 
     /// </summary>
-    public class BouncyEd25519 : IAsymmetricSignature, IECAlgorithims
+    public class BouncyEd448 : IAsymmetricSignature, IECAlgorithims
     {
         #region Private Fields
 
@@ -48,7 +45,7 @@ namespace CryptoCalc.Core
         /// <summary>
         /// Default constructor
         /// </summary>
-        public BouncyEd25519()
+        public BouncyEd448()
         {
         }
 
@@ -62,7 +59,7 @@ namespace CryptoCalc.Core
         /// <returns></returns>
         public ObservableCollection<string> GetEcProviders()
         {
-            return new ObservableCollection<string> { "ED25519" };
+            return new ObservableCollection<string> { "ED448" };
         }
 
         /// <summary>
@@ -71,7 +68,7 @@ namespace CryptoCalc.Core
         /// <returns>the list of all ec curves</returns>
         public ObservableCollection<string> GetEcCurves(EcCurveProvider provider)
         {
-            return new ObservableCollection<string> { "Ed25519" };
+            return new ObservableCollection<string> { "Ed448" };
         }
 
         /// <summary>
@@ -80,8 +77,8 @@ namespace CryptoCalc.Core
         /// <param name="curveName">the curve to use for key creation</param>
         public void CreateKeyPair(string curveName)
         {
-            var keyGenerationParameters = new Ed25519KeyGenerationParameters(new SecureRandom());
-            var keyGenerator = new Ed25519KeyPairGenerator();
+            var keyGenerationParameters = new Ed448KeyGenerationParameters(new SecureRandom());
+            var keyGenerator = new Ed448KeyPairGenerator();
             keyGenerator.Init(keyGenerationParameters);
             keyPair = keyGenerator.GenerateKeyPair();
         }
@@ -92,7 +89,7 @@ namespace CryptoCalc.Core
         /// <returns>private key in bytes</returns>
         public byte[] GetPrivateKey()
         {
-            var encoded = ((Ed25519PrivateKeyParameters)keyPair.Private).GetEncoded();
+            var encoded = ((Ed448PrivateKeyParameters)keyPair.Private).GetEncoded();
             var privateKey = new List<byte>();
             privateKey.AddRange(encoded);
 
@@ -105,8 +102,8 @@ namespace CryptoCalc.Core
         /// <returns>the public key in bytes</returns>
         public byte[] GetPublicKey()
         {
-            var der = ((Ed25519PrivateKeyParameters)keyPair.Private).GeneratePublicKey().GetEncoded();
-            var Y = ((Ed25519PublicKeyParameters)keyPair.Public).GetEncoded();
+            var der = ((Ed448PrivateKeyParameters)keyPair.Private).GeneratePublicKey().GetEncoded();
+            var Y = ((Ed448PublicKeyParameters)keyPair.Public).GetEncoded();
             var publicKey = new List<byte>();
             publicKey.AddRange(der);
             publicKey.AddRange(Y);
@@ -123,7 +120,7 @@ namespace CryptoCalc.Core
         /// <returns>the signature as a byte array</returns>
         public byte[] Sign(byte[] privateKey, byte[] data)
         {
-            var signer = new Ed25519Signer();
+            var signer = new Ed448Signer(ByteConvert.StringToAsciiBytes("context"));
             var privKey = CreatePrivateKeyParameterFromBytes(privateKey);
             signer.Init(true, privKey);
             signer.BlockUpdate(data, 0, data.Length);
@@ -140,7 +137,7 @@ namespace CryptoCalc.Core
         /// <returns>true if signature is authentic, false if not</returns>
         public bool Verify(byte[] originalSignature, byte[] publicKey, byte[] data)
         {
-            var signer = new Ed25519Signer();
+            var signer = new Ed448Signer(ByteConvert.StringToAsciiBytes("context"));
             var pubKey = CreatePublicKeyParameterFromBytes(publicKey);
             signer.Init(false, pubKey);
             signer.BlockUpdate(data, 0, data.Length);
@@ -153,23 +150,23 @@ namespace CryptoCalc.Core
         #region Private Methods
 
         /// <summary>
-        /// Creates a public key <see cref="Ed25519PublicKeyParameters"/> from a byte array containing the exponent and modulus
+        /// Creates a public key <see cref="Ed448PublicKeyParameters"/> from a byte array containing the exponent and modulus
         /// </summary>
         /// <param name="publicKey">the byte array conatining the exponent and the modulus</param>
         /// <returns>The public key parameter object</returns>
-        private Ed25519PublicKeyParameters CreatePublicKeyParameterFromBytes(byte[] publicKey)
+        private Ed448PublicKeyParameters CreatePublicKeyParameterFromBytes(byte[] publicKey)
         {
-            return new Ed25519PublicKeyParameters(publicKey, 0);
+            return new Ed448PublicKeyParameters(publicKey, 0);
         }
 
         /// <summary>
-        /// Creates a private key <see cref="Gost3410PrivateKeyParameters"/> from a byte array containing the exponent and modulus
+        /// Creates a private key <see cref="Ed448PrivateKeyParameters"/> from a byte array containing the exponent and modulus
         /// </summary>
         /// <param name="privateKey">the byte array containing the exponent and the modulus</param>
         /// <returns>The private key parameter object</returns>
-        private Ed25519PrivateKeyParameters CreatePrivateKeyParameterFromBytes(byte[] privateKey)
+        private Ed448PrivateKeyParameters CreatePrivateKeyParameterFromBytes(byte[] privateKey)
         {
-            return new Ed25519PrivateKeyParameters(privateKey, 0);
+            return new Ed448PrivateKeyParameters(privateKey, 0);
         }
 
         #endregion
