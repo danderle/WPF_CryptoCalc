@@ -143,13 +143,9 @@ namespace CryptoCalc.Core
         {
             var der = ((ECPublicKeyParameters)keyPair.Public).PublicKeyParamSet.ToAsn1Object().GetDerEncoded();
             var Q = ((ECPublicKeyParameters)keyPair.Public).Q.GetEncoded();
-            //var X = ((ECPublicKeyParameters)keyPair.Public).Q.AffineXCoord.ToBigInteger().ToByteArrayUnsigned();
-            //var Y = ((ECPublicKeyParameters)keyPair.Public).Q.AffineYCoord.ToBigInteger().ToByteArrayUnsigned();
             var publicKey = new List<byte>();
             publicKey.AddRange(der);
             publicKey.AddRange(Q);
-            //publicKey.AddRange(X);
-            //publicKey.AddRange(Y);
             return publicKey.ToArray();
         }
 
