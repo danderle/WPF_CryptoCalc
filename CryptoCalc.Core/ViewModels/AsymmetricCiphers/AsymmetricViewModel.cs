@@ -328,17 +328,21 @@ namespace CryptoCalc.Core
         /// </summary>
         private void CreateKeyPair()
         {
-            PrivateKeyPath = pKeyPath + "\\" + KeyName + "_PrivateKey.pkcs1";
-            PublicKeyPath = pKeyPath + "\\" + KeyName + "_PublicKey.pkcs1";
             
-            if(SelectedCipher.UsesCurves)
+            if(SelectedCipher.UsesCurves && EcCurves.Count != 0)
             {
                 ((IECAlgorithims)SelectedCipher).CreateKeyPair(EcCurves[EcCurveIndex]);
             }
-            else
+            else if(!SelectedCipher.UsesCurves && KeySizes.Count != 0)
             {
                 ((INonECAlgorithims)SelectedCipher).CreateKeyPair(KeySizes[KeySizeIndex]);
             }
+            else
+            {
+                return;
+            }
+            PrivateKeyPath = pKeyPath + "\\" + KeyName + "_PrivateKey.pkcs1";
+            PublicKeyPath = pKeyPath + "\\" + KeyName + "_PublicKey.pkcs1";
         }
 
         private void ChangedProvider()
