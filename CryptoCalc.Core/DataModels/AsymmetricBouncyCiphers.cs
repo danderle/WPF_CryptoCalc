@@ -7,6 +7,7 @@
     {
         DSA = 0,
         RSA,
+        SM2,
         ECDsa,
         Gost3410_94,
         ECGost3410,

@@ -57,6 +57,8 @@ namespace CryptoCalc.Core
             {
                 case AsymmetricBouncyCiphers.RSA:
                     return new BouncyRsa();
+                case AsymmetricBouncyCiphers.SM2:
+                    return new BouncySM2();
                 case AsymmetricBouncyCiphers.DSA:
                     return new BouncyDsa();
                 case AsymmetricBouncyCiphers.ECDsa:
@@ -116,9 +118,10 @@ namespace CryptoCalc.Core
             switch (operation)
             {
                 case AsymmetricOperation.Encryption:
-                    return new List<string> 
-                    { 
+                    return new List<string>
+                    {
                         AsymmetricBouncyCiphers.RSA.ToString() ,
+                        AsymmetricBouncyCiphers.SM2.ToString() ,
                     };
 
                 case AsymmetricOperation.Signature:
