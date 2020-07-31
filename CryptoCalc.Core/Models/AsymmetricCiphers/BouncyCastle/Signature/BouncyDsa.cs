@@ -47,7 +47,6 @@ namespace CryptoCalc.Core
         /// <summary>
         /// Return the available key sizes for the given algorithim
         /// </summary>
-        /// <param name="selectedAlgorithim"></param>
         /// <returns></returns>
         public ObservableCollection<int> GetKeySizes()
         {

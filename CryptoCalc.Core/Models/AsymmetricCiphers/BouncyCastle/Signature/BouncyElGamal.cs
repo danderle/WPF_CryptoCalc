@@ -35,6 +35,11 @@ namespace CryptoCalc.Core
         /// </summary>
         public bool UsesCurves => false;
 
+        /// <summary>
+        /// A flag for knowing if the algorithim uses key sizes for key creation
+        /// </summary>
+        public bool UsesKeySize => true;
+
         #endregion
 
         #region Constructor
