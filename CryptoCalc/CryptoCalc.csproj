@@ -138,6 +138,9 @@
     <Page Update="Pages\HashPages\BouncyHashPage.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Pages\BouncyPkKeyExchangePage.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Pages\MsdnPkKeyExchangePage.xaml">
       <SubType>Designer</SubType>
     </Page>
