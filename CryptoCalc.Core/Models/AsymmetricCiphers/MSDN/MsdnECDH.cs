@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace CryptoCalc.Core
 {
-    public class MsdnECDH : IAsymmetricCipher, IECAlgorithims
+    public class MsdnECDH : IAsymmetricKeyExchange, IECAlgorithims
     {
         #region Private Fields
 
@@ -20,20 +20,6 @@ namespace CryptoCalc.Core
         /// The cipher object for this class
         /// </summary>
         public ECDiffieHellman cipher { get; set; } = ECDiffieHellman.Create();
-
-        #endregion
-
-        #region Public Properties
-
-        /// <summary>
-        /// A flag for knowing if the algorithim uses elliptical curves
-        /// </summary>
-        public bool UsesCurves => true;
-
-        /// <summary>
-        /// A flag for knowing if the algorithim uses key sizes for key creation
-        /// </summary>
-        public bool UsesKeySize => false;
 
         #endregion
 
@@ -86,7 +72,7 @@ namespace CryptoCalc.Core
 
         public byte[] DeriveKey(byte[] myPrivateKey, int cipherKeySize, byte[] otherPartyPublicKey)
         {
-            var myDiffie = ECDiffieHellman.Create( );
+            var myDiffie = ECDiffieHellman.Create();
             int bytesRead;
             myDiffie.KeySize = cipherKeySize;
             
@@ -142,31 +128,6 @@ namespace CryptoCalc.Core
                 }
             }
             return iv;
-        }
-
-        public byte[] EncryptBytes(string selectedAlgorithim, int keySize, byte[] plainBytes)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string DecryptToText(byte[] privateKey, byte[] encrypted)
-        {
-            throw new NotImplementedException();
-        }
-
-        public byte[] DecryptToBytes(string selectedAlgorithim, int keySize, byte[] encrypted)
-        {
-            throw new NotImplementedException();
-        }
-
-        public byte[] Sign(byte[] privKey, byte[] data)
-        {
-            return null;
-        }
-
-        public bool Verify(byte[] originalSignature, byte[] pubKey, byte[] data)
-        {
-            return false;
         }
 
         /// <summary>
