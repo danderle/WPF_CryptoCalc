@@ -8,6 +8,11 @@ namespace CryptoCalc.Core
     public interface INonECAlgorithims : IAsymmetricCipher
     {
         /// <summary>
+        /// A flag for knowing if the algorithim uses key sizes for key creation
+        /// </summary>
+        public bool UsesKeySize => true;
+
+        /// <summary>
         /// Return the available key sizes for the given algorithim
         /// </summary>
         /// <param name="selectedAlgorithim"></param>

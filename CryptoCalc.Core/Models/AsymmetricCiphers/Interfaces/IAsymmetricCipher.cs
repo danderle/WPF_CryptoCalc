@@ -12,10 +12,9 @@ namespace CryptoCalc.Core
     {
         #region Public Properties
 
-        /// <summary>
-        /// A flag for knowing if the algorithim uses elliptical curves
-        /// </summary>
-        public bool UsesCurves { get; }
+        
+
+        
 
         #endregion
 
@@ -74,6 +73,7 @@ namespace CryptoCalc.Core
                 case AsymmetricBouncyCiphers.ED448:
                     return new BouncyEd448();
                 case AsymmetricBouncyCiphers.ECDifiieHellman:
+                    return new BouncyDH();
                 default:
                     Debugger.Break();
                     return null;
@@ -101,7 +101,10 @@ namespace CryptoCalc.Core
                     };
 
                 case AsymmetricOperation.KeyExchange:
-                    return new List<string> { AsymmetricMsdnCiphers.ECDifiieHellman.ToString() };
+                    return new List<string> 
+                    { 
+                        AsymmetricMsdnCiphers.ECDifiieHellman.ToString() 
+                    };
                 default:
                     Debugger.Break();
                     return null;
@@ -138,7 +141,10 @@ namespace CryptoCalc.Core
                     };
 
                 case AsymmetricOperation.KeyExchange:
-                    return new List<string> { AsymmetricBouncyCiphers.ECDifiieHellman.ToString() };
+                    return new List<string> 
+                    { 
+                        AsymmetricBouncyCiphers.ECDifiieHellman.ToString() 
+                    };
                 default:
                     Debugger.Break();
                     return null;

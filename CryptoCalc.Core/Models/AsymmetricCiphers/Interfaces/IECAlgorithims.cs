@@ -8,6 +8,11 @@ namespace CryptoCalc.Core
     public interface IECAlgorithims : IAsymmetricCipher
     {
         /// <summary>
+        /// A flag for knowing if the algorithim uses elliptical curves
+        /// </summary>
+        public bool UsesCurves => true;
+
+        /// <summary>
         /// Gets the available ec curve providers
         /// </summary>
         /// <returns></returns>
