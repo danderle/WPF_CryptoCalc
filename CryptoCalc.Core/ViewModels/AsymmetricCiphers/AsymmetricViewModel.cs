@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Windows.Input;
 
 namespace CryptoCalc.Core
@@ -22,6 +21,8 @@ namespace CryptoCalc.Core
         #region Public Properties
 
         public bool UsesEcCurves { get; set; }
+
+        public bool UsesKeySize { get; set; }
 
         /// <summary>
         /// The data to be hashed <see cref="Format"/> for hash data format options
@@ -328,14 +329,19 @@ namespace CryptoCalc.Core
         /// </summary>
         private void CreateKeyPair()
         {
-            
-            if(SelectedCipher.UsesCurves && EcCurves.Count != 0)
+            if(SelectedCipher is IECAlgorithims ecCipher)
             {
-                ((IECAlgorithims)SelectedCipher).CreateKeyPair(EcCurves[EcCurveIndex]);
+                if(EcCurves.Count != 0)
+                {
+                    ecCipher.CreateKeyPair(EcCurves[EcCurveIndex]);
+                }
             }
-            else if(!SelectedCipher.UsesCurves && KeySizes.Count != 0)
+            else if(SelectedCipher is INonECAlgorithims nonEcCipher)
             {
-                ((INonECAlgorithims)SelectedCipher).CreateKeyPair(KeySizes[KeySizeIndex]);
+                if(KeySizes.Count != 0)
+                {
+                    nonEcCipher.CreateKeyPair(KeySizes[KeySizeIndex]);
+                }
             }
             else
             {
@@ -366,17 +372,23 @@ namespace CryptoCalc.Core
                     SelectedCipher = IAsymmetricCipher.GetBouncyCipher(Algorithims[SelectedAlgorithimIndex]);
                     break;
             }
-            UsesEcCurves = SelectedCipher.UsesCurves;
-            if (UsesEcCurves)
+            if (SelectedCipher is IECAlgorithims ecCipher)
             {
-                Providers = ((IECAlgorithims)SelectedCipher).GetEcProviders();
-                var provider = (EcCurveProvider)Enum.Parse(typeof(EcCurveProvider), Providers[ProviderIndex]);
-                EcCurves = ((IECAlgorithims)SelectedCipher).GetEcCurves(provider);
-                EcCurveIndex = 0;
+                UsesKeySize = false;
+                UsesEcCurves = ecCipher.UsesCurves;
+                if (UsesEcCurves)
+                {
+                    Providers = ecCipher.GetEcProviders();
+                    var provider = (EcCurveProvider)Enum.Parse(typeof(EcCurveProvider), Providers[ProviderIndex]);
+                    EcCurves = ecCipher.GetEcCurves(provider);
+                    EcCurveIndex = 0;
+                }
             }
-            else
+            else if(SelectedCipher is INonECAlgorithims nonEcCipher)
             {
-                KeySizes = ((INonECAlgorithims)SelectedCipher).GetKeySizes();
+                UsesEcCurves = false;
+                UsesKeySize = nonEcCipher.UsesKeySize;
+                KeySizes = nonEcCipher.GetKeySizes();
                 KeySizeIndex = 0;
             }
         }

@@ -25,7 +25,7 @@
             <ComboBox ItemsSource="{Binding Algorithims}"
                       SelectedIndex ="{Binding SelectedAlgorithimIndex}"
                       local:SelectionChangedProperty.Value="{Binding ChangedAlgorithimCommand}"/>
-            <StackPanel Visibility="{Binding UsesEcCurves, Converter={local:BoolToVisibility}, ConverterParameter=false}">
+            <StackPanel Visibility="{Binding UsesKeySize, Converter={local:BoolToVisibility}}">
                 <TextBlock Text="Key Size" />
                 <ComboBox ItemsSource="{Binding KeySizes}"
                       SelectedIndex="{Binding KeySizeIndex}"/>

@@ -25,10 +25,7 @@ namespace CryptoCalc.Core
 
         #region Public Properties
 
-        /// <summary>
-        /// A flag for knowing if the algorithim uses elliptical curves
-        /// </summary>
-        public bool UsesCurves => true;
+        
 
         #endregion
 
