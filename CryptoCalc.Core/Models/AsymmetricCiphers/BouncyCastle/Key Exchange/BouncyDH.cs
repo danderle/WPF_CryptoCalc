@@ -1,5 +1,4 @@
-﻿using Org.BouncyCastle.Asn1;
-using Org.BouncyCastle.Crypto;
+﻿using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Agreement;
 using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Crypto.Parameters;
@@ -8,7 +7,6 @@ using Org.BouncyCastle.Security;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 
 namespace CryptoCalc.Core
 {
@@ -20,8 +18,6 @@ namespace CryptoCalc.Core
         /// The generated key pair object for this class
         /// </summary>
         private AsymmetricCipherKeyPair keyPair;
-
-        private AsymmetricCipherKeyPair otherKeyPair;
 
         #endregion
 
@@ -73,8 +69,6 @@ namespace CryptoCalc.Core
             var keyGenerator = new DHKeyPairGenerator();
             keyGenerator.Init(keyGenerationParameters);
             keyPair = keyGenerator.GenerateKeyPair();
-            
-            otherKeyPair = keyGenerator.GenerateKeyPair();
         }
 
         /// <summary>
@@ -121,40 +115,26 @@ namespace CryptoCalc.Core
             return publicKey.ToArray();
         }
 
+        /// <summary>
+        /// Drevies a shared secret key from a private key and another persons public key
+        /// </summary>
+        /// <param name="myPrivateKey">the private key which is used</param>
+        /// <param name="cipherKeySize">the size of the private key</param>
+        /// <param name="otherPartyPublicKey">the public key of the other person</param>
+        /// <returns></returns>
         public byte[] DeriveKey(byte[] myPrivateKey, int cipherKeySize, byte[] otherPartyPublicKey)
         {
-            //var privKey = CreatePrivateKeyParameterFromBytes(myPrivateKey);
-            //var agreement = new DHAgreement();
-            //agreement.Init(privKey);
-            //var message = agreement.CalculateMessage();
-            //var otherPubKey = CreatePublicKeyParameterFromBytes(otherPartyPublicKey);
-            //var sharedagreement = agreement.CalculateAgreement(otherPubKey, message);
-
             var a1 = new DHAgreement();
-            var a2 = new DHAgreement();
-            var priv = CreatePrivateKeyParameterFromBytes(myPrivateKey);
 
-            a1.Init(keyPair.Private);
-            a2.Init(otherKeyPair.Private);
+            var priv = CreatePrivateKeyParameterFromBytes(myPrivateKey);
+            a1.Init(priv);
 
             BigInteger m1 = a1.CalculateMessage();
-            BigInteger m2 = a2.CalculateMessage();
 
-            var pubKey = CreatePublicKeyParameterFromBytes(GetPublicKey());
-            var param = pubKey.Parameters;
-            if(!param.Equals(priv.Parameters))
-            {
-                string fail = "fail";
-            }
+            var pubKey = CreatePublicKeyParameterFromBytes(otherPartyPublicKey);
 
             //Both party keys must share the same DHParameters to be able to calculate the agreement
-            BigInteger k1 = a1.CalculateAgreement((DHPublicKeyParameters)otherKeyPair.Public, m2);
-            BigInteger k2 = a2.CalculateAgreement((DHPublicKeyParameters)keyPair.Public, m1);
-
-            if (!k1.Equals(k2))
-            {
-                string fail = "fail";
-            }
+            BigInteger k1 = a1.CalculateAgreement(pubKey, m1);
 
             return k1.ToByteArrayUnsigned();
         }
