@@ -38,6 +38,7 @@ namespace CryptoCalc
                 case ApplicationPage.BouncyCastleDigitalSignature:
                     return new BouncyPkSignaturePage(viewModel == null ? new AsymmetricViewModel(CryptographyApi.BouncyCastle, AsymmetricOperation.Signature) : viewModel as AsymmetricViewModel);
                 case ApplicationPage.BouncyCastleKeyExchange:
+                    return new BouncyPkKeyExchangePage(viewModel == null ? new AsymmetricViewModel(CryptographyApi.BouncyCastle, AsymmetricOperation.KeyExchange) : viewModel as AsymmetricViewModel);
                 default:
                     Debugger.Break();
                     return null;
