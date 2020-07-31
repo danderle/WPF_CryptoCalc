@@ -3,7 +3,7 @@
     /// <summary>
     /// A interface used for asymmetric key exchange
     /// </summary>
-    public interface IAsymmetricKeyExchange
+    public interface IAsymmetricKeyExchange : IAsymmetricCipher
     {
         #region Public Methods
 
