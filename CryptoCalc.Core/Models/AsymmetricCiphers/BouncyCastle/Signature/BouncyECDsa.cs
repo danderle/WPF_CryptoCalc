@@ -126,7 +126,7 @@ namespace CryptoCalc.Core
         /// <returns>private key in bytes</returns>
         public byte[] GetPrivateKey()
         {
-            var der = ((ECPrivateKeyParameters)keyPair.Private).PublicKeyParamSet.ToAsn1Object().GetDerEncoded();
+            var der = ((ECPrivateKeyParameters)keyPair.Private).PublicKeyParamSet.ToAsn1Object().GetEncoded();
             var d = ((ECPrivateKeyParameters)keyPair.Private).D.ToByteArrayUnsigned();
             var privateKey = new List<byte>();
             privateKey.AddRange(der);
@@ -141,11 +141,11 @@ namespace CryptoCalc.Core
         /// <returns>the public key in bytes</returns>
         public byte[] GetPublicKey()
         {
-            var der = ((ECPublicKeyParameters)keyPair.Public).PublicKeyParamSet.ToAsn1Object().GetDerEncoded();
-            var Q = ((ECPublicKeyParameters)keyPair.Public).Q.GetEncoded();
+            var der = ((ECPublicKeyParameters)keyPair.Public).PublicKeyParamSet.ToAsn1Object().GetEncoded();
+            var q = ((ECPublicKeyParameters)keyPair.Public).Q.GetEncoded();
             var publicKey = new List<byte>();
             publicKey.AddRange(der);
-            publicKey.AddRange(Q);
+            publicKey.AddRange(q);
             return publicKey.ToArray();
         }
 
@@ -206,12 +206,8 @@ namespace CryptoCalc.Core
             int restLength = publicKey.Length - der.Length;
 
             //The x an y split the rest length
-            var x = new byte[restLength / 2];
-            var y = new byte[restLength / 2];
             var q = new byte[restLength];
             Array.Copy(publicKey, der, der.Length);
-            Array.Copy(publicKey, der.Length, x, 0, x.Length);
-            Array.Copy(publicKey, der.Length + x.Length, y, 0, y.Length);
             Array.Copy(publicKey, der.Length, q, 0, q.Length);
 
             //Get the der object identifierer
@@ -221,8 +217,6 @@ namespace CryptoCalc.Core
             var x9 = ECNamedCurveTable.GetByOid(derOid);
 
             //Get the X and Y coordinates and then create the ECPoint
-            var X = new BigInteger(1, x);
-            var Y = new BigInteger(1, y);
             var ecPoint = x9.Curve.DecodePoint(q);
             return new ECPublicKeyParameters("EC", ecPoint, derOid);
         }
