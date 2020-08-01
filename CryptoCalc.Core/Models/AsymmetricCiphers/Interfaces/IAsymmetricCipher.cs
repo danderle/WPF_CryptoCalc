@@ -10,14 +10,6 @@ namespace CryptoCalc.Core
     /// </summary>
     public interface IAsymmetricCipher
     {
-        #region Public Properties
-
-        
-
-        
-
-        #endregion
-
         #region Public Static Methods
 
         /// <summary>
@@ -72,8 +64,10 @@ namespace CryptoCalc.Core
                     return new BouncyEd25519();
                 case AsymmetricBouncyCiphers.ED448:
                     return new BouncyEd448();
-                case AsymmetricBouncyCiphers.ECDifiieHellman:
+                case AsymmetricBouncyCiphers.DifiieHellman:
                     return new BouncyDH();
+                case AsymmetricBouncyCiphers.ECDifiieHellman:
+                    return new BouncyECDH();
                 default:
                     Debugger.Break();
                     return null;
@@ -123,8 +117,8 @@ namespace CryptoCalc.Core
                 case AsymmetricOperation.Encryption:
                     return new List<string>
                     {
-                        AsymmetricBouncyCiphers.RSA.ToString() ,
-                        AsymmetricBouncyCiphers.SM2.ToString() ,
+                        AsymmetricBouncyCiphers.RSA.ToString(),
+                        AsymmetricBouncyCiphers.SM2.ToString(),
                     };
 
                 case AsymmetricOperation.Signature:
@@ -143,6 +137,7 @@ namespace CryptoCalc.Core
                 case AsymmetricOperation.KeyExchange:
                     return new List<string> 
                     { 
+                        AsymmetricBouncyCiphers.DifiieHellman.ToString(),
                         AsymmetricBouncyCiphers.ECDifiieHellman.ToString() 
                     };
                 default:
