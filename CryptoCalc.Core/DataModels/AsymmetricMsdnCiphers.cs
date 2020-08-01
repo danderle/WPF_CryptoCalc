@@ -6,7 +6,7 @@
     public enum AsymmetricMsdnCiphers
     {
         DSA = 0,
-        ECDifiieHellman,
+        ECDiffieHellman,
         ECDsa,
         RSA,
     }

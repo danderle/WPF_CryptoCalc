@@ -28,7 +28,7 @@ namespace CryptoCalc.Core
                     return new MsdnDsa();
                 case AsymmetricMsdnCiphers.ECDsa:
                     return new MsdnECDsa();
-                case AsymmetricMsdnCiphers.ECDifiieHellman:
+                case AsymmetricMsdnCiphers.ECDiffieHellman:
                     return new MsdnECDH();
                 default:
                     Debugger.Break();
@@ -64,9 +64,9 @@ namespace CryptoCalc.Core
                     return new BouncyEd25519();
                 case AsymmetricBouncyCiphers.ED448:
                     return new BouncyEd448();
-                case AsymmetricBouncyCiphers.DifiieHellman:
+                case AsymmetricBouncyCiphers.DiffieHellman:
                     return new BouncyDH();
-                case AsymmetricBouncyCiphers.ECDifiieHellman:
+                case AsymmetricBouncyCiphers.ECDiffieHellman:
                     return new BouncyECDH();
                 default:
                     Debugger.Break();
@@ -97,7 +97,7 @@ namespace CryptoCalc.Core
                 case AsymmetricOperation.KeyExchange:
                     return new List<string> 
                     { 
-                        AsymmetricMsdnCiphers.ECDifiieHellman.ToString() 
+                        AsymmetricMsdnCiphers.ECDiffieHellman.ToString() 
                     };
                 default:
                     Debugger.Break();
@@ -137,8 +137,8 @@ namespace CryptoCalc.Core
                 case AsymmetricOperation.KeyExchange:
                     return new List<string> 
                     { 
-                        AsymmetricBouncyCiphers.DifiieHellman.ToString(),
-                        AsymmetricBouncyCiphers.ECDifiieHellman.ToString() 
+                        AsymmetricBouncyCiphers.DiffieHellman.ToString(),
+                        AsymmetricBouncyCiphers.ECDiffieHellman.ToString() 
                     };
                 default:
                     Debugger.Break();
