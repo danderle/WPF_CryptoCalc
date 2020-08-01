@@ -14,6 +14,7 @@
         ECNR,
         ED25519,
         ED448,
+        DifiieHellman,
         ECDifiieHellman,
     }
 }
