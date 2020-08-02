@@ -68,6 +68,8 @@ namespace CryptoCalc.Core
                     return new BouncyDH();
                 case AsymmetricBouncyCiphers.ECDiffieHellman:
                     return new BouncyECDH();
+                case AsymmetricBouncyCiphers.ECMQV:
+                    return new BouncyECMqv();
                 default:
                     Debugger.Break();
                     return null;
@@ -138,7 +140,8 @@ namespace CryptoCalc.Core
                     return new List<string> 
                     { 
                         AsymmetricBouncyCiphers.DiffieHellman.ToString(),
-                        AsymmetricBouncyCiphers.ECDiffieHellman.ToString() 
+                        AsymmetricBouncyCiphers.ECDiffieHellman.ToString(),
+                        AsymmetricBouncyCiphers.ECMQV.ToString(),
                     };
                 default:
                     Debugger.Break();

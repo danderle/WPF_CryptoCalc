@@ -16,5 +16,6 @@
         ED448,
         DiffieHellman,
         ECDiffieHellman,
+        ECMQV,
     }
 }
