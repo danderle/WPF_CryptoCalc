@@ -11,7 +11,7 @@
     <Border Background="{StaticResource WhiteBrush}"
             Padding="5">
         <StackPanel>
-            <TextBlock Text="MSDN Public Key Exchange"
+            <TextBlock Text="Bouncy Castle Public Key Exchange"
                        FontWeight="Bold"
                        HorizontalAlignment="Center" />
             <local:AsymmetricSetupControl DataContext="{Binding}"/>

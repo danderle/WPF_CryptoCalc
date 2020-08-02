@@ -158,7 +158,6 @@ namespace CryptoCalc.Core
 
             var pubKey = CreatePublicKeyParameterFromBytes(otherPartyPublicKey);
 
-            //Both party keys must share the same DHParameters to be able to calculate the agreement
             BigInteger k = a1.CalculateAgreement(pubKey);
 
             return k.ToByteArrayUnsigned();

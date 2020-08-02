@@ -8,7 +8,7 @@
         #region Public Methods
 
         /// <summary>
-        /// Drevies a shared secret key from a private key and another persons public key
+        /// Derives a shared secret key from a private key and another persons public key
         /// </summary>
         /// <param name="myPrivateKey">the private key which is used</param>
         /// <param name="cipherKeySize">the size of the private key</param>
