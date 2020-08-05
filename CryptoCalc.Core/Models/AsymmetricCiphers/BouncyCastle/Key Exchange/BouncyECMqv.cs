@@ -28,7 +28,7 @@ namespace CryptoCalc.Core
         /// The generated key pair object for this class
         /// </summary>
         private AsymmetricCipherKeyPair keyPair;
-        private AsymmetricKeyParameter pubKey1;
+
         #endregion
 
         #region Constructor
@@ -111,7 +111,6 @@ namespace CryptoCalc.Core
                 yLength = ((ECPublicKeyParameters)keyPair.Public).Q.AffineYCoord.ToBigInteger().ToByteArrayUnsigned().Length;
             }
             while (xLength != yLength);
-            pubKey1 = keyPair.Public;
         }
 
         /// <summary>
