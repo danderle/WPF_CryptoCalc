@@ -17,5 +17,6 @@
         DiffieHellman,
         ECDiffieHellman,
         ECMQV,
+        X25519,
     }
 }
