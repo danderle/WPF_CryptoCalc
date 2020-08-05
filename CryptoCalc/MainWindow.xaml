@@ -10,27 +10,172 @@
         Activated="Window_Activated"
         Deactivated="Window_Deactivated"
         Height="600" 
-        Width="800">
+        Width="800"
+        x:Name="AppWindow"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        MinWidth="{Binding MinimumWidth}"
+        MinHeight="{Binding MinimumHeight}">
 
+    <Window.Resources>
+        <Style TargetType="{x:Type local:MainWindow}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Window}">
+                        <Grid>
+                            <!--Opacity Mask-->
+                            <Border x:Name="Container"
+                                        CornerRadius="{Binding WindowCornerRadius}"
+                                        Background="{StaticResource WhiteBrush}"/>
+
+
+                            <!--Main window with resizeable outline margin-->
+                            <Border CornerRadius="{Binding WindowCornerRadius}"
+                                        Background="{StaticResource WhiteBrush}">
+                                <Border.Effect>
+                                    <DropShadowEffect ShadowDepth="0" Opacity="0.2" />
+                                </Border.Effect>
+                            </Border>
+
+                            <!--The main window content-->
+                            <Grid >
+                                <Grid.OpacityMask>
+                                    <VisualBrush Visual="{Binding ElementName=Container}" />
+                                </Grid.OpacityMask>
+                                <Grid.RowDefinitions>
+                                    <!--Title bar-->
+                                    <RowDefinition Height="{Binding TitleHeightGridLength}" />
+                                    <!--Drop Shadow-->
+                                    <RowDefinition Height="Auto" />
+                                    <!--Window Content-->
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+
+                                <Grid Grid.Column="0"
+                                          Panel.ZIndex="1">
+                                    <Grid.ColumnDefinitions>
+                                        <!--Icon-->
+                                        <ColumnDefinition Width="Auto" />
+                                        <!--Title-->
+                                        <ColumnDefinition Width="*" />
+                                        <!--Window Buttons-->
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <!--Icon-->
+                                    <Button Command="{Binding MenuCommand}"
+                                                Style="{StaticResource SystemIconButton}">
+                                        <Image Source="/Resources/Images/projekt.ico"/>
+                                    </Button>
+
+                                    <!--Title-->
+                                    <Viewbox Grid.ColumnSpan="3" >
+                                        <StackPanel>
+                                            <TextBlock Style="{StaticResource HeaderText}"
+                                                       Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Title}" 
+                                                       Margin="0 0 0 -2"/>
+                                            <TextBlock Text="by danderle" 
+                                                       HorizontalAlignment="Center"
+                                                       Foreground="{StaticResource BlackBrush}"
+                                                       FontSize="{StaticResource FontSizeSmallest}"/>
+                                        </StackPanel>
+                                    </Viewbox>
+
+                                    <!--Window Buttons-->
+                                    <StackPanel Grid.Column="2"
+                                                    Orientation="Horizontal"
+                                                    >
+                                        <Button Content="_"
+                                                    Style="{StaticResource WindowControlButton}"
+                                                    Command="{Binding MinimizeCommand}"/>
+                                        <Button Content="[ ]"
+                                                    Style="{StaticResource WindowControlButton}"
+                                                    Command="{Binding MaximizeCommand}"/>
+                                        <Button Content="X" 
+                                                    Style="{StaticResource WindowCloseButton}"
+                                                    Command="{Binding CloseCommand}"/>
+                                    </StackPanel>
+                                </Grid>
+
+                                <!--Drop Shadow-->
+                                <Border Grid.Row="1" Height="6" BorderThickness="0 0.2 0 0">
+                                    <!--Underline-->
+                                    <Border.BorderBrush>
+                                        <LinearGradientBrush StartPoint="0, 0" EndPoint="1, 0">
+                                            <GradientStop Color="{StaticResource White}" Offset="0.0" />
+                                            <GradientStop Color="{StaticResource Black}" Offset="0.5" />
+                                            <GradientStop Color="{StaticResource White}" Offset="1.0" />
+                                        </LinearGradientBrush>
+                                    </Border.BorderBrush>
+                                </Border>
+
+                                <Border Grid.Row="2"
+                                        ClipToBounds="True"
+                                        Padding="{Binding InnerContentPresenterPadding}">
+                                    <ContentPresenter Content="{TemplateBinding Content}" />
+                                </Border>
+                            </Grid>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <WindowChrome.WindowChrome >
+        <WindowChrome ResizeBorderThickness="{Binding ResizeBorderThickness}"
+                      CaptionHeight="{Binding TitleHeight}"
+                      GlassFrameThickness="0"
+                      CornerRadius="0"
+                      />
+    </WindowChrome.WindowChrome>
+    
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-
-        <local:SideMenuControl>
-            <local:PageOptionListItemControl DataContext="{Binding ApplicationViewModel.PageList,
-                                            Source={x:Static local:ViewModelLocator.Instance}}" />
-        </local:SideMenuControl>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
         
-        <local:PageHost Grid.Column="1" 
-                        CurrentPage="{Binding ApplicationViewModel.CurrentPage,
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!--Left column-->
+            <!-- Side menu control which holds áll the available pages-->
+            <local:SideMenuControl>
+                <local:PageOptionListItemControl DataContext="{Binding ApplicationViewModel.PageList,
+                                            Source={x:Static local:ViewModelLocator.Instance}}" />
+            </local:SideMenuControl>
+
+            <!--Right Column-->
+            <!--Displays the currently selected page-->
+            <Border Grid.Column="1"
+                ClipToBounds="True">
+                <local:PageHost CurrentPage="{Binding ApplicationViewModel.CurrentPage,
                                 Source={x:Static local:ViewModelLocator.Instance}}"
                         CurrentPageViewModel="{Binding ApplicationViewModel.CurrentPageViewModel,
                                             Source={x:Static local:ViewModelLocator.Instance}}"/>
-        <Border Opacity="0.3">
-            <Border Background="{StaticResource BlackBrush}" 
+            </Border>
+            
+            <!--A dimmable overlay which is dark if the app is not active-->
+            <Border Opacity="0.3"
+                    Grid.ColumnSpan="2">
+                <Border Background="{StaticResource BlackBrush}" 
                     local:AnimateFadeInProperty.Value="{Binding DimmableOverlayVisible}"/>
-        </Border>
+            </Border>
+        </Grid>
+
+        <!--Bottom Row with a section border and my initials-->
+        <Grid Grid.Row="1">
+            <Border Style="{StaticResource SectionBorder}" 
+                    VerticalAlignment="Top"/>
+            <TextBlock Text="by danderle" 
+                       FontStyle="Italic"
+                       FontWeight="Bold"
+                       TextDecorations="Underline"
+                       Padding="10 5"/>
+        </Grid>
     </Grid>
 </Window>
