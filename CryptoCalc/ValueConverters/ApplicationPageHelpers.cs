@@ -70,8 +70,8 @@ namespace CryptoCalc
                 return ApplicationPage.BouncyCastlePublicKeyEncryption;
             if (page is BouncyPkSignaturePage)
                 return ApplicationPage.BouncyCastleDigitalSignature;
-            //if (page is MsdnHashPage)
-            //    return ApplicationPage.BouncyCastleKeyExchange;
+            if (page is BouncyPkKeyExchangePage)
+                return ApplicationPage.BouncyCastleKeyExchange;
 
             //Alert developer
             Debugger.Break();
