@@ -7,39 +7,55 @@
              xmlns:core="clr-namespace:CryptoCalc.Core;assembly=CryptoCalc.Core"
              mc:Ignorable="d" >
 
-    <!--<Grid Background="{StaticResource WhiteBrush}">
-        <StackPanel>
-            <Button Content="MSDN Hash" />
-            <Button Content="MSDN Symmetric Encryption" />
-            <Button Content="MSDN Public Key Encryption" />
-            <Button Content="MSDN Digital Signature" />
-            <Button Content="MSDN Key Exchange" />
-            <Button Content="Bouncy Castle Hash" />
-            <Button Content="Bouncy Castle Symmetric Encryption" />
-            <Button Content="Bouncy Castle Public Key Encryption" />
-            <Button Content="Bouncy Castle Digital Signature" />
-            <Button Content="Bouncy Castle Key Exchange" />
-        </StackPanel>
-    </Grid>-->
+    <Border Background="{StaticResource WhiteBrush}">
+        <Border.Style>
+            <Style TargetType="Border">
+                <Style.Triggers>
+                    <EventTrigger RoutedEvent="MouseEnter">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ColorAnimation Duration="0:0:0.3" 
+                                                To="{StaticResource LightGreen}"
+                                                Storyboard.TargetProperty="Background.Color"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                    <EventTrigger RoutedEvent="MouseLeave">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ColorAnimation Duration="0:0:0.3"
+                                                To="{StaticResource White}"
+                                                Storyboard.TargetProperty="Background.Color"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </Style.Triggers>
+            </Style>
+        </Border.Style>
+        
+        <Grid d:DataContext="{x:Static core:PageOptionItemDesignModel.Instance}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
 
-    <Grid Background="{StaticResource WhiteBrush}"
-          d:DataContext="{x:Static core:PageOptionItemDesignModel.Instance}">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="35" />
+            </Grid.RowDefinitions>
+            <Border Width="45"
+                    Background="{StaticResource LightBlueBrush}"
+                    Visibility="{Binding IsChecked, Converter={local:BoolToVisibility}}"
+                    />
 
-        <Border Width="20"
-            Background="Orange"
-            Visibility="{Binding IsChecked, Converter={local:BoolToVisibility}}"/>
-
-        <RadioButton Grid.Column="1"
-                    Content="{Binding PageName}"
-                    GroupName="Pages"
-                    IsChecked="{Binding IsChecked}" 
-                    Style="{StaticResource TransparentRadioButton}"
-                    Command="{Binding PageSelectedCommand}"/>
-    </Grid>
+            <RadioButton Grid.Column="1"
+                         VerticalAlignment="Center"
+                        Content="{Binding PageName}"
+                        GroupName="Pages"
+                        IsChecked="{Binding IsChecked}" 
+                        Style="{StaticResource TransparentRadioButton}"
+                        Command="{Binding PageSelectedCommand}"/>
+        </Grid>
+    </Border>
 
 
 </UserControl>
