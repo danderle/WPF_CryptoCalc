@@ -18,12 +18,12 @@
     <system:Double x:Key="FontSizeXXLarge">30</system:Double>
 
     <Style TargetType="{x:Type Control}" x:Key="BaseStyle">
-        <Setter Property="FontFamily" Value="{StaticResource LatoThin}"/>
+        <Setter Property="FontFamily" Value="{StaticResource LatoRegular}"/>
         <Setter Property="FontSize" Value="{StaticResource FontSizeRegular}" />
     </Style>
 
     <Style TargetType="{x:Type TextBlock}" x:Key="BaseTextBlockStyle">
-        <Setter Property="FontFamily" Value="{StaticResource LatoThin}" />
+        <Setter Property="FontFamily" Value="{StaticResource LatoRegular}" />
         <Setter Property="FontSize" Value="{StaticResource FontSizeRegular}" />
     </Style>
 
@@ -33,6 +33,7 @@
     <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource BaseTextBlockStyle}" />
     <Style TargetType="{x:Type ListView}" BasedOn="{StaticResource BaseStyle}" />
 
-    <system:String x:Key="FontAwesomeEdit">&#xf044;</system:String>
+    <system:String x:Key="FontAwesomeAngleLeft">&#xf104;</system:String>
+    <system:String x:Key="FontAwesomeAngleRight">&#xf105;</system:String>
     
 </ResourceDictionary>
