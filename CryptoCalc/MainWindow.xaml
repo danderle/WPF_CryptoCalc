@@ -131,51 +131,51 @@
     </WindowChrome.WindowChrome>
     
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-        
-        <Grid Grid.Row="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
 
-            <!--Left column-->
-            <!-- Side menu control which holds áll the available pages-->
-            <local:SideMenuControl>
-                <local:PageOptionListItemControl DataContext="{Binding ApplicationViewModel.PageList,
-                                            Source={x:Static local:ViewModelLocator.Instance}}" />
-            </local:SideMenuControl>
+        <!--Left column-->
+        <Border>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
 
-            <!--Right Column-->
-            <!--Displays the currently selected page-->
-            <Border Grid.Column="1"
-                ClipToBounds="True">
-                <local:PageHost CurrentPage="{Binding ApplicationViewModel.CurrentPage,
-                                Source={x:Static local:ViewModelLocator.Instance}}"
-                        CurrentPageViewModel="{Binding ApplicationViewModel.CurrentPageViewModel,
-                                            Source={x:Static local:ViewModelLocator.Instance}}"/>
-            </Border>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <Button Grid.Column="1" 
+                        Content="{StaticResource FontAwesomeAngleLeft}"
+                        FontFamily="{StaticResource FontAwesomeSolid}"/>
+
+                <!--Page selection list-->
+                <local:PageOptionListItemControl Grid.Row="1" 
+                                                 DataContext="{Binding ApplicationViewModel.PageList,
+                                                    Source={x:Static local:ViewModelLocator.Instance}}" 
+                                                    VerticalAlignment="Center"/>
+            </Grid>
+        </Border>
+
+        <!--Right Column-->
+        <!--Displays the currently selected page-->
+        <Border Grid.Column="1"
+            ClipToBounds="True">
+            <local:PageHost CurrentPage="{Binding ApplicationViewModel.CurrentPage,
+                            Source={x:Static local:ViewModelLocator.Instance}}"
+                    CurrentPageViewModel="{Binding ApplicationViewModel.CurrentPageViewModel,
+                                        Source={x:Static local:ViewModelLocator.Instance}}"/>
+        </Border>
             
-            <!--A dimmable overlay which is dark if the app is not active-->
-            <Border Opacity="0.3"
-                    Grid.ColumnSpan="2">
-                <Border Background="{StaticResource BlackBrush}" 
-                    local:AnimateFadeInProperty.Value="{Binding DimmableOverlayVisible}"/>
-            </Border>
-        </Grid>
-
-        <!--Bottom Row with a section border and my initials-->
-        <Grid Grid.Row="1">
-            <Border Style="{StaticResource SectionBorder}" 
-                    VerticalAlignment="Top"/>
-            <TextBlock Text="by danderle" 
-                       FontStyle="Italic"
-                       FontWeight="Bold"
-                       TextDecorations="Underline"
-                       Padding="10 5"/>
-        </Grid>
+        <!--A dimmable overlay which is dark if the app is not active-->
+        <Border Opacity="0.3"
+                Grid.ColumnSpan="2">
+            <Border Background="{StaticResource BlackBrush}" 
+                local:AnimateFadeInProperty.Value="{Binding DimmableOverlayVisible}"/>
+        </Border>
     </Grid>
 </Window>
