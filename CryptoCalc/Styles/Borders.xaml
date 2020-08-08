@@ -15,4 +15,11 @@
             </Setter.Value>
         </Setter>
     </Style>
+    
+    <!--Vertical line-->
+    <Style TargetType="{x:Type Border}" x:Key="VerticalLine" >
+        <Setter Property="BorderThickness" Value="0 0 1 0" />
+        <Setter Property="BorderBrush" Value="{StaticResource BlueGrayBrush}" />
+
+    </Style>
 </ResourceDictionary>
