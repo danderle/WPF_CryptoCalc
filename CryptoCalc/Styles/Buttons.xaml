@@ -138,6 +138,73 @@
         </Setter>
     </Style>
     
+    <!--Side Menu Open/Close Button-->
+    <Style TargetType="{x:Type ToggleButton}" x:Key="SideMenuToggleButton" BasedOn="{StaticResource BaseStyle}">
+        <Setter Property="Background" Value="{StaticResource MediumBlueBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource LightWhiteBrush}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="FontSize" Value="{StaticResource FontSizeLarge}" />
+        <Setter Property="FontFamily" Value="{StaticResource FontAwesomeSolid}" />
+        <Setter Property="Padding" Value="3 8" />
+        <Setter Property="IsChecked" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ButtonBase}">
+                    <Border x:Name="border" 
+                            Background="{TemplateBinding Background}" 
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}" 
+                            SnapsToDevicePixels="true">
+                        <TextBlock Focusable="False" 
+                                   Text="{TemplateBinding Content}"
+                                   Foreground="{TemplateBinding Foreground}"
+                                   HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                   FontFamily="{TemplateBinding FontFamily}"
+                                   FontSize="{TemplateBinding FontSize}"
+                                   Margin="{TemplateBinding Padding}"
+                                   SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
+                                   VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <EventTrigger RoutedEvent="MouseEnter">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <ColorAnimation To="{StaticResource LightBlue}" 
+                                                    Duration="0:0:0.3"
+                                                    Storyboard.TargetName="border"
+                                                    Storyboard.TargetProperty="Background.Color">
+
+                                    </ColorAnimation>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                        <EventTrigger RoutedEvent="MouseLeave">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <ColorAnimation To="{StaticResource MediumBlue}" 
+                                                    Duration="0:0:0.3"
+                                                    Storyboard.TargetName="border"
+                                                    Storyboard.TargetProperty="Background.Color">
+
+                                    </ColorAnimation>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsChecked" Value="True" >
+                <Setter Property="Content" Value="{StaticResource FontAwesomeAngleLeft}" />
+            </Trigger>
+            <Trigger Property="IsChecked" Value="False" >
+                <Setter Property="Content" Value="{StaticResource FontAwesomeAngleRight}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+
     <!--Transparent Radiobutton-->
     <Style TargetType="{x:Type RadioButton}" x:Key="TransparentRadioButton" >
         <Setter Property="Background" Value="Transparent"/>
