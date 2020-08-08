@@ -23,7 +23,7 @@
         public BaseViewModel CurrentPageViewModel { get; set; }
 
         /// <summary>
-        /// 
+        /// Holds the file path which weas selected from the file path dialog
         /// </summary>
         public string FilePathFromDialogSelection { get; set; }
 
