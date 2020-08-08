@@ -7,43 +7,34 @@
              xmlns:core="clr-namespace:CryptoCalc.Core;assembly=CryptoCalc.Core"
              mc:Ignorable="d" >
 
-    <UserControl.Template>
-        <ControlTemplate TargetType="UserControl">
-            <Border >
-                <!--Side Menu Content-->
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
+    <!--Left column-->
+    <Border>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
 
-                    <!--Top Menu-->
-                    <Grid Background="Transparent"
-                      Height="60">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
 
-                        <!--Main Buttons-->
-                        <StackPanel Orientation="Horizontal">
-                            
-                           
-                        </StackPanel>
+            <ToggleButton Grid.Column="1"
+                          x:Name="VisibilityToggleButton"
+                          Style="{StaticResource SideMenuToggleButton}"/>
 
-                    </Grid>
+            <!--Page selection list-->
+            <local:PageOptionListItemControl Grid.Row="1"
+                                             Margin="0 0 3 0"
+                                            DataContext="{Binding ApplicationViewModel.PageList,
+                                            Source={x:Static local:ViewModelLocator.Instance}}" 
+                                             Visibility="{Binding ElementName=VisibilityToggleButton, Path=IsChecked, Converter={local:BoolToVisibility}}"   
+                                             VerticalAlignment="Center"/>
 
-                    <Border Grid.Row="1"
-                            Background="{StaticResource WhiteBrush}"
-                                      >
-                        <ContentPresenter Grid.Row="1"/>
-
-                    </Border>
-
-                </Grid>
-            </Border>
-        </ControlTemplate>
-    </UserControl.Template>
+            <Border Grid.RowSpan="2" 
+                    Style="{StaticResource VerticalLine}" />
+        </Grid>
+    </Border>
 
 </UserControl>
