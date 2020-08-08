@@ -136,30 +136,7 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <!--Left column-->
-        <Border>
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-
-                <Button Grid.Column="1" 
-                        Content="{StaticResource FontAwesomeAngleLeft}"
-                        FontFamily="{StaticResource FontAwesomeSolid}"/>
-
-                <!--Page selection list-->
-                <local:PageOptionListItemControl Grid.Row="1" 
-                                                 DataContext="{Binding ApplicationViewModel.PageList,
-                                                    Source={x:Static local:ViewModelLocator.Instance}}" 
-                                                    VerticalAlignment="Center"/>
-            </Grid>
-        </Border>
+        <local:SideMenuControl />
 
         <!--Right Column-->
         <!--Displays the currently selected page-->
