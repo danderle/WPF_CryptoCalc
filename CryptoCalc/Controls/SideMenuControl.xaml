@@ -10,23 +10,18 @@
     <!--Left column-->
     <Border>
         <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
             <ToggleButton Grid.Column="1"
+                          VerticalAlignment="Top"
                           x:Name="VisibilityToggleButton"
                           Style="{StaticResource SideMenuToggleButton}"/>
 
             <!--Page selection list-->
             <local:PageOptionListItemControl Grid.Row="1"
-                                             Margin="0 0 3 0"
                                             DataContext="{Binding ApplicationViewModel.PageList,
                                             Source={x:Static local:ViewModelLocator.Instance}}" 
                                              Visibility="{Binding ElementName=VisibilityToggleButton, Path=IsChecked, Converter={local:BoolToVisibility}}"   
