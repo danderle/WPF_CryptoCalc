@@ -10,23 +10,26 @@
     
     <Border Background="{StaticResource WhiteBrush}"
             d:DataContext="{x:Static core:HashItemDesignModel.Instance}">
+        
         <Grid VerticalAlignment="Center">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Name="CheckBoxColumn" Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-
+            
             <!--The checkbox for selecting a hash/checcksum algorithim-->
             <CheckBox Content="{Binding HashName}"
-                      Margin="8"
-                      Padding="5 0 0 0"
-                      HorizontalAlignment="Left"
-                      Name="CheckBoxItem"
-                      IsChecked="{Binding IsChecked}"/>
+                    Margin="8"
+                    Padding="5 0 0 0"
+                    HorizontalAlignment="Left"
+                    Name="CheckBoxItem"
+                    IsChecked="{Binding IsChecked}"/>
+            
             <!--The calculated hash value-->
-            <TextBlock Grid.Column="1"
-                       Text="{Binding HashValue}" 
-                       Padding="8"/>
+            <TextBox Grid.Column="1"
+                    Text="{Binding HashValue}" 
+                     Style="{StaticResource OutputTextBox}"
+                     VerticalAlignment="Center"/>
         </Grid>
     </Border>
 </UserControl>

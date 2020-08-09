@@ -72,25 +72,25 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Controls\AsymmetricSetupControl.xaml.cs">
+    <Compile Update="Controls\Asymmetric\AsymmetricSetupControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Controls\HashControl.xaml.cs">
+    <Compile Update="Controls\Hash\HashControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Controls\PageOptionListItemControl.xaml.cs">
+    <Compile Update="Controls\SideMenu\PageOptionListItemControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Controls\PageOptionItemControl.xaml.cs">
+    <Compile Update="Controls\SideMenu\PageOptionItemControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Controls\SideMenuControl.xaml.cs">
+    <Compile Update="Controls\SideMenu\SideMenuControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Controls\DeriveKeyControl.xaml.cs">
+    <Compile Update="Controls\Asymmetric\DeriveKeyControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Controls\SignatureInputControl.xaml.cs">
+    <Compile Update="Controls\Asymmetric\SignatureInputControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Controls\CipherOutputControl.xaml.cs">
@@ -99,16 +99,16 @@
     <Compile Update="Controls\CipherSetupControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Controls\KeyPairCreatorControl.xaml.cs">
+    <Compile Update="Controls\Asymmetric\KeyPairCreatorControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Controls\TreeViewControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Controls\HashItemListControl.xaml.cs">
+    <Compile Update="Controls\Hash\HashItemListControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Controls\HashItemControl.xaml.cs">
+    <Compile Update="Controls\Hash\HashItemControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Controls\DataFormatControl.xaml.cs">
@@ -129,25 +129,25 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Page Update="Controls\AsymmetricSetupControl.xaml">
+    <Page Update="Controls\Asymmetric\AsymmetricSetupControl.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Controls\HashControl.xaml">
+    <Page Update="Controls\Hash\HashControl.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Controls\PageOptionListItemControl.xaml">
+    <Page Update="Controls\SideMenu\PageOptionListItemControl.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Controls\PageOptionItemControl.xaml">
+    <Page Update="Controls\SideMenu\PageOptionItemControl.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Controls\SideMenuControl.xaml">
+    <Page Update="Controls\SideMenu\SideMenuControl.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Controls\DeriveKeyControl.xaml">
+    <Page Update="Controls\Asymmetric\DeriveKeyControl.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Controls\SignatureInputControl.xaml">
+    <Page Update="Controls\Asymmetric\SignatureInputControl.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Controls\CipherOutputControl.xaml">
@@ -156,16 +156,16 @@
     <Page Update="Controls\CipherSetupControl.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Controls\KeyPairCreatorControl.xaml">
+    <Page Update="Controls\Asymmetric\KeyPairCreatorControl.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Controls\TreeViewControl.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Controls\HashItemListControl.xaml">
+    <Page Update="Controls\Hash\HashItemListControl.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Controls\HashItemControl.xaml">
+    <Page Update="Controls\Hash\HashItemControl.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Controls\DataFormatControl.xaml">
@@ -210,6 +210,10 @@
     <Page Update="Styles\Texts.xaml">
       <SubType>Designer</SubType>
     </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controls\Symmetric\" />
   </ItemGroup>
 
 </Project>
