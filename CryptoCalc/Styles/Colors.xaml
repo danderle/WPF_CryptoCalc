@@ -30,6 +30,9 @@
     <Color x:Key="Red">#ff0000</Color>
     <SolidColorBrush x:Key="RedBrush" Color="{StaticResource Red}" />
 
+    <Color x:Key="LightRed">#FF6A6A</Color>
+    <SolidColorBrush x:Key="LightRedBrush" Color="{StaticResource LightRed}" />
+    
     <Color x:Key="LightGray">#efefef</Color>
     <SolidColorBrush x:Key="LightGrayBrush" Color="{StaticResource LightGray}" />
 
@@ -56,9 +59,15 @@
     <SolidColorBrush x:Key="LightPurpleBrush" Color="{StaticResource LightPurple}" />
 
     <LinearGradientBrush x:Key="LightGreenMiddleGradient" EndPoint="0,1" StartPoint="0,0">
-        <GradientStop Color="{StaticResource White}" Offset="0.0"/>
-        <GradientStop Color="{StaticResource LightGreen}" Offset="0.5"/>
-        <GradientStop Color="{StaticResource White}" Offset="1.0"/>
+        <GradientStop Color="{StaticResource LightGreen}" Offset="0.0"/>
+        <GradientStop Color="{StaticResource White}" Offset="0.5"/>
+        <GradientStop Color="{StaticResource LightGreen}" Offset="1.0"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="LightGrayMiddleGradient" EndPoint="0,1" StartPoint="0,0">
+        <GradientStop Color="{StaticResource RegularGray}" Offset="0.0"/>
+        <GradientStop Color="{StaticResource White}" Offset="0.5"/>
+        <GradientStop Color="{StaticResource RegularGray}" Offset="1.0"/>
     </LinearGradientBrush>
 
 </ResourceDictionary>
