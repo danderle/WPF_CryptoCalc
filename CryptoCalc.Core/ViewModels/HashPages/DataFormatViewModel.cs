@@ -80,7 +80,7 @@ namespace CryptoCalc.Core
                 if (value != hmacKey)
                 {
                     hmacKey = value;
-                    HmacKeyIsCorrectlyFormatted = CheckIfCorrectlyFormatted((KeyFormatSelected + 1), hmacKey);
+                    HmacKeyIsCorrectlyFormatted = CheckIfCorrectlyFormatted((KeyFormatSelected), hmacKey);
                 }
             }
         }
