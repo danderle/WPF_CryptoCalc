@@ -9,11 +9,15 @@
 
     <Grid Background="{StaticResource WhiteBrush}">
         <Grid.RowDefinitions>
+            <!--The data format control-->
             <RowDefinition Height="Auto" />
+            <!--The hash options-->
             <RowDefinition Height="*" />
+            <!--The calculate button-->
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
+        <!--Border gradient brush-->
         <Border Style="{StaticResource SectionBorder}" 
                 VerticalAlignment="Bottom"
                 Grid.Row="0">
@@ -25,6 +29,7 @@
                                      />
         </Border>
 
+        <!--Border gradient brush-->
         <Border Grid.Row="1"
                 Style="{StaticResource SectionBorder}"
                 Padding="0 8">
@@ -35,12 +40,12 @@
                                        local:HmacSelectedProperty.Value="{Binding ElementName=DataFormatOptions, Path=HmacSelected}"/>
         </Border>
 
-        
-            <Button Content="Calculate"
-                    Command="{Binding CalculateCommand}"
-                    IsEnabled="{Binding DataFormatSetup.DataIsReadyForProcessing}"
-                    HorizontalAlignment="Center"
-                    Grid.Row="2"/>
+        <!--Calculate button-->
+        <Button Content="Calculate"
+                Command="{Binding CalculateCommand}"
+                IsEnabled="{Binding DataFormatSetup.DataIsReadyForProcessing}"
+                HorizontalAlignment="Center"
+                Grid.Row="2"/>
 
     </Grid>
 </UserControl>

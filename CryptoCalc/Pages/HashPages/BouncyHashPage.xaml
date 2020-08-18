@@ -10,14 +10,17 @@
 
     <Grid Background="{StaticResource WhiteBrush}">
         <Grid.RowDefinitions>
+            <!--Header text-->
             <RowDefinition Height="Auto" />
+            <!--Hash control-->
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
+        <!--Header text-->
         <TextBlock Text="Bouncy Castle Hash Algorithims" 
-                   HorizontalAlignment="Center"
-                   FontWeight="Bold"/>
+                   Style="{StaticResource HeaderText}"/>
 
+        <!--Hsh control-->
         <local:HashControl Grid.Row="1"
                            DataContext="{Binding}" />
     </Grid>
