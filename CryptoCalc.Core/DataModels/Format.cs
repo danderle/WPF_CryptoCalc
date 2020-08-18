@@ -6,18 +6,19 @@
     public enum Format
     {
         /// <summary>
-        /// Hash a file
-        /// </summary>
-        File = 0,
-
-        /// <summary>
         /// Hash a string
         /// </summary>
-        TextString,
+        TextString = 0,
 
         /// <summary>
         /// Hash a hex string
         /// </summary>
         HexString,
+
+        /// <summary>
+        /// Hash a file
+        /// </summary>
+        File,
+
     }
 }

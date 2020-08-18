@@ -93,10 +93,10 @@
     <Compile Update="Controls\Asymmetric\SignatureInputControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Controls\CipherOutputControl.xaml.cs">
+    <Compile Update="Controls\Symmetric\CipherOutputControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Controls\CipherSetupControl.xaml.cs">
+    <Compile Update="Controls\Symmetric\CipherSetupControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Controls\Asymmetric\KeyPairCreatorControl.xaml.cs">
@@ -150,10 +150,10 @@
     <Page Update="Controls\Asymmetric\SignatureInputControl.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Controls\CipherOutputControl.xaml">
+    <Page Update="Controls\Symmetric\CipherOutputControl.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Controls\CipherSetupControl.xaml">
+    <Page Update="Controls\Symmetric\CipherSetupControl.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Controls\Asymmetric\KeyPairCreatorControl.xaml">
@@ -213,10 +213,6 @@
     <Page Update="Styles\Texts.xaml">
       <SubType>Designer</SubType>
     </Page>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controls\Symmetric\" />
   </ItemGroup>
 
 </Project>
