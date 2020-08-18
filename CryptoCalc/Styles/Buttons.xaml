@@ -82,20 +82,21 @@
 
         <Setter Property="Background" Value="{StaticResource MediumBlueBrush}" />
         <Setter Property="Foreground" Value="{StaticResource LightWhiteBrush}" />
-        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="BorderThickness" Value="1" />
         <Setter Property="FontSize" Value="{StaticResource FontSizeLarge}" />
         <Setter Property="FontFamily" Value="{StaticResource LatoRegular}" />
-        <Setter Property="Margin" Value="0 10" />
-        <Setter Property="Padding" Value="50 10" />
+        <Setter Property="Margin" Value="8" />
+        <Setter Property="Padding" Value="12 5" />
+        <Setter Property="BorderBrush" Value="{StaticResource LightBlueBrush}" />
 
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ButtonBase}">
                     <Border x:Name="border" 
-                            CornerRadius="10"
+                            CornerRadius="6"
                             Background="{TemplateBinding Background}" 
                             BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}" 
+                            BorderThickness="{TemplateBinding BorderThickness}"
                             SnapsToDevicePixels="true">
                         <TextBlock Focusable="False" 
                                    Text="{TemplateBinding Content}"
@@ -114,9 +115,11 @@
                                     <ColorAnimation To="{StaticResource LightBlue}" 
                                                     Duration="0:0:0.3"
                                                     Storyboard.TargetName="border"
-                                                    Storyboard.TargetProperty="Background.Color">
-
-                                    </ColorAnimation>
+                                                    Storyboard.TargetProperty="Background.Color"/>
+                                    <ColorAnimation To="{StaticResource MediumBlue}" 
+                                                    Duration="0:0:0.3"
+                                                    Storyboard.TargetName="border"
+                                                    Storyboard.TargetProperty="BorderBrush.Color"/>
                                 </Storyboard>
                             </BeginStoryboard>
                         </EventTrigger>
@@ -126,9 +129,11 @@
                                     <ColorAnimation To="{StaticResource MediumBlue}" 
                                                     Duration="0:0:0.3"
                                                     Storyboard.TargetName="border"
-                                                    Storyboard.TargetProperty="Background.Color">
-
-                                    </ColorAnimation>
+                                                    Storyboard.TargetProperty="Background.Color"/>
+                                    <ColorAnimation To="{StaticResource LightBlue}" 
+                                                    Duration="0:0:0.3"
+                                                    Storyboard.TargetName="border"
+                                                    Storyboard.TargetProperty="BorderBrush.Color"/>
                                 </Storyboard>
                             </BeginStoryboard>
                         </EventTrigger>
@@ -136,6 +141,13 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Background" Value="{StaticResource BlueGrayBrush}" />
+                <Setter Property="Foreground" Value="{StaticResource BlackBrush}" />
+                <Setter Property="BorderBrush" Value="{StaticResource BlackBrush}" />
+            </Trigger>
+        </Style.Triggers>
     </Style>
     
     <!--Side Menu Open/Close Button-->
