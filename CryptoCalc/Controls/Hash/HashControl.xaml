@@ -35,38 +35,12 @@
                                        local:HmacSelectedProperty.Value="{Binding ElementName=DataFormatOptions, Path=HmacSelected}"/>
         </Border>
 
-        <Grid Grid.Row="2"
-              Margin="0 8">
-            <Grid.ColumnDefinitions>
-                <!--TradeMark-->
-                <ColumnDefinition Width="Auto" />
-                <!--Buttons for calculating, close, and help-->
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-
-            <TextBlock Text="by danderle" 
-                       FontStyle="Italic"
-                       FontWeight="Bold"
-                       TextDecorations="Underline"
-                       Padding="10 5"/>
-
-            <StackPanel Grid.Column="1"
-                        Orientation="Horizontal"
-                        HorizontalAlignment="Right">
-                <Button Content="Calculate"
-                        Command="{Binding CalculateCommand}"
-                        Margin="5 0"
-                        Padding="3"/>
-                <Button Content="Close" 
-                        Command="{Binding CloseCommand}"
-                        Margin="5 0"
-                        Padding="3"/>
-                <Button Content="Help" 
-                        Command="{Binding HelpCommand}"
-                        Margin="5 0 10 0"
-                        Padding="3"/>
-            </StackPanel>
-        </Grid>
+        
+            <Button Content="Calculate"
+                    Command="{Binding CalculateCommand}"
+                    IsEnabled="{Binding DataFormatSetup.DataIsReadyForProcessing}"
+                    HorizontalAlignment="Center"
+                    Grid.Row="2"/>
 
     </Grid>
 </UserControl>
