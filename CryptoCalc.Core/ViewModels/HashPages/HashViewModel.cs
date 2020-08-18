@@ -1,6 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Text;
+﻿using System.Diagnostics;
 using System.Windows.Input;
 
 namespace CryptoCalc.Core
@@ -17,9 +15,6 @@ namespace CryptoCalc.Core
         #endregion
 
         #region Properties
-
-
-        public string HashPageHeader { get; set; }
 
         /// <summary>
         /// The view model to setup the hashing process
@@ -64,21 +59,17 @@ namespace CryptoCalc.Core
         }
 
         
-
+        /// <summary>
+        /// Overloaded constructor
+        /// </summary>
+        /// <param name="api">The api to use</param>
         public HashViewModel(CryptographyApi api)
         {
             //Initialize the commands
             InitializeCommands();
             crpytoApi = api;
-            switch(crpytoApi)
-            {
-                case CryptographyApi.MSDN:
-                    HashPageHeader = "MSDN Hash Algorithims";
-                    break;
-                case CryptographyApi.BouncyCastle:
-                    HashPageHeader = "Bouncy Castle Hash Algorithims";
-                    break;
-            }
+
+            //Create the hash list options according to the selected api
             HashList = new HashItemListViewModel(crpytoApi);
         }
 
@@ -91,6 +82,7 @@ namespace CryptoCalc.Core
         /// </summary>
         private async void HelpAsync()
         {
+            //TODO Help dialog window
             await Ioc.UI.ShowMessage(new MessageBoxDialogViewModel
             {
                 Message = "Hello this is a pop up message",
@@ -135,11 +127,11 @@ namespace CryptoCalc.Core
         #region Private Methods
 
         /// <summary>
-        /// 
+        /// transforms the data to bytes according to the selected format option
         /// </summary>
-        /// <param name="format"></param>
-        /// <param name="data"></param>
-        /// <returns></returns>
+        /// <param name="format">The format option to use for byte extraction</param>
+        /// <param name="data">The data to extract the bytes from</param>
+        /// <returns>the extracted bytes</returns>
         private byte[] GetBytesAccordingToFormatSelected(Format format, string data)
         {
             byte[] bytes = null;
@@ -165,6 +157,9 @@ namespace CryptoCalc.Core
 
         #region MyRegion
 
+        /// <summary>
+        /// Initializes all the commands
+        /// </summary>
         private void InitializeCommands()
         {
             CalculateCommand = new RelayCommand(Calculate);

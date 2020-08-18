@@ -25,7 +25,7 @@
             <ComboBox ItemsSource="{Binding DataFormatOptions}"
                       SelectedIndex="{Binding DataFormatSelected, Converter={local:DataHashFormatEnumToInt}}"
                       local:ComboBoxElementsMaxWidthProperty.Value="True"
-                       local:SelectionChangedProperty.Value="{Binding DataFormatSelectionChangedCommand}"
+                      local:SelectionChangedProperty.Value="{Binding DataFormatSelectionChangedCommand}"
                       />
 
             <!--The HMAC option-->
