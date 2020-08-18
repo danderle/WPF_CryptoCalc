@@ -180,13 +180,13 @@
     <Page Update="Pages\HashPages\BouncyHashPage.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Pages\BouncyPkKeyExchangePage.xaml">
+    <Page Update="Pages\AsymmetricPages\BouncyPkKeyExchangePage.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Pages\MsdnPkKeyExchangePage.xaml">
+    <Page Update="Pages\AsymmetricPages\MsdnPkKeyExchangePage.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Pages\BouncyPkSignaturePage.xaml">
+    <Page Update="Pages\AsymmetricPages\BouncyPkSignaturePage.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Pages\SymmetricPages\BouncySymmetricPage.xaml">
