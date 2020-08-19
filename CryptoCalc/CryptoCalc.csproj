@@ -111,7 +111,7 @@
     <Compile Update="Controls\Hash\HashItemControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Controls\DataFormatControl.xaml.cs">
+    <Compile Update="Controls\Hash\DataFormatControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Pages\AsymmetricCipherPage.xaml.cs">
@@ -168,7 +168,7 @@
     <Page Update="Controls\Hash\HashItemControl.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Controls\DataFormatControl.xaml">
+    <Page Update="Controls\Hash\DataFormatControl.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="DialogWindow.xaml">

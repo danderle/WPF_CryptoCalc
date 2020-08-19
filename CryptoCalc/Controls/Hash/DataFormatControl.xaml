@@ -22,11 +22,11 @@
         <StackPanel Margin="5">
             <!--ComboBox of what type of format to hash-->
             <TextBlock Text="Data Format:" />
-            <ComboBox ItemsSource="{Binding DataFormatOptions}"
-                      SelectedIndex="{Binding DataFormatSelected, Converter={local:DataHashFormatEnumToInt}}"
+            <ComboBox ItemsSource="{Binding DataSetup.DataFormatOptions}"
+                      SelectedIndex="{Binding DataSetup.DataFormatSelected, Converter={local:DataHashFormatEnumToInt}}"
+                      local:SelectionChangedProperty.Value="{Binding DataSetup.DataFormatSelectionChangedCommand}"
                       local:ComboBoxElementsMaxWidthProperty.Value="True"
-                      local:SelectionChangedProperty.Value="{Binding DataFormatSelectionChangedCommand}"
-                      />
+                      HorizontalAlignment="Right"/>
 
             <!--The HMAC option-->
             <CheckBox Content="HMAC"
@@ -47,8 +47,8 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <TextBox Text="{Binding Data, UpdateSourceTrigger=PropertyChanged}"
-                         Background="{Binding DataIsCorrectlyFormatted, Converter={local:BoolToBackground}}"
+                <TextBox Text="{Binding DataSetup.Data, UpdateSourceTrigger=PropertyChanged}"
+                         Background="{Binding DataSetup.DataIsCorrectlyFormatted, Converter={local:BoolToBackground}}"
                          local:DragDropProperty.Value="True"
                          Grid.ColumnSpan="2"
                          VerticalContentAlignment="Center"
@@ -57,9 +57,9 @@
                         Margin="5,0,0,0"
                         Padding="5 2"
                         Content="..."
-                        Command="{Binding OpenFolderDialogCommand}" 
+                        Command="{Binding DataSetup.OpenFolderDialogCommand}" 
                         Height="30"
-                        Visibility="{Binding DataFormatSelected, Converter={local:DataFormatsToVisibility}, ConverterParameter=File}"/>
+                        Visibility="{Binding DataSetup.DataFormatSelected, Converter={local:DataFormatsToVisibility}, ConverterParameter=File}"/>
             </Grid>
             <Grid Margin="0 5">
                 <Grid.ColumnDefinitions>
