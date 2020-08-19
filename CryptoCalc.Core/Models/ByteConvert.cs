@@ -77,6 +77,16 @@ namespace CryptoCalc.Core
             return Encoding.ASCII.GetString(bytes);
         }
 
+        /// <summary>
+        /// Verifies if only hex characters are used in given text
+        /// </summary>
+        /// <param name="text">The text to check</param>
+        /// <returns>True if all chars are hex values</returns>
+        public static bool OnlyHexInString(string text)
+        {
+            // For C-style hex notation (0xFF) you can use @"\A\b(0[xX])?[0-9a-fA-F]+\b\Z"
+            return System.Text.RegularExpressions.Regex.IsMatch(text, @"\A\b[0-9a-fA-F]+\b\Z");
+        }
         #endregion
     }
 }
