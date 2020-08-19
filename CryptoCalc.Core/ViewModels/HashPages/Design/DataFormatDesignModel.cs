@@ -20,17 +20,13 @@ namespace CryptoCalc.Core
         /// </summary>
         public DataFormatDesignModel()
         {
+            DataSetup.Data = "Data to be hashed";
+            DataSetup.DataFormatSelected = 0;
             HmacChecked = false;
-            Data = "Data to be hashed";
             Key = "some kind of hash key";
 
             KeyFormat.Add(Format.TextString.ToString());
             KeyFormat.Add(Format.HexString.ToString());
-            DataFormatOptions.Add(Format.File.ToString());
-            DataFormatOptions.Add(Format.TextString.ToString());
-            DataFormatOptions.Add(Format.HexString.ToString());
-
-            DataFormatSelected = 0;
             KeyFormatSelected = Format.TextString;
         } 
 

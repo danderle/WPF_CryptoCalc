@@ -6,71 +6,95 @@
              xmlns:local="clr-namespace:CryptoCalc"
              xmlns:core="clr-namespace:CryptoCalc.Core;assembly=CryptoCalc.Core"
              mc:Ignorable="d" 
-             d:DesignHeight="150" d:DesignWidth="400">
+             d:DesignWidth="500">
 
     <Grid Background="{StaticResource WhiteBrush}"
-          >
+          d:DataContext="{x:Static core:SymmetricDesignModel.Instance}">
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="4*" />
         </Grid.ColumnDefinitions>
         
-        <!--ComboBox of what type of format to hash-->
-        <StackPanel Margin="0 0 5 0">
-            <TextBlock Text="Data Format:" />
-            <ComboBox ItemsSource="{Binding DataFormatOptions}"
-                      local:ComboBoxElementsMaxWidthProperty.Value="True"
-                      SelectedIndex="{Binding DataFormatSelected, Converter={local:DataHashFormatEnumToInt}}"/>
+        <!--ComboBoxes-->
+        <StackPanel Margin="5">
             
-            <TextBlock Text="Algorithim"/>
+            <!--Data Format ComboBox-->
+            <TextBlock Text="Data Format:" />
+            <ComboBox ItemsSource="{Binding DataSetup.DataFormatOptions}"
+                      SelectedIndex="{Binding DataSetup.DataFormatSelected, Converter={local:DataHashFormatEnumToInt}}"
+                      local:SelectionChangedProperty.Value="{Binding DataSetup.DataFormatSelectionChangedCommand}"
+                      local:ComboBoxElementsMaxWidthProperty.Value="True"
+                      HorizontalAlignment="Right"/>
+            
+            <!--Algorithims ComboBox-->
+            <TextBlock Text="Algorithim"
+                       Margin="0 8 0 0"/>
             <ComboBox ItemsSource="{Binding Algorithims}"
                       SelectedIndex ="{Binding SelectedAlgorithim}"
                       local:ComboBoxElementsMaxWidthProperty.Value="True"
                       local:SelectionChangedProperty.Value="{Binding ChangedAlgorithimCommand}" 
-                      />
-            <TextBlock Text="Key Size" />
+                      HorizontalAlignment="Right"/>
+            
+            <!--Key size comboBox-->
+            <TextBlock Text="Key Size (bits)" 
+                       Margin="0 8 0 0"/>
             <ComboBox ItemsSource="{Binding KeySizes}"
                       SelectedIndex="{Binding KeySizeIndex}"
                       local:ComboBoxElementsMaxWidthProperty.Value="True"
-                      HorizontalAlignment="Stretch"/>
+                      HorizontalAlignment="Right"/>
         </StackPanel>
         
         <!--Cipher algorithim option list-->
-        <StackPanel Grid.Column="1">
+        <StackPanel Grid.Column="1"
+                    Margin="5">
             <!--Data to be hashed-->
             <TextBlock Text="Data:" />
             <Grid >
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="30*" />
-                    <ColumnDefinition Width="233*"/>
+                    <!--Data text box-->
+                    <ColumnDefinition Width="*"/>
+                    <!--File dialog window pop up button-->
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <TextBox Text="{Binding Data, UpdateSourceTrigger=PropertyChanged}"
+                
+                <!--Data text box-->
+                <TextBox Text="{Binding DataSetup.Data, UpdateSourceTrigger=PropertyChanged}"
+                         Background="{Binding DataSetup.DataIsCorrectlyFormatted, Converter={local:BoolToBackground}}"
                          local:DragDropProperty.Value="True"
-                         VerticalContentAlignment="Center"
-                         Grid.ColumnSpan="2"/>
-                <Button Grid.Column="2"
+                         VerticalContentAlignment="Center"/>
+                
+                <!--File broswer dialog pop up button-->
+                <Button Command="{Binding DataSetup.OpenFolderDialogCommand}"
+                        Visibility="{Binding DataSetup.DataFormatSelected, Converter={local:DataFormatsToVisibility}, ConverterParameter=File}"
+                        Grid.Column="1"
                         Margin="5,0,0,0"
                         Padding="5 2"
-                        Content="..." 
-                        Command="{Binding OpenFolderDialogCommand}"/>
+                        Content="..." />
             </Grid>
             
             <StackPanel>
-                <!--Secret Key-->
-                <TextBlock Text="Secret key" />
-                <TextBox Text="{Binding SecretKey, UpdateSourceTrigger=PropertyChanged}" />
-                <TextBlock>
+                <!--Secret Key text box-->
+                <TextBlock Text="Secret key" 
+                           Margin="0 8 0 0"/>
+                <TextBox Text="{Binding SecretKey, UpdateSourceTrigger=PropertyChanged}" 
+                         Background="{Binding SecretKeyAcceptable, Converter={local:BoolToBackground}}"/>
+                
+                <!--Initial value text box-->
+                <TextBlock Margin="0 8 0 0">
                     <Run Text="Initial value" />
                     <Run Text="(" /><Run Text="{Binding IvSize}" />
                     <Run Text=" bits)" />
                 </TextBlock>
                     <TextBox Text="{Binding IV, UpdateSourceTrigger=PropertyChanged}" 
-                                IsEnabled="{Binding HasIv}"
-                                Background="{Binding HasIv, Converter={local:HasIvToColor}}"/>
+                            IsEnabled="{Binding HasIv}"
+                            Background="{Binding IvAcceptable, Converter={local:BoolToBackground}}"/>
             </StackPanel>
-            <Button Content="Generate key" 
-                    Command="{Binding GenerateKeyCommand}"/>
+            
+            <!--Random key generation button-->
+            <Button Content="Generate random key" 
+                    Command="{Binding GenerateKeyCommand}"
+                    HorizontalAlignment="Right"
+                    Margin="0 8"/>
         </StackPanel>
         
     </Grid>

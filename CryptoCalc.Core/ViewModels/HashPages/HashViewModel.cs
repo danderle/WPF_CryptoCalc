@@ -110,7 +110,7 @@ namespace CryptoCalc.Core
                 key = GetBytesAccordingToFormatSelected(DataFormatSetup.KeyFormatSelected, DataFormatSetup.Key);
             }
 
-            var data = GetBytesAccordingToFormatSelected(DataFormatSetup.DataFormatSelected, DataFormatSetup.Data);
+            var data = GetBytesAccordingToFormatSelected(DataFormatSetup.DataSetup.DataFormatSelected, DataFormatSetup.DataSetup.Data);
 
             //Check which hash options are checked and then calculate
             foreach(var item in HashList.Items)
@@ -135,7 +135,7 @@ namespace CryptoCalc.Core
         private byte[] GetBytesAccordingToFormatSelected(Format format, string data)
         {
             byte[] bytes = null;
-            switch (DataFormatSetup.DataFormatSelected)
+            switch (DataFormatSetup.DataSetup.DataFormatSelected)
             {
                 case Format.File:
                     bytes = ByteConvert.FileToBytes(data);
