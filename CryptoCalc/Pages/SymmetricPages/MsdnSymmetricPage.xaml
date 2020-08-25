@@ -8,16 +8,28 @@
                 mc:Ignorable="d">
 
     <Border Background="{StaticResource WhiteBrush}"
-            Padding="5">
-
-        <StackPanel>
-            <TextBlock Text="MSDN Symmetric Ciphers"
-                       FontWeight="Bold"
-                       HorizontalAlignment="Center" />
-            <local:CipherSetupControl DataContext="{Binding}"/>
-            <local:CipherOutputControl Grid.Row="1" 
-                                      DataContext="{Binding}" />
-        </StackPanel>
+            d:DataContext="{x:Static core:SymmetricDesignModel.Instance}"
+            Padding="0 0 5 0">
+        <Grid>
+            <Grid.RowDefinitions>
+                <!--setup control-->
+                <RowDefinition Height="Auto" />
+                <!--Output control-->
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
             
+            <StackPanel>
+                <!--Page title-->
+                <TextBlock Text="MSDN Symmetric Ciphers"
+                           Style="{StaticResource HeaderText}"/>
+                <!--setup control-->
+                <local:CipherSetupControl DataContext="{Binding}"/>
+                <Border Style="{StaticResource SectionBorder}" 
+                        Margin="0 0 0 5"/>
+            </StackPanel>
+            <!--Output control-->
+            <local:CipherOutputControl Grid.Row="1" 
+                                       DataContext="{Binding}"/>
+        </Grid>
     </Border>
 </local:BasePage>

@@ -3,7 +3,7 @@
 namespace CryptoCalc
 {
     /// <summary>
-    /// Interaction logic for MsdnSymmetricPage.xaml
+    /// Interaction logic for BouncySymmetricPage.xaml
     /// </summary>
     public partial class BouncySymmetricPage : BasePage<SymmetricViewModel>
     {
