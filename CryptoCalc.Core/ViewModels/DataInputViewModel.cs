@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Windows.Input;
 
 namespace CryptoCalc.Core.Models
@@ -30,10 +29,11 @@ namespace CryptoCalc.Core.Models
             get => data;
             set
             {
-                if (value != data)
+                if(data != value)
                 {
                     data = value;
-                    DataIsCorrectlyFormatted = CheckIfCorrectlyFormatted(DataFormatSelected, data);
+                    DataIsCorrectlyFormatted = CheckIfCorrectlyFormatted(DataFormatSelected, Data);
+                    OnDataChanged();
                 }
             }
         }
@@ -44,9 +44,22 @@ namespace CryptoCalc.Core.Models
         public Format DataFormatSelected { get; set; } = Format.TextString;
 
         /// <summary>
+        /// A delegate event handler function for the ny data changes
+        /// </summary>
+        /// <param name="obj">the object from which event is triggered</param>
+        /// <param name="args">The event arguments</param>
+        public delegate void DataChangedEventHandler(object obj, EventArgs args);
+
+        /// <summary>
+        /// The data changed event
+        /// </summary>
+        public event DataChangedEventHandler DataChanged;
+
+        /// <summary>
         /// Holds the data format options
         /// </summary>
-        public List<string> DataFormatOptions { get; set; } = new List<string>(); 
+        public List<string> DataFormatOptions { get; set; } = new List<string>();
+
 
         #endregion
 
@@ -57,15 +70,13 @@ namespace CryptoCalc.Core.Models
         /// </summary>
         public ICommand OpenFolderDialogCommand { get; set; }
 
-        /// <summary>
-        /// The command to execute when the data format is changed
-        /// </summary>
-        public ICommand DataFormatSelectionChangedCommand { get; set; }
 
         #endregion
 
+        #region Constructor
+
         /// <summary>
-        /// 
+        /// Default constructor
         /// </summary>
         public DataInputViewModel()
         {
@@ -73,10 +84,11 @@ namespace CryptoCalc.Core.Models
             DataFormatOptions = Enum.GetValues(typeof(Format)).Cast<Format>().Select(t => t.ToString()).ToList();
 
             OpenFolderDialogCommand = new RelayCommand(OpenFolderDialogAsync);
-            DataFormatSelectionChangedCommand = new RelayCommand(DataFormatSelectionChanged);
 
         }
 
+        #endregion
+        
         #region Command Methods
 
         /// <summary>
@@ -89,15 +101,6 @@ namespace CryptoCalc.Core.Models
 
             //Saves the selected path
             Data = Ioc.Application.FilePathFromDialogSelection;
-        }
-
-        /// <summary>
-        /// The command method to verify that the new data format selected
-        /// is correctly implemented on current key string
-        /// </summary>
-        private void DataFormatSelectionChanged()
-        {
-            DataIsCorrectlyFormatted = CheckIfCorrectlyFormatted(DataFormatSelected, Data);
         }
 
         #endregion
@@ -122,6 +125,16 @@ namespace CryptoCalc.Core.Models
                     return text.Length > 0;
             }
         }
+
+        /// <summary>
+        /// The function to be called when the <see cref="Data"/> gets changed
+        /// </summary>
+        protected virtual void OnDataChanged()
+        {
+            DataChanged?.Invoke(this, EventArgs.Empty);
+        }
+
         #endregion
     }
+
 }
