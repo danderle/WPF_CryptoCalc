@@ -30,17 +30,22 @@ namespace CryptoCalc.Core
         /// </summary>
         public SymmetricDesignModel()
         {
+            SelectedCipherApi = new MsdnSymmetricCipher();
+            Algorithims = SelectedCipherApi.GetAlgorthims();
+            KeySizes = SelectedCipherApi.GetKeySizes(SelectedAlgorithim);
+            SelectedKeySize = KeySizes[0];
+            IvSize = SelectedCipherApi.GetIvSize(SelectedAlgorithim);
+
             DataSetup.Data = "Some data";
             DataSetup.DataFormatOptions = Enum.GetValues(typeof(Format)).Cast<Format>().Select(t => t.ToString()).ToList();
-            DataSetup.DataIsCorrectlyFormatted = true;
-            SecretKey = "ff33aaacdd";
-            IV = "FFFFFFFFFFF";
-            IvSize = 128;
-            Algorithims = Enum.GetValues(typeof(SymmetricMsdnCipher)).Cast<SymmetricMsdnCipher>().Select(t => t.ToString()).ToList();
-            KeySizes = new ObservableCollection<int> { 56, 55, 23 };
-            SecretKeyAcceptable = false;
-            IvSize = 50;
-            IvAcceptable = false;
+            DataSetup.DataFormatSelected = Format.TextString;
+            SecretKey = "FFFFFFFFFFFF";
+            IV = "FFFFFFFFFFFF";
+            IvSize = 6*8;
+            KeySizes = new ObservableCollection<int> { 6*8, 55, 23 };
+            SelectedKeySize = 6*8;
+            IvSize = 6*8;
+
         }
 
         #endregion
