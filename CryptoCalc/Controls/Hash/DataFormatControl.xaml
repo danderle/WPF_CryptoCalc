@@ -24,7 +24,6 @@
             <TextBlock Text="Data Format:" />
             <ComboBox ItemsSource="{Binding DataSetup.DataFormatOptions}"
                       SelectedIndex="{Binding DataSetup.DataFormatSelected, Converter={local:DataHashFormatEnumToInt}}"
-                      local:SelectionChangedProperty.Value="{Binding DataSetup.DataFormatSelectionChangedCommand}"
                       local:ComboBoxElementsMaxWidthProperty.Value="True"
                       HorizontalAlignment="Right"/>
 
