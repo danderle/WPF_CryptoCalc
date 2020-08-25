@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Windows.Input;
 
 namespace CryptoCalc.Core
@@ -14,6 +13,16 @@ namespace CryptoCalc.Core
     /// </summary>
     public class SymmetricViewModel : BaseViewModel
     {
+        #region Private Fields
+
+        private bool secretKeyLengthIsAcceptable => (SecretKey.Length % 2 == 0) && (SecretKey.Length / 2 * 8 == SelectedKeySize);
+        private bool secretKeyIsOnlyHex => ByteConvert.OnlyHexInString(SecretKey);
+
+        private bool ivLengthIsAcceptable => (IV.Length % 2 == 0) && (IV.Length / 2 * 8 == IvSize);
+        private bool ivIsOnlyHex => ByteConvert.OnlyHexInString(IV);
+
+        #endregion
+
         #region Public Properties
 
         /// <summary>
@@ -21,11 +30,56 @@ namespace CryptoCalc.Core
         /// </summary>
         public bool HasIv => IvSize > 0;
 
+        /// <summary>
+        /// Flag to let us know if the secret key is in an acceptable format
+        /// </summary>
+        public bool SecretKeyAcceptable => secretKeyLengthIsAcceptable && secretKeyIsOnlyHex;
 
-        public bool SecretKeyAcceptable { get; set; }
+        /// <summary>
+        /// Flag to let us know if the iv is in an acceptable format
+        /// </summary>
+        public bool IvAcceptable => ivLengthIsAcceptable && ivIsOnlyHex;
 
-        public bool IvAcceptable { get; set; }
+        /// <summary>
+        /// Flag for letting us know if the Data is correctly entered and ready for en-/decrypting
+        /// </summary>
+        public bool DataCorrect { get; set; }
 
+        /// <summary>
+        /// Flag letting us know if we are ready for encryption
+        /// </summary>
+        public bool ReadyForEncryption
+        {
+            get
+            {
+                return DataCorrect && SecretKeyAcceptable && IvAcceptable;
+            }
+        }
+
+        /// <summary>
+        /// Flag letting us know if we are ready for decryption
+        /// </summary>
+        public bool ReadyForDecryption
+        {
+            get
+            {
+                string encrypted = string.Empty;
+                switch(DataSetup.DataFormatSelected)
+                {
+                    case Format.File:
+                        encrypted = EncryptedFilePath;
+                        break;
+                    default:
+                        encrypted = EncryptedText;
+                        break;
+                }
+                if(encrypted.Length > 0 && (encrypted.Length / 2 * 8) % SelectedKeySize == 0)
+                {
+                    return DataSetup.DataIsCorrectlyFormatted;
+                }
+                return false;
+            }
+        }
         /// <summary>
         /// The secret key
         /// </summary>
@@ -47,6 +101,11 @@ namespace CryptoCalc.Core
         public string EncryptedText { get; set; }
 
         /// <summary>
+        /// The encrypted hex
+        /// </summary>
+        public string EncryptedHex { get; set; }
+
+        /// <summary>
         /// The decrypted file path
         /// </summary>
         public string DecryptedFilePath { get; set; }
@@ -57,9 +116,9 @@ namespace CryptoCalc.Core
         public string DecryptedText { get; set; }
 
         /// <summary>
-        /// The currently selected key size index
+        /// The decrypted hex
         /// </summary>
-        public int KeySizeIndex { get; set; }
+        public string DecryptedHex { get; set; }
 
         /// <summary>
         /// The iv size in bits
@@ -72,14 +131,19 @@ namespace CryptoCalc.Core
         public int SelectedAlgorithim { get; set; } = 0;
 
         /// <summary>
+        /// Get the currently selected key size
+        /// </summary>
+        public int SelectedKeySize { get; set; }
+
+        /// <summary>
         /// The Cryptography api to use
         /// </summary>
         public CryptographyApi Api { get; set; }
 
         /// <summary>
-        /// 
+        /// The currently selected cipher api
         /// </summary>
-        public DataInputViewModel DataSetup { get; set; } = new DataInputViewModel();
+        public ISymmetricCipher SelectedCipherApi { get; set; }
 
         /// <summary>
         /// The list off all symmetric algorithims
@@ -92,9 +156,10 @@ namespace CryptoCalc.Core
         public ObservableCollection<int> KeySizes { get; set; } = new ObservableCollection<int>();
 
         /// <summary>
-        /// The currently selected cipher api
+        /// The View model for the data input control 
         /// </summary>
-        public ISymmetricCipher SelectedCipherApi { get; set; }
+        public DataInputViewModel DataSetup { get; set; } = new DataInputViewModel();
+       
 
         #endregion
 
@@ -163,8 +228,13 @@ namespace CryptoCalc.Core
             //Gets all the available key sizes for the currently selected algorithim
             KeySizes = SelectedCipherApi.GetKeySizes(SelectedAlgorithim);
 
+            //As default select the first item in the list
+            SelectedKeySize = KeySizes[0];
+
             //Gets the iv size of the currently selected algorithim
             IvSize = SelectedCipherApi.GetIvSize(SelectedAlgorithim);
+
+            DataSetup.DataChanged += DataChanged;
         }
 
 
@@ -178,7 +248,7 @@ namespace CryptoCalc.Core
         private void GenerateKey()
         {
             //Gets a list of byte arrays containing the secret key and if available the iv
-            var keyAndIv = SelectedCipherApi.GenerateKey(SelectedAlgorithim, KeySizes[KeySizeIndex]);
+            var keyAndIv = SelectedCipherApi.GenerateKey(SelectedAlgorithim, SelectedKeySize);
 
             //Convert the byte array to a string
             SecretKey = ByteConvert.BytesToHexString(keyAndIv[0]);
@@ -191,21 +261,19 @@ namespace CryptoCalc.Core
             }
         }
 
-        
-
         /// <summary>
         /// The command method when a different algrithim is selected
         /// </summary>
         private void ChangedAlgorithim()
         {
-            //Gets the available key size of the selected algorithim
+           //Gets the available key size of the selected algorithim
             KeySizes = SelectedCipherApi.GetKeySizes(SelectedAlgorithim);
 
-            //GEts the available iv size of the selected algorithim
+            //Set default key size, first one in the list
+            SelectedKeySize = KeySizes[0];
+
+            //Gets the available iv size of the selected algorithim
             IvSize = SelectedCipherApi.GetIvSize(SelectedAlgorithim);
-            
-            //sets the default key size
-            KeySizeIndex = 0;
         }
 
         /// <summary>
@@ -217,24 +285,51 @@ namespace CryptoCalc.Core
             var secretKey = ByteConvert.HexStringToBytes(SecretKey);
             var iv = ByteConvert.HexStringToBytes(IV);
 
+            //fields for saving the plain and encrypted byte arrays
             byte[] encrypted;
-
-            //Get the data
+            byte[] plainBytes;
+            
+            //Get the data and encrypt it acording to the selected format
             switch (DataSetup.DataFormatSelected)
             {
-                case Format.File:
-                    if (File.Exists(DataSetup.Data))
-                    {
-                        var plainBytes = File.ReadAllBytes(DataSetup.Data);
-                        var encryptedBytes = SelectedCipherApi.EncryptBytes(SelectedAlgorithim, KeySizes[KeySizeIndex], secretKey, iv, plainBytes);
-                        var extension = Path.GetExtension(DataSetup.Data);
-                        EncryptedFilePath = Path.Combine(Directory.GetParent(DataSetup.Data).ToString(), Path.GetFileNameWithoutExtension(DataSetup.Data) + ".Encrypted" + extension);
-                        File.WriteAllBytes(EncryptedFilePath, encryptedBytes);
-                    }
-                    break;
+                //Encrypt a text string
                 case Format.TextString:
-                    encrypted = SelectedCipherApi.EncryptText(SelectedAlgorithim, KeySizes[KeySizeIndex], secretKey, iv, DataSetup.Data);
+
+                    //Encrypt with the selected cipher and return the encrypted byte array
+                    encrypted = SelectedCipherApi.EncryptText(SelectedAlgorithim, SelectedKeySize, secretKey, iv, DataSetup.Data);
+                    
+                    //Converts the byte array to a hex string
                     EncryptedText = ByteConvert.BytesToHexString(encrypted);
+                    break;
+                //Encrypt a hex string
+                case Format.HexString:
+
+                    //Convert the plain hex string to byte array
+                    plainBytes = ByteConvert.HexStringToBytes(DataSetup.Data);
+
+                    //Encrypt with the selected cipher and return the encrypted byte array
+                    encrypted = SelectedCipherApi.EncryptBytes(SelectedAlgorithim, SelectedKeySize, secretKey, iv, plainBytes);
+                    
+                    //Converts the byte array to a hex string
+                    EncryptedHex = ByteConvert.BytesToHexString(encrypted);
+                    break;
+                //Encrypt a file
+                case Format.File:
+
+                    //Gets the file as a byte array
+                    plainBytes = File.ReadAllBytes(DataSetup.Data);
+
+                    //Encrypt with the selected cipher and return the encrypted byte array
+                    encrypted = SelectedCipherApi.EncryptBytes(SelectedAlgorithim, SelectedKeySize, secretKey, iv, plainBytes);
+                    
+                    //Gets the file extension of the plain original file
+                    var extension = Path.GetExtension(DataSetup.Data);
+                    
+                    //Adds the "Encrypted" text to the encrypted file name
+                    EncryptedFilePath = Path.Combine(Directory.GetParent(DataSetup.Data).ToString(), Path.GetFileNameWithoutExtension(DataSetup.Data) + ".Encrypted" + extension);
+                    
+                    //Writes alll the bytes to the encrypted file
+                    File.WriteAllBytes(EncryptedFilePath, encrypted);
                     break;
             }
         }
@@ -244,30 +339,78 @@ namespace CryptoCalc.Core
         /// </summary>
         private void Decrypt()
         {
+            //field for saving the encrypted and decrypted byte arrays
             byte[] encrypted;
+            byte[] decryptedBytes;
+
+            //Convert the secret key and iv to byte arrays
             var secretKey = ByteConvert.HexStringToBytes(SecretKey);
             var iv = ByteConvert.HexStringToBytes(IV);
 
+            //Decrypt the data according to the selected file format
             switch (DataSetup.DataFormatSelected)
             {
-                case Format.File:
-                    encrypted = ByteConvert.FileToBytes(EncryptedFilePath);
-                    var decryptedBytes = SelectedCipherApi.DecryptToBytes(SelectedAlgorithim, KeySizes[KeySizeIndex], secretKey, iv, encrypted);
-                    var extension = Path.GetExtension(EncryptedFilePath);
-                    DecryptedFilePath = Path.Combine(Directory.GetParent(EncryptedFilePath).ToString(), Path.GetFileNameWithoutExtension(EncryptedFilePath) + ".Decrypted" + extension);
-                    File.WriteAllBytes(DecryptedFilePath, decryptedBytes);
-                    break;
+                //Decrypt to a regular string
                 case Format.TextString:
+
+                    //Convert the text string to a byte array
                     encrypted = ByteConvert.HexStringToBytes(EncryptedText);
-                    DecryptedText = SelectedCipherApi.DecryptToText(SelectedAlgorithim, KeySizes[KeySizeIndex], secretKey, iv, encrypted);
+                    
+                    //Decrypt the byte array to a text string
+                    DecryptedText = SelectedCipherApi.DecryptToText(SelectedAlgorithim, SelectedKeySize, secretKey, iv, encrypted);
+                    break;
+                case Format.HexString:
+
+                    //Convert the hex string to a byte array
+                    encrypted = ByteConvert.HexStringToBytes(EncryptedHex);
+                    
+                    //Decrypt the byte array to a decrypted byte array
+                    decryptedBytes = SelectedCipherApi.DecryptToBytes(SelectedAlgorithim, SelectedKeySize, secretKey, iv, encrypted);
+
+                    //Convert the decrypted byte array to a hex string
+                    DecryptedHex = ByteConvert.BytesToHexString(decryptedBytes);
+                    break;
+                case Format.File:
+
+                    //Get the encrypted file as a byte array
+                    encrypted = ByteConvert.FileToBytes(EncryptedFilePath);
+
+                    //Decrypt the byte array to a decrypted byte array
+                    decryptedBytes = SelectedCipherApi.DecryptToBytes(SelectedAlgorithim, SelectedKeySize, secretKey, iv, encrypted);
+                    
+                    //Get the extension of the encrypted file
+                    var extension = Path.GetExtension(EncryptedFilePath);
+
+                    //Create a new file name with the encrypted file path and the "Decrypted" text
+                    DecryptedFilePath = Path.Combine(Directory.GetParent(EncryptedFilePath).ToString(), Path.GetFileNameWithoutExtension(EncryptedFilePath) + ".Decrypted" + extension);
+                    
+                    //Write all byte to the decrypted file
+                    File.WriteAllBytes(DecryptedFilePath, decryptedBytes);
                     break;
             }
         }
 
         #endregion
 
+        #region Event handler subscriptions
+
+        /// <summary>
+        /// Event subscription called when the input data changes
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="args"></param>
+        private void DataChanged(object obj, EventArgs args)
+        {
+            DataCorrect = DataSetup.DataIsCorrectlyFormatted;
+        }
+
+        #endregion
+
         #region Private Methods
 
+        /// <summary>
+        /// Initializes all the commands
+        /// </summary>
         private void InitializeCommands()
         {
             ChangedAlgorithimCommand = new RelayCommand(ChangedAlgorithim);
@@ -276,24 +419,6 @@ namespace CryptoCalc.Core
             GenerateKeyCommand = new RelayCommand(GenerateKey);
         }
 
-        /// <summary>
-        /// Verifies if the correct format is implemented on given text
-        /// </summary>
-        /// <param name="format">The format used</param>
-        /// <param name="text">The text entered by user</param>
-        /// <returns>True if correct format</returns>
-        private bool CheckIfCorrectlyFormatted(Format format, string text)
-        {
-            switch (format)
-            {
-                case Format.File:
-                    return File.Exists(text);
-                case Format.HexString:
-                    return text.Length % 2 == 0 && ByteConvert.OnlyHexInString(text);
-                default:
-                    return text.Length > 0;
-            }
-        }
         #endregion
     }
 }
