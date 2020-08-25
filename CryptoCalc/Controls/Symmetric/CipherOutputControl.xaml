@@ -7,24 +7,19 @@
              xmlns:core="clr-namespace:CryptoCalc.Core;assembly=CryptoCalc.Core"
              mc:Ignorable="d" >
 
-    <Grid Background="{StaticResource WhiteBrush}">
+    <Grid Background="{StaticResource WhiteBrush}"
+          d:DataContext="{x:Static core:SymmetricDesignModel.Instance}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
+            <!--Output Textboxes-->
+            <RowDefinition Height="*" />
+            <!--En-/Decryption buttons-->
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <StackPanel >
-            <!--File encryption input / output-->
-            <StackPanel Visibility="{Binding DataFormatSelected, Converter={local:DataFormatsToVisibility}, ConverterParameter=File}">
-                <TextBlock Text="Encrypted File Path" />
-                <TextBox Text="{Binding EncryptedFilePath, UpdateSourceTrigger=PropertyChanged}" />
-
-                <TextBlock Text="Decrypted File Path" />
-                <TextBox Text="{Binding DecryptedFilePath, UpdateSourceTrigger=PropertyChanged}" 
-                             IsReadOnly="True"/>
-            </StackPanel>
-
+        
+        <!--Output textboxes-->
+        <StackPanel VerticalAlignment="Center">
             <!--Text encryption input / output-->
-            <StackPanel Visibility="{Binding DataFormatSelected, Converter={local:DataFormatsToVisibility}, ConverterParameter=TextString}">
+            <StackPanel Visibility="{Binding DataSetup.DataFormatSelected, Converter={local:DataFormatsToVisibility}, ConverterParameter=TextString}">
                 <TextBlock Text="Encrypted Text" />
                 <TextBox Text="{Binding EncryptedText, UpdateSourceTrigger=PropertyChanged}" />
 
@@ -33,17 +28,47 @@
                              IsReadOnly="True"/>
             </StackPanel>
 
+            <!--hex encryption input / output-->
+            <StackPanel Visibility="{Binding DataSetup.DataFormatSelected, Converter={local:DataFormatsToVisibility}, ConverterParameter=HexString}">
+                <TextBlock Text="Encrypted Hex" />
+                <TextBox Text="{Binding EncryptedHex, UpdateSourceTrigger=PropertyChanged}" />
+
+                <TextBlock Text="Decrypted Hex" />
+                <TextBox Text="{Binding DecryptedHex, UpdateSourceTrigger=PropertyChanged}" 
+                             IsReadOnly="True"/>
+            </StackPanel>
+            
+            <!--File encryption input / output-->
+            <StackPanel Visibility="{Binding DataSetup.DataFormatSelected, Converter={local:DataFormatsToVisibility}, ConverterParameter=File}">
+                <TextBlock Text="Encrypted File Path" />
+                <TextBox Text="{Binding EncryptedFilePath, UpdateSourceTrigger=PropertyChanged}" />
+
+                <TextBlock Text="Decrypted File Path" />
+                <TextBox Text="{Binding DecryptedFilePath, UpdateSourceTrigger=PropertyChanged}" 
+                             IsReadOnly="True"/>
+            </StackPanel>
+
+
         </StackPanel>
 
-        <StackPanel Grid.Row="1" 
+        <!--Gradient sectioned line-->
+        <Border Style="{StaticResource SectionBorder}" />
+        
+        <!--De-/Encryption buttons-->
+        <StackPanel Grid.Row="1"
                     Orientation="Horizontal"
-                    HorizontalAlignment="Center">
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Bottom">
+            <!--Encryption button-->
             <Button Content="Encrypt" 
                     Margin="15 5"
+                    IsEnabled="{Binding ReadyForEncryption, Mode=OneWay}"
                     Command="{Binding EncryptCommand}"/>
+            <!--Decryption button-->
             <Button Content="Decrypt" 
-                    Margin="15 5"
-                    Command="{Binding DecryptCommand}"/>
+                    Margin="15 8"
+                    Command="{Binding DecryptCommand}"
+                    />
         </StackPanel>
     </Grid>
     
