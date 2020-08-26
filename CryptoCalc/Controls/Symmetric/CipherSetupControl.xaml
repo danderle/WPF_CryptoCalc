@@ -16,33 +16,31 @@
         </Grid.ColumnDefinitions>
         
         <!--ComboBoxes-->
-        <StackPanel Margin="5">
-            
+        <StackPanel Margin="5"
+                    local:ComboBoxWidthMatcherProperty.Value="True">
+
             <!--Data Format ComboBox-->
             <TextBlock Text="Data Format:" />
             <ComboBox ItemsSource="{Binding DataSetup.DataFormatOptions}"
                       SelectedIndex="{Binding DataSetup.DataFormatSelected, Converter={local:DataHashFormatEnumToInt}}"
-                      local:ComboBoxElementsMaxWidthProperty.Value="True"
-                      HorizontalAlignment="Right"/>
-            
+                      />
+
             <!--Algorithims ComboBox-->
             <TextBlock Text="Algorithim"
                        Margin="0 8 0 0"/>
             <ComboBox ItemsSource="{Binding Algorithims}"
                       SelectedIndex ="{Binding SelectedAlgorithim}"
-                      local:ComboBoxElementsMaxWidthProperty.Value="True"
                       local:SelectionChangedProperty.Value="{Binding ChangedAlgorithimCommand}" 
-                      HorizontalAlignment="Right"/>
-            
+                      />
+
             <!--Key size comboBox-->
             <TextBlock Text="Key Size" 
                        Margin="0 8 0 0"/>
             <ComboBox ItemsSource="{Binding KeySizes}"
                       SelectedItem="{Binding SelectedKeySize}"
-                      local:ComboBoxElementsMaxWidthProperty.Value="True"
-                      HorizontalAlignment="Right"/>
+                      />
         </StackPanel>
-        
+
         <!--Cipher algorithim option list-->
         <StackPanel Grid.Column="1"
                     Margin="5">
