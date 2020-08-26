@@ -8,7 +8,8 @@
                 mc:Ignorable="d">
 
     <Border Background="{StaticResource WhiteBrush}"
-            Padding="0 0 5 0">
+            Padding="0 0 5 0"
+            d:DataContext="{x:Static core:SymmetricDesignModel.Instance}">
         <Grid>
             <Grid.RowDefinitions>
                 <!--setup control-->
