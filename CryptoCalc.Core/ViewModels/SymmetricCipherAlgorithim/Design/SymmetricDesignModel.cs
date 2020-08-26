@@ -30,7 +30,8 @@ namespace CryptoCalc.Core
         /// </summary>
         public SymmetricDesignModel()
         {
-            SelectedCipherApi = new MsdnSymmetricCipher();
+            SelectedCipherApi = new BouncySymmetricCipher();
+            //SelectedCipherApi = new MsdnSymmetricCipher();
             Algorithims = SelectedCipherApi.GetAlgorthims();
             KeySizes = SelectedCipherApi.GetKeySizes(SelectedAlgorithim);
             SelectedKeySize = KeySizes[0];
