@@ -21,8 +21,10 @@
                     Margin="8">
             <!--Text encryption input / output-->
             <StackPanel Visibility="{Binding DataSetup.DataFormatSelected, Converter={local:DataFormatsToVisibility}, ConverterParameter=TextString}">
-                <TextBlock Text="Encrypted Text" />
-                <TextBox Text="{Binding EncryptedText, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBlock Text="Encrypted Text" 
+                           />
+                <TextBox Text="{Binding EncryptedText, UpdateSourceTrigger=PropertyChanged}"
+                         ToolTip="{Binding DataSetup.DataFormatSelected, Converter={local:DataFormatsToToolTip}}"/>
 
                 <TextBlock Text="Decrypted Text" />
                 <TextBox Text="{Binding DecryptedText, UpdateSourceTrigger=PropertyChanged}" 
@@ -32,7 +34,8 @@
             <!--hex encryption input / output-->
             <StackPanel Visibility="{Binding DataSetup.DataFormatSelected, Converter={local:DataFormatsToVisibility}, ConverterParameter=HexString}">
                 <TextBlock Text="Encrypted Hex" />
-                <TextBox Text="{Binding EncryptedHex, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBox Text="{Binding EncryptedHex, UpdateSourceTrigger=PropertyChanged}" 
+                         ToolTip="{Binding DataSetup.DataFormatSelected, Converter={local:DataFormatsToToolTip}}"/>
 
                 <TextBlock Text="Decrypted Hex"/>
                 <TextBox Text="{Binding DecryptedHex, UpdateSourceTrigger=PropertyChanged}" 
@@ -42,7 +45,8 @@
             <!--File encryption input / output-->
             <StackPanel Visibility="{Binding DataSetup.DataFormatSelected, Converter={local:DataFormatsToVisibility}, ConverterParameter=File}">
                 <TextBlock Text="Encrypted File Path" />
-                <TextBox Text="{Binding EncryptedFilePath, UpdateSourceTrigger=PropertyChanged}" 
+                <TextBox Text="{Binding EncryptedFilePath, UpdateSourceTrigger=PropertyChanged}"
+                         ToolTip="{Binding DataSetup.DataFormatSelected, Converter={local:DataFormatsToToolTip}}"
                          local:DragDropProperty.Value="True"/>
 
                 <TextBlock Text="Decrypted File Path"/>

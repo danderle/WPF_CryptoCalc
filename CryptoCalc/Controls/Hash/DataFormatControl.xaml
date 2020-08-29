@@ -26,6 +26,7 @@
                       SelectedIndex="{Binding DataSetup.DataFormatSelected, Converter={local:DataHashFormatEnumToInt}}"
                       local:SelectionChangedProperty.Value="{Binding DataSetup.ChangedFormatCommand}"
                       local:ComboBoxElementsMaxWidthProperty.Value="True"
+                      x:Name="DataFormatComboBox"
                       HorizontalAlignment="Right"/>
 
             <!--The HMAC option-->
@@ -40,7 +41,7 @@
         <StackPanel Grid.Column="1"
                     Margin="8">
             <!--Data to be hashed-->
-            <TextBlock Text="Data:" />
+            <TextBlock Text="Data:"/>
             <Grid >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
@@ -49,14 +50,15 @@
                 <TextBox Text="{Binding DataSetup.Data, UpdateSourceTrigger=PropertyChanged}"
                          Background="{Binding DataSetup.DataIsCorrectlyFormatted, Converter={local:BoolToBackground}}"
                          local:DragDropProperty.Value="True"
-                         />
+                         ToolTip="{Binding ElementName=DataFormatComboBox, Path=SelectedIndex, Converter={local:IndexToToolTip}}"/>
                 <Button Grid.Column="2"
+                        Command="{Binding DataSetup.OpenFolderDialogCommand}" 
+                        Visibility="{Binding DataSetup.DataFormatSelected, Converter={local:DataFormatsToVisibility}, ConverterParameter=File}"
                         Content="..."
+                        ToolTip="Select file"
                         VerticalAlignment="Top"
                         Margin="8 0 0 0"
-                        Height="30"
-                        Command="{Binding DataSetup.OpenFolderDialogCommand}" 
-                        Visibility="{Binding DataSetup.DataFormatSelected, Converter={local:DataFormatsToVisibility}, ConverterParameter=File}"/>
+                        Height="30"/>
             </Grid>
             <Grid>
                 <Grid.ColumnDefinitions>
