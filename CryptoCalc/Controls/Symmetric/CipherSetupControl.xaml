@@ -64,9 +64,11 @@
                 <Button Command="{Binding DataSetup.OpenFolderDialogCommand}"
                         Visibility="{Binding DataSetup.DataFormatSelected, Converter={local:DataFormatsToVisibility}, ConverterParameter=File}"
                         Grid.Column="1"
-                        Margin="5,0,0,0"
-                        Padding="5 2"
-                        Content="..." />
+                        Content="..."
+                        ToolTip="Select file"
+                        VerticalAlignment="Top"
+                        Margin="8 0 0 0"
+                        Height="30"/>
             </Grid>
             
             <StackPanel>
