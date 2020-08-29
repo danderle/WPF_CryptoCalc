@@ -9,7 +9,7 @@ using System.Windows.Input;
 namespace CryptoCalc.Core
 {
     /// <summary>
-    /// The view model for the symmetric cipher page
+    /// The view model for the symmetric cipher page 
     /// </summary>
     public class SymmetricViewModel : BaseViewModel
     {
@@ -64,18 +64,27 @@ namespace CryptoCalc.Core
             get
             {
                 string encrypted = string.Empty;
-                switch(DataSetup.DataFormatSelected)
+                switch (DataSetup.DataFormatSelected)
                 {
                     case Format.File:
-                        encrypted = EncryptedFilePath;
+                        //Get the encrypted file to bytes
+                        var bytes = ByteConvert.FileToBytes(EncryptedFilePath);
+                        if (bytes != null)
+                        {
+                            encrypted = ByteConvert.BytesToHexString(bytes);
+                        }
                         break;
-                    default:
+                    case Format.HexString:
+                        encrypted = EncryptedHex;
+                        break;
+                    case Format.TextString:
                         encrypted = EncryptedText;
                         break;
                 }
-                if(encrypted.Length > 0 && (encrypted.Length / 2 * 8) % SelectedKeySize == 0)
+                //true if the encrypted format matches the criteria
+                if(encrypted.Length / 2 * 8 >= SelectedKeySize && (encrypted.Length / 2 * 8) % SelectedKeySize == 0 && ByteConvert.OnlyHexInString(encrypted))
                 {
-                    return DataSetup.DataIsCorrectlyFormatted;
+                    return SecretKeyAcceptable && IvAcceptable;
                 }
                 return false;
             }
@@ -93,32 +102,32 @@ namespace CryptoCalc.Core
         /// <summary>
         /// The encrypted file path
         /// </summary>
-        public string EncryptedFilePath { get; set; }
+        public string EncryptedFilePath { get; set; } = string.Empty;
 
         /// <summary>
         /// The encrypted text
         /// </summary>
-        public string EncryptedText { get; set; }
+        public string EncryptedText { get; set; } = string.Empty;
 
         /// <summary>
         /// The encrypted hex
         /// </summary>
-        public string EncryptedHex { get; set; }
+        public string EncryptedHex { get; set; } = string.Empty;
 
         /// <summary>
         /// The decrypted file path
         /// </summary>
-        public string DecryptedFilePath { get; set; }
+        public string DecryptedFilePath { get; set; } = string.Empty;
 
         /// <summary>
         /// The decrypted text
         /// </summary>
-        public string DecryptedText { get; set; }
+        public string DecryptedText { get; set; } = string.Empty;
 
         /// <summary>
         /// The decrypted hex
         /// </summary>
-        public string DecryptedHex { get; set; }
+        public string DecryptedHex { get; set; } = string.Empty;
 
         /// <summary>
         /// The iv size in bits
@@ -234,6 +243,7 @@ namespace CryptoCalc.Core
             //Gets the iv size of the currently selected algorithim
             IvSize = SelectedCipherApi.GetIvSize(SelectedAlgorithim);
 
+            ///Subscribe to the DataChanged event from the <see cref="DataInputViewModel"/>
             DataSetup.DataChanged += DataChanged;
         }
 
@@ -336,6 +346,7 @@ namespace CryptoCalc.Core
 
         /// <summary>
         /// The command method to decrypt the given data
+        /// TODO wrap decrypt in try catch with pop up window if error occurs during decryption
         /// </summary>
         private void Decrypt()
         {
@@ -378,11 +389,8 @@ namespace CryptoCalc.Core
                     //Decrypt the byte array to a decrypted byte array
                     decryptedBytes = SelectedCipherApi.DecryptToBytes(SelectedAlgorithim, SelectedKeySize, secretKey, iv, encrypted);
                     
-                    //Get the extension of the encrypted file
-                    var extension = Path.GetExtension(EncryptedFilePath);
-
                     //Create a new file name with the encrypted file path and the "Decrypted" text
-                    DecryptedFilePath = Path.Combine(Directory.GetParent(EncryptedFilePath).ToString(), Path.GetFileNameWithoutExtension(EncryptedFilePath) + ".Decrypted" + extension);
+                    DecryptedFilePath = Path.Combine(Directory.GetParent(EncryptedFilePath).ToString(), Path.GetFileName(EncryptedFilePath).Replace("Encrypted","Decrypted"));
                     
                     //Write all byte to the decrypted file
                     File.WriteAllBytes(DecryptedFilePath, decryptedBytes);
