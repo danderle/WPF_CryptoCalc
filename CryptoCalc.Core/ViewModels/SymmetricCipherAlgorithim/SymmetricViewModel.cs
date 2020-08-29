@@ -82,9 +82,9 @@ namespace CryptoCalc.Core
                         break;
                 }
                 //true if the encrypted format matches the criteria
-                if(encrypted.Length / 2 * 8 >= SelectedKeySize && (encrypted.Length / 2 * 8) % SelectedKeySize == 0 && ByteConvert.OnlyHexInString(encrypted))
+                if(encrypted.Length != 0 && encrypted.Length / 2 * 8 >= SelectedKeySize && (encrypted.Length / 2 * 8) % SelectedKeySize == 0)
                 {
-                    return SecretKeyAcceptable && IvAcceptable;
+                    return ByteConvert.OnlyHexInString(encrypted) && SecretKeyAcceptable && IvAcceptable;
                 }
                 return false;
             }
