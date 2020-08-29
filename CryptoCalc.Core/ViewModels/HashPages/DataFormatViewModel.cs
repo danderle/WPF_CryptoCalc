@@ -21,6 +21,11 @@ namespace CryptoCalc.Core
         #region Public Properties
 
         /// <summary>
+        /// Flag for letting us know if the Data is correctly entered and ready for en-/decrypting
+        /// </summary>
+        public bool DataCorrect { get; set; }
+
+        /// <summary>
         /// Flag letting us know if the data is ready for hashing
         /// </summary>
         public bool DataIsReadyForProcessing
@@ -29,24 +34,20 @@ namespace CryptoCalc.Core
             {
                 if(HmacChecked)
                 {
-                    return DataIsCorrectlyFormatted && HmacKeyIsCorrectlyFormatted;
+                    return DataCorrect && HmacKeyIsCorrectlyFormatted;
                 }
                 else
                 {
-                    return DataIsCorrectlyFormatted;
+                    return DataCorrect;
                 }
             }
         }
 
         /// <summary>
-        /// Flag to know if the Data has the correct format
-        /// </summary>
-        public bool DataIsCorrectlyFormatted { get; set; }
-
-        /// <summary>
         /// Flag to know if the HMAC key has the correct format
         /// </summary>
         public bool HmacKeyIsCorrectlyFormatted { get; set; }
+
 
         /// <summary>
         /// Keyed-Hash Message Authentication Code
@@ -106,6 +107,9 @@ namespace CryptoCalc.Core
             // Adds the formats to the lists
             KeyFormat.Add(Format.TextString.ToString());
             KeyFormat.Add(Format.HexString.ToString());
+
+            ///Subscribe to the DataChanged event from the <see cref="DataInputViewModel"/>
+            DataSetup.DataChanged += DataChanged;
         }
 
         #endregion
@@ -120,7 +124,21 @@ namespace CryptoCalc.Core
         {
             HmacKeyIsCorrectlyFormatted = CheckIfCorrectlyFormatted(KeyFormatSelected, Key);
         }
-        
+
+        #endregion
+
+        #region Event handler subscriptions
+
+        /// <summary>
+        /// Event subscription called when the input data changes
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="args"></param>
+        private void DataChanged(object obj, EventArgs args)
+        {
+            DataCorrect = DataSetup.DataIsCorrectlyFormatted;
+        }
+
         #endregion
 
         #region Private Methods
