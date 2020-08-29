@@ -17,33 +17,34 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
+        <!--Data formatting options and data to be hashed entry-->
+        <local:DataFormatControl Grid.Row="0"
+                                 DataContext="{Binding DataFormatSetup}" 
+                                 HmacSelected="{Binding HmacChecked}"
+                                 d:DataContext="{x:Static core:DataFormatDesignModel.Instance}"
+                                 x:Name="DataFormatOptions"/>
+        
         <!--Border gradient brush-->
         <Border Style="{StaticResource SectionBorder}" 
-                VerticalAlignment="Bottom"
-                Grid.Row="0">
-            <!--Data formatting options and data to be hashed entry-->
-            <local:DataFormatControl DataContext="{Binding DataFormatSetup}" 
-                                     HmacSelected="{Binding HmacChecked}"
-                                     d:DataContext="{x:Static core:DataFormatDesignModel.Instance}"
-                                     x:Name="DataFormatOptions"
-                                     />
-        </Border>
+                Grid.Row="0"/>
+
+
+
+        <!--List of hashing algorithims-->
+        <local:HashItemListControl Grid.Row="1" 
+                                   d:DataContext="{x:Static core:HashItemListDesignModel.Instance}"
+                                   DataContext="{Binding HashList}"
+                                   VerticalAlignment="Center"
+                                   local:HmacSelectedProperty.Value="{Binding ElementName=DataFormatOptions, Path=HmacSelected}"/>
 
         <!--Border gradient brush-->
         <Border Grid.Row="1"
-                Style="{StaticResource SectionBorder}"
-                Padding="0 8">
-            <!--List of hashing algorithims-->
-            <local:HashItemListControl d:DataContext="{x:Static core:HashItemListDesignModel.Instance}"
-                                       DataContext="{Binding HashList}"
-                                       VerticalAlignment="Center"
-                                       local:HmacSelectedProperty.Value="{Binding ElementName=DataFormatOptions, Path=HmacSelected}"/>
-        </Border>
-
+                Style="{StaticResource SectionBorder}"/>
+        
         <!--Calculate button-->
         <Button Content="Calculate"
                 Command="{Binding CalculateCommand}"
-                IsEnabled="{Binding DataFormatSetup.DataIsReadyForProcessing}"
+                IsEnabled="{Binding DataFormatSetup.DataIsReadyForProcessing, Mode=OneWay}"
                 HorizontalAlignment="Center"
                 Grid.Row="2"/>
 

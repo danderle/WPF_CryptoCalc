@@ -19,11 +19,12 @@
         </Grid.ColumnDefinitions>
 
         <!--Column 0-->
-        <StackPanel Margin="5">
+        <StackPanel Margin="8">
             <!--ComboBox of what type of format to hash-->
             <TextBlock Text="Data Format:" />
             <ComboBox ItemsSource="{Binding DataSetup.DataFormatOptions}"
                       SelectedIndex="{Binding DataSetup.DataFormatSelected, Converter={local:DataHashFormatEnumToInt}}"
+                      local:SelectionChangedProperty.Value="{Binding DataSetup.ChangedFormatCommand}"
                       local:ComboBoxElementsMaxWidthProperty.Value="True"
                       HorizontalAlignment="Right"/>
 
@@ -37,30 +38,27 @@
 
         <!--Column 1-->
         <StackPanel Grid.Column="1"
-                    Margin="5">
+                    Margin="8">
             <!--Data to be hashed-->
             <TextBlock Text="Data:" />
             <Grid >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <TextBox Text="{Binding DataSetup.Data, UpdateSourceTrigger=PropertyChanged}"
                          Background="{Binding DataSetup.DataIsCorrectlyFormatted, Converter={local:BoolToBackground}}"
                          local:DragDropProperty.Value="True"
-                         Grid.ColumnSpan="2"
-                         VerticalContentAlignment="Center"
                          />
                 <Button Grid.Column="2"
-                        Margin="5,0,0,0"
-                        Padding="5 2"
                         Content="..."
-                        Command="{Binding DataSetup.OpenFolderDialogCommand}" 
+                        VerticalAlignment="Top"
+                        Margin="8 0 0 0"
                         Height="30"
+                        Command="{Binding DataSetup.OpenFolderDialogCommand}" 
                         Visibility="{Binding DataSetup.DataFormatSelected, Converter={local:DataFormatsToVisibility}, ConverterParameter=File}"/>
             </Grid>
-            <Grid Margin="0 5">
+            <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
@@ -81,7 +79,7 @@
 
                 <!--Key entry, only enabled if HMAC is checked-->
                 <StackPanel Grid.Column="1"
-                            Margin="5 0 0 0">
+                            Margin="8 0 0 0">
                     <TextBlock Text="Key" 
                                IsEnabled="{Binding ElementName=hmacCheck, Path=IsChecked}"/>
                     <TextBox Text="{Binding Key, UpdateSourceTrigger=PropertyChanged}"
