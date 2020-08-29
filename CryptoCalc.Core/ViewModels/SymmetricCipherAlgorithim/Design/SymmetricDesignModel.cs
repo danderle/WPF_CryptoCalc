@@ -39,7 +39,7 @@ namespace CryptoCalc.Core
 
             DataSetup.Data = "Some data";
             DataSetup.DataFormatOptions = Enum.GetValues(typeof(Format)).Cast<Format>().Select(t => t.ToString()).ToList();
-            DataSetup.DataFormatSelected = Format.TextString;
+            DataSetup.DataFormatSelected = Format.File;
             SecretKey = "FFFFFFFFFFFF";
             IV = "FFFFFFFFFFFF";
             IvSize = 6*8;
