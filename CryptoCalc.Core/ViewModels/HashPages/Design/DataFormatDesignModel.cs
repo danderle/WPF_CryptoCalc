@@ -21,7 +21,7 @@ namespace CryptoCalc.Core
         public DataFormatDesignModel()
         {
             DataSetup.Data = "Data to be hashed";
-            DataSetup.DataFormatSelected = 0;
+            DataSetup.DataFormatSelected = Format.File;
             HmacChecked = false;
             Key = "some kind of hash key";
 

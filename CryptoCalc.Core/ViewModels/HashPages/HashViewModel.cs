@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Windows.Input;
 
 namespace CryptoCalc.Core
@@ -155,7 +156,7 @@ namespace CryptoCalc.Core
 
         #endregion
 
-        #region MyRegion
+        #region Private Methods
 
         /// <summary>
         /// Initializes all the commands
