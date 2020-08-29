@@ -17,15 +17,16 @@
         </Grid.RowDefinitions>
         
         <!--Output textboxes-->
-        <StackPanel VerticalAlignment="Center">
+        <StackPanel VerticalAlignment="Center"
+                    Margin="8">
             <!--Text encryption input / output-->
             <StackPanel Visibility="{Binding DataSetup.DataFormatSelected, Converter={local:DataFormatsToVisibility}, ConverterParameter=TextString}">
                 <TextBlock Text="Encrypted Text" />
-                <TextBox Text="{Binding EncryptedText, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBox Text="{Binding EncryptedText, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <TextBlock Text="Decrypted Text" />
                 <TextBox Text="{Binding DecryptedText, UpdateSourceTrigger=PropertyChanged}" 
-                             IsReadOnly="True"/>
+                         IsReadOnly="True"/>
             </StackPanel>
 
             <!--hex encryption input / output-->
@@ -33,7 +34,7 @@
                 <TextBlock Text="Encrypted Hex" />
                 <TextBox Text="{Binding EncryptedHex, UpdateSourceTrigger=PropertyChanged}" />
 
-                <TextBlock Text="Decrypted Hex" />
+                <TextBlock Text="Decrypted Hex"/>
                 <TextBox Text="{Binding DecryptedHex, UpdateSourceTrigger=PropertyChanged}" 
                              IsReadOnly="True"/>
             </StackPanel>
@@ -41,9 +42,10 @@
             <!--File encryption input / output-->
             <StackPanel Visibility="{Binding DataSetup.DataFormatSelected, Converter={local:DataFormatsToVisibility}, ConverterParameter=File}">
                 <TextBlock Text="Encrypted File Path" />
-                <TextBox Text="{Binding EncryptedFilePath, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBox Text="{Binding EncryptedFilePath, UpdateSourceTrigger=PropertyChanged}" 
+                         local:DragDropProperty.Value="True"/>
 
-                <TextBlock Text="Decrypted File Path" />
+                <TextBlock Text="Decrypted File Path"/>
                 <TextBox Text="{Binding DecryptedFilePath, UpdateSourceTrigger=PropertyChanged}" 
                              IsReadOnly="True"/>
             </StackPanel>
@@ -58,15 +60,14 @@
         <StackPanel Grid.Row="1"
                     Orientation="Horizontal"
                     HorizontalAlignment="Center"
-                    VerticalAlignment="Bottom">
+                    >
             <!--Encryption button-->
             <Button Content="Encrypt" 
-                    Margin="15 5"
                     IsEnabled="{Binding ReadyForEncryption, Mode=OneWay}"
                     Command="{Binding EncryptCommand}"/>
             <!--Decryption button-->
             <Button Content="Decrypt" 
-                    Margin="15 8"
+                    IsEnabled="{Binding ReadyForDecryption, Mode=OneWay}"
                     Command="{Binding DecryptCommand}"
                     />
         </StackPanel>

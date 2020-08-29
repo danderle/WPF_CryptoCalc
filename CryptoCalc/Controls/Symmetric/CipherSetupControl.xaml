@@ -16,14 +16,14 @@
         </Grid.ColumnDefinitions>
         
         <!--ComboBoxes-->
-        <StackPanel Margin="5"
+        <StackPanel Margin="8"
                     local:ComboBoxWidthMatcherProperty.Value="True">
 
             <!--Data Format ComboBox-->
             <TextBlock Text="Data Format:" />
             <ComboBox ItemsSource="{Binding DataSetup.DataFormatOptions}"
                       SelectedIndex="{Binding DataSetup.DataFormatSelected, Converter={local:DataHashFormatEnumToInt}}"
-                      />
+                      local:SelectionChangedProperty.Value="{Binding DataSetup.ChangedFormatCommand}" />
 
             <!--Algorithims ComboBox-->
             <TextBlock Text="Algorithim"
@@ -43,7 +43,7 @@
 
         <!--Cipher algorithim option list-->
         <StackPanel Grid.Column="1"
-                    Margin="5">
+                    Margin="8">
             <!--Data to be hashed-->
             <TextBlock Text="Data:" />
             <Grid >
@@ -71,7 +71,7 @@
             
             <StackPanel>
                 <!--Secret Key text box-->
-                <TextBlock Margin="0 8 0 0">
+                <TextBlock >
                     <Run Text="Secret key" />
                     <Run Text="(" /><Run Text="{Binding SelectedKeySize, Mode=OneWay}" />
                     <Run Text=" bits)" />
@@ -80,7 +80,7 @@
                          Background="{Binding SecretKeyAcceptable, Converter={local:BoolToBackground}}"/>
                 
                 <!--Initial value text box-->
-                <TextBlock Margin="0 8 0 0">
+                <TextBlock >
                     <Run Text="Initial value" />
                     <Run Text="(" /><Run Text="{Binding IvSize}" />
                     <Run Text=" bits)" />
@@ -93,8 +93,8 @@
             <!--Random key generation button-->
             <Button Content="Generate random key" 
                     Command="{Binding GenerateKeyCommand}"
-                    HorizontalAlignment="Right"
-                    Margin="0 8"/>
+                    HorizontalAlignment="Center"
+                    Margin="8 8 8 0"/>
         </StackPanel>
         
     </Grid>
