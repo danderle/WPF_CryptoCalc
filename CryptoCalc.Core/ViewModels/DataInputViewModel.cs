@@ -70,6 +70,10 @@ namespace CryptoCalc.Core.Models
         /// </summary>
         public ICommand OpenFolderDialogCommand { get; set; }
 
+        /// <summary>
+        /// The command to exectue when a different format is selected
+        /// </summary>
+        public ICommand ChangedFormatCommand { get; set; }
 
         #endregion
 
@@ -84,12 +88,21 @@ namespace CryptoCalc.Core.Models
             DataFormatOptions = Enum.GetValues(typeof(Format)).Cast<Format>().Select(t => t.ToString()).ToList();
 
             OpenFolderDialogCommand = new RelayCommand(OpenFolderDialogAsync);
-
+            ChangedFormatCommand = new RelayCommand(ChangedFormat);
         }
 
         #endregion
-        
+
         #region Command Methods
+
+        /// <summary>
+        /// The command method to execute when the data format is changed
+        /// </summary>
+        private void ChangedFormat()
+        {
+            DataIsCorrectlyFormatted = CheckIfCorrectlyFormatted(DataFormatSelected, Data);
+            OnDataChanged();
+        }
 
         /// <summary>
         /// The command method to show a Folder dialog window and saves the selected file path
