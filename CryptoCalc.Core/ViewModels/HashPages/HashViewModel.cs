@@ -18,9 +18,37 @@ namespace CryptoCalc.Core
         #region Properties
 
         /// <summary>
-        /// The view model to setup the hashing process
+        /// Flag for letting us know if the Data is correctly entered and ready for en-/decrypting
         /// </summary>
-        public DataFormatViewModel DataFormatSetup { get; set; } = new DataFormatViewModel();
+        public bool DataCorrect { get; set; }
+
+        /// <summary>
+        /// Flag letting us know if the data is ready for hashing
+        /// </summary>
+        public bool DataIsReadyForProcessing
+        {
+            get
+            {
+                if (HmacSetup.HmacChecked)
+                {
+                    return DataCorrect && HmacSetup.HmacKeyIsCorrectlyFormatted;
+                }
+                else
+                {
+                    return DataCorrect;
+                }
+            }
+        }
+
+        /// <summary>
+        /// The view model for the data input control
+        /// </summary>
+        public DataInputViewModel DataInput { get; set; } = new DataInputViewModel();
+
+        /// <summary>
+        /// The view model to setup the hmac options
+        /// </summary>
+        public HmacViewModel HmacSetup { get; set; } = new HmacViewModel();
 
         /// <summary>
         /// The view model that holds all the hashing methods
@@ -35,11 +63,6 @@ namespace CryptoCalc.Core
         /// The command to calculate the hash values
         /// </summary>
         public ICommand CalculateCommand { get; set; }
-
-        /// <summary>
-        /// The command to close the application
-        /// </summary>
-        public ICommand CloseCommand { get; set; }
 
         /// <summary>
         /// The command to show help options
@@ -72,6 +95,9 @@ namespace CryptoCalc.Core
 
             //Create the hash list options according to the selected api
             HashList = new HashItemListViewModel(crpytoApi);
+
+            ///Subscribe to the DataChanged event from the <see cref="DataInputViewModel"/>
+            DataInput.DataChanged += DataChanged;
         }
 
         #endregion
@@ -93,25 +119,20 @@ namespace CryptoCalc.Core
         }
 
         /// <summary>
-        /// The command method to close the application
-        /// </summary>
-        private void Close()
-        {
-            Ioc.Application.Close();
-        }
-
-        /// <summary>
         /// The command method to calculate the hash values according to the selected data format
         /// </summary>
         private void Calculate()
         {
             byte[] key = null;
-            if (DataFormatSetup.HmacChecked)
+
+            //if hmac is selected get the hmac key bytes
+            if (HmacSetup.HmacChecked)
             {
-                key = GetBytesAccordingToFormatSelected(DataFormatSetup.KeyFormatSelected, DataFormatSetup.Key);
+                key = GetBytesAccordingToFormatSelected(HmacSetup.KeyFormatSelected, HmacSetup.Key);
             }
 
-            var data = GetBytesAccordingToFormatSelected(DataFormatSetup.DataSetup.DataFormatSelected, DataFormatSetup.DataSetup.Data);
+            //get the data bytes
+            var data = GetBytesAccordingToFormatSelected(DataInput.DataFormatSelected, DataInput.Data);
 
             //Check which hash options are checked and then calculate
             foreach(var item in HashList.Items)
@@ -136,7 +157,7 @@ namespace CryptoCalc.Core
         private byte[] GetBytesAccordingToFormatSelected(Format format, string data)
         {
             byte[] bytes = null;
-            switch (DataFormatSetup.DataSetup.DataFormatSelected)
+            switch (format)
             {
                 case Format.File:
                     bytes = ByteConvert.FileToBytes(data);
@@ -156,6 +177,20 @@ namespace CryptoCalc.Core
 
         #endregion
 
+        #region Event handler subscriptions
+
+        /// <summary>
+        /// Event subscription called when the input data changes
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="args"></param>
+        private void DataChanged(object obj, EventArgs args)
+        {
+            DataCorrect = DataInput.DataIsCorrectlyFormatted;
+        }
+
+        #endregion
+
         #region Private Methods
 
         /// <summary>
@@ -164,7 +199,6 @@ namespace CryptoCalc.Core
         private void InitializeCommands()
         {
             CalculateCommand = new RelayCommand(Calculate);
-            CloseCommand = new RelayCommand(Close);
             HelpCommand = new RelayCommand(HelpAsync);
         }
 

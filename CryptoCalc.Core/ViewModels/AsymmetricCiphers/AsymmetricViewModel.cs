@@ -125,6 +125,11 @@ namespace CryptoCalc.Core
         public CryptographyApi Api { get; set; }
 
         /// <summary>
+        /// The selected crypto cipher algorithim
+        /// </summary>
+        public IAsymmetricCipher SelectedCipher { get; set; }
+
+        /// <summary>
         /// The list off all symmetric algorithims
         /// </summary>
         public List<string> Algorithims { get; set; } = new List<string>();
@@ -150,9 +155,9 @@ namespace CryptoCalc.Core
         public ObservableCollection<int> KeySizes { get; set; } = new ObservableCollection<int>();
 
         /// <summary>
-        /// The selected crypto cipher algorithim
+        /// The View model for the data input control 
         /// </summary>
-        public IAsymmetricCipher SelectedCipher { get; set; }
+        public DataInputViewModel DataSetup { get; set; } = new DataInputViewModel();
 
         #endregion
 
