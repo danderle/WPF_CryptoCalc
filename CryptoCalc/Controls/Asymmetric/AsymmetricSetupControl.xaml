@@ -6,66 +6,88 @@
              xmlns:local="clr-namespace:CryptoCalc"
              mc:Ignorable="d" d:DesignWidth="400">
 
-    <Grid Background="{StaticResource WhiteBrush}"
-          >
+    <Grid Background="{StaticResource WhiteBrush}">
         <Grid.ColumnDefinitions>
+            <!--Comboboxes-->
+            <ColumnDefinition Width="Auto" />
+            <!--Textboxes and buttons-->
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="3*" />
         </Grid.ColumnDefinitions>
         
-        <!--ComboBox of what type of format to hash-->
-        <StackPanel Margin="0 0 5 0">
+        <!--ComboBoxes-->
+        <StackPanel Margin="8"
+                    local:ComboBoxWidthMatcherProperty.Value="True">
+            
+            <!--Data format combobox-->
             <TextBlock Text="Data Format:" />
             <ComboBox ItemsSource="{Binding DataFormatOptions}"
                       SelectedIndex="{Binding DataFormatSelected, Converter={local:DataHashFormatEnumToInt}}"
                       HorizontalAlignment="Stretch"/>
 
-
-            <TextBlock Text="Algorithim"/>
+            <!--Algorithim combobox-->
+            <TextBlock Text="Algorithim"
+                       Margin="0 8 0 0"/>
             <ComboBox ItemsSource="{Binding Algorithims}"
                       SelectedIndex ="{Binding SelectedAlgorithimIndex}"
                       local:SelectionChangedProperty.Value="{Binding ChangedAlgorithimCommand}"/>
+            
+            <!--Stackpanel visibile if key size selection is used-->
             <StackPanel Visibility="{Binding UsesKeySize, Converter={local:BoolToVisibility}}">
-                <TextBlock Text="Key Size" />
+                
+                <!--Key size combobox-->
+                <TextBlock Text="Key Size"
+                       Margin="0 8 0 0"/>
                 <ComboBox ItemsSource="{Binding KeySizes}"
                       SelectedIndex="{Binding KeySizeIndex}"/>
             </StackPanel>
+            
+            <!--Stackpanel visible if Ec curves are used-->
             <StackPanel Visibility="{Binding UsesEcCurves, Converter={local:BoolToVisibility}}">
-                <TextBlock Text="Curve Provider"/>
+                
+                <!--Ec curve provider combobox-->
+                <TextBlock Text="Curve Provider"
+                       Margin="0 8 0 0"/>
                 <ComboBox ItemsSource="{Binding Providers}"
                           SelectedIndex ="{Binding ProviderIndex}"
                           local:SelectionChangedProperty.Value="{Binding ChangedAlgorithimCommand}"/>
-                <TextBlock Text="EC Curve" />
+                
+                <!--Ec curve types combobox-->
+                <TextBlock Text="EC Curve"
+                       Margin="0 8 0 0"/>
                 <ComboBox ItemsSource="{Binding EcCurves}"
                       SelectedIndex="{Binding EcCurveIndex}"/>
             </StackPanel>
         </StackPanel>
         
-        <!--Cipher algorithim option list-->
-        <StackPanel Grid.Column="1">
+        <!--Stackpanel data and key setups-->
+        <StackPanel Grid.Column="1"
+                    Margin="8">
+            
             <!--Data to be hashed-->
             <TextBlock Text="Data:" />
             <Grid >
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="30*" />
-                    <ColumnDefinition Width="233*"/>
+                    <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <TextBox Text="{Binding Data, UpdateSourceTrigger=PropertyChanged}"
+                <TextBox Text="{Binding DataSetup.Data, UpdateSourceTrigger=PropertyChanged}"
+                         Background="{Binding DataSetup.DataIsCorrectlyFormatted, Converter={local:BoolToBackground}}"
                          local:DragDropProperty.Value="True"
-                         VerticalContentAlignment="Center"
-                         Grid.ColumnSpan="2"/>
-                <Button Grid.Column="2"
-                        Margin="5,0,0,0"
-                        Padding="5 2"
-                        Content="..." 
-                        Command="{Binding OpenFolderDialogCommand}"/>
+                         VerticalContentAlignment="Center"/>
+
+                <!--File broswer dialog pop up button-->
+                <Button Command="{Binding DataSetup.OpenFolderDialogCommand}"
+                        Visibility="{Binding DataSetup.DataFormatSelected, Converter={local:DataFormatsToVisibility}, ConverterParameter=File}"
+                        Grid.Column="1"
+                        Content="..."
+                        ToolTip="Select file"
+                        VerticalAlignment="Top"
+                        Margin="8 0 0 0"
+                        Height="30"/>
             </Grid>
 
+            <!--Key pair input-->
             <local:KeyPairCreatorControl DataContext="{Binding}" />
-            
         </StackPanel>
-        
     </Grid>
-    
 </UserControl>
