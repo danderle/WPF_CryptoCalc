@@ -8,20 +8,22 @@
                 mc:Ignorable="d"
                 MinWidth="400">
 
-    <Grid Background="{StaticResource WhiteBrush}">
-        <Grid.RowDefinitions>
-            <!--Header text-->
-            <RowDefinition Height="Auto" />
-            <!--Hash control-->
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
+    <Border Style="{StaticResource MainPageBorder}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <!--Header text-->
+                <RowDefinition Height="Auto" />
+                <!--Hash control-->
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
 
-        <!--Header text-->
-        <TextBlock Text="MSDN Hash Algorithims" 
+            <!--Header text-->
+            <TextBlock Text="MSDN Hash Algorithims" 
                    Style="{StaticResource HeaderText}"/>
 
-        <!--Hsh control-->
-        <local:HashControl Grid.Row="1"
+            <!--Hsh control-->
+            <local:HashControl Grid.Row="1"
                            DataContext="{Binding}" />
-    </Grid>
+        </Grid>
+    </Border>
 </local:BasePage>

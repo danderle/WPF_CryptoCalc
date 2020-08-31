@@ -7,9 +7,8 @@
                 xmlns:core="clr-namespace:CryptoCalc.Core;assembly=CryptoCalc.Core"
                 mc:Ignorable="d">
 
-    <Border Background="{StaticResource WhiteBrush}"
-            d:DataContext="{x:Static core:SymmetricDesignModel.Instance}"
-            Padding="0 0 5 0">
+    <Border d:DataContext="{x:Static core:SymmetricDesignModel.Instance}"
+            Style="{StaticResource MainPageBorder}">
         <Grid>
             <Grid.RowDefinitions>
                 <!--setup control-->

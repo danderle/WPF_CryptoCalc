@@ -22,4 +22,10 @@
         <Setter Property="BorderBrush" Value="{StaticResource BlueGrayBrush}" />
 
     </Style>
+    
+    <!--Main page border-->
+    <Style TargetType="{x:Type Border}" x:Key="MainPageBorder">
+        <Setter Property="Background" Value="{StaticResource WhiteBrush}"/>
+        <Setter Property="Padding" Value="0 0 5 0"/>
+    </Style>
 </ResourceDictionary>

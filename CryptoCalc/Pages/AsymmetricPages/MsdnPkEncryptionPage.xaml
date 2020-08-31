@@ -8,12 +8,10 @@
                 xmlns:core="clr-namespace:CryptoCalc.Core;assembly=CryptoCalc.Core"
                 mc:Ignorable="d">
 
-    <Border Background="{StaticResource WhiteBrush}"
-            Padding="5">
+    <Border Style="{StaticResource MainPageBorder}">
         <StackPanel>
             <TextBlock Text="MSDN Public Key Encryption"
-                       FontWeight="Bold"
-                       HorizontalAlignment="Center" />
+                       Style="{StaticResource HeaderText}"/>
             <local:AsymmetricSetupControl DataContext="{Binding}"/>
             <local:CipherOutputControl DataContext="{Binding}" />
         </StackPanel>
