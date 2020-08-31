@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace CryptoCalc.Core
+﻿namespace CryptoCalc.Core
 {
+    /// <summary>
+    /// The desing time model for the <see cref="HashItemViewModel"/>
+    /// </summary>
     public class HashItemDesignModel : HashItemViewModel
     {
         #region Singleton

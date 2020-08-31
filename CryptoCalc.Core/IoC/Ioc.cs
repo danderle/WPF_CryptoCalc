@@ -24,11 +24,6 @@ namespace CryptoCalc.Core
         /// </summary>
         public static ApplicationViewModel Application => Ioc.Get<ApplicationViewModel>();
 
-        /// <summary>
-        /// Gets the Data format view model
-        /// </summary>
-        public static DataFormatViewModel DataFormat => Ioc.Get<DataFormatViewModel>();
-
         #endregion
 
         #region Construction
@@ -50,9 +45,6 @@ namespace CryptoCalc.Core
         {
             //Bind to a single instance of the application view model
             Kernal.Bind<ApplicationViewModel>().ToConstant(new ApplicationViewModel());
-
-            //Bind to a single instance of the data format view model
-            Kernal.Bind<DataFormatViewModel>().ToConstant(new DataFormatViewModel());
         }
 
         #endregion

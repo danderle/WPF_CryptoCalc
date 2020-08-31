@@ -64,7 +64,7 @@ namespace CryptoCalc.Core
         #region Command Methods
 
         /// <summary>
-        /// The file selected command method, which saves the files path to the <see cref="DataFormatViewModel"/>
+        /// The file selected command method, which saves the files path to the <see cref="HmacViewModel"/>
         /// </summary>
         /// <param name="obj"></param>
         private void FileSelected(object obj)
