@@ -2,6 +2,9 @@
 
 namespace CryptoCalc.Core
 {
+    /// <summary>
+    /// The desing time model for the <see cref="HashItemListViewModel"/>
+    /// </summary>
     public class HashItemListDesignModel : HashItemListViewModel
     {
         #region Singleton
