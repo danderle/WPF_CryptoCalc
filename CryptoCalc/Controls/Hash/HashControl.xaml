@@ -17,13 +17,17 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <!--Data formatting options and data to be hashed entry-->
-        <local:DataFormatControl Grid.Row="0"
-                                 DataContext="{Binding DataFormatSetup}" 
-                                 HmacSelected="{Binding HmacChecked}"
-                                 d:DataContext="{x:Static core:DataFormatDesignModel.Instance}"
-                                 x:Name="DataFormatOptions"/>
-        
+        <StackPanel Grid.Row="0">
+            <!--Data input to be hashed entry-->
+            <local:DataInputControl DataContext="{Binding DataInput}" 
+                                    d:DataContext="{x:Static core:DataInputDesignModel.Instance}"
+                                    x:Name="DataInput"/>
+
+            <!--Hmac option control-->
+            <local:HmacControl d:DataContext="{x:Static core:HmacDesignModel.Instance}"
+                               DataContext="{Binding HmacSetup}"
+                               HmacSelected="{Binding HmacChecked}" />
+        </StackPanel>
         <!--Border gradient brush-->
         <Border Style="{StaticResource SectionBorder}" 
                 Grid.Row="0"/>
@@ -44,7 +48,7 @@
         <!--Calculate button-->
         <Button Content="Calculate"
                 Command="{Binding CalculateCommand}"
-                IsEnabled="{Binding DataFormatSetup.DataIsReadyForProcessing, Mode=OneWay}"
+                IsEnabled="{Binding DataIsReadyForProcessing, Mode=OneWay}"
                 HorizontalAlignment="Center"
                 Grid.Row="2"/>
 
