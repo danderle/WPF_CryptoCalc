@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Input;
 
-namespace CryptoCalc.Core.Models
+namespace CryptoCalc.Core
 {
     public class DataInputViewModel : BaseViewModel
     {

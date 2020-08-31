@@ -78,6 +78,9 @@
     <Compile Update="Controls\Hash\HashControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Controls\Shared\DataInputControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Controls\SideMenu\PageOptionListItemControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -93,7 +96,7 @@
     <Compile Update="Controls\Asymmetric\SignatureInputControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Controls\Symmetric\CipherOutputControl.xaml.cs">
+    <Compile Update="Controls\CipherOutputControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Controls\Symmetric\CipherSetupControl.xaml.cs">
@@ -111,7 +114,7 @@
     <Compile Update="Controls\Hash\HashItemControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Controls\Hash\DataFormatControl.xaml.cs">
+    <Compile Update="Controls\Hash\HmacControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Pages\AsymmetricCipherPage.xaml.cs">
@@ -135,6 +138,9 @@
     <Page Update="Controls\Hash\HashControl.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Controls\Shared\DataInputControl.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Controls\SideMenu\PageOptionListItemControl.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -150,7 +156,7 @@
     <Page Update="Controls\Asymmetric\SignatureInputControl.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Controls\Symmetric\CipherOutputControl.xaml">
+    <Page Update="Controls\CipherOutputControl.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Controls\Symmetric\CipherSetupControl.xaml">
@@ -168,7 +174,7 @@
     <Page Update="Controls\Hash\HashItemControl.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Controls\Hash\DataFormatControl.xaml">
+    <Page Update="Controls\Hash\HmacControl.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="DialogWindow.xaml">
