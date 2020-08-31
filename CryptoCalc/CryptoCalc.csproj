@@ -96,7 +96,7 @@
     <Compile Update="Controls\Asymmetric\SignatureInputControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Controls\CipherOutputControl.xaml.cs">
+    <Compile Update="Controls\Shared\CipherOutputControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Controls\Symmetric\CipherSetupControl.xaml.cs">
@@ -105,7 +105,7 @@
     <Compile Update="Controls\Asymmetric\KeyPairCreatorControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Controls\TreeViewControl.xaml.cs">
+    <Compile Update="Controls\Shared\TreeViewControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Controls\Hash\HashItemListControl.xaml.cs">
@@ -156,7 +156,7 @@
     <Page Update="Controls\Asymmetric\SignatureInputControl.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Controls\CipherOutputControl.xaml">
+    <Page Update="Controls\Shared\CipherOutputControl.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Controls\Symmetric\CipherSetupControl.xaml">
@@ -165,7 +165,7 @@
     <Page Update="Controls\Asymmetric\KeyPairCreatorControl.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Controls\TreeViewControl.xaml">
+    <Page Update="Controls\Shared\TreeViewControl.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Controls\Hash\HashItemListControl.xaml">
