@@ -26,6 +26,7 @@
                 <Border Style="{StaticResource SectionBorder}" 
                         Margin="0 0 0 5"/>
             </StackPanel>
+            
             <!--Output control-->
             <local:CipherOutputControl Grid.Row="1" 
                                        DataContext="{Binding}"/>

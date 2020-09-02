@@ -99,9 +99,6 @@
     <Compile Update="Controls\Shared\CipherOutputControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Controls\Symmetric\CipherSetupControl.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Update="Controls\Asymmetric\KeyPairCreatorControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -157,9 +154,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Controls\Shared\CipherOutputControl.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Controls\Symmetric\CipherSetupControl.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Controls\Asymmetric\KeyPairCreatorControl.xaml">

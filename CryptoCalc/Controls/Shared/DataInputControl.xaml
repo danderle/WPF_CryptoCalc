@@ -18,13 +18,13 @@
         </Grid.ColumnDefinitions>
 
         <!--Column 0-->
-        <StackPanel Margin="8">
+        <StackPanel Margin="8"
+                    x:Name="StackPanel">
             <!--ComboBox of what type of format to hash-->
             <TextBlock Text="Data Format:" />
             <ComboBox ItemsSource="{Binding DataFormatOptions}"
                       SelectedIndex="{Binding DataFormatSelected, Converter={local:DataHashFormatEnumToInt}}"
                       local:SelectionChangedProperty.Value="{Binding ChangedFormatCommand}"
-                      local:ComboBoxElementsMaxWidthProperty.Value="True"
                       x:Name="DataFormatComboBox"
                       HorizontalAlignment="Right"/>
         </StackPanel>
