@@ -21,9 +21,9 @@
 
             <!--Data Format ComboBox-->
             <TextBlock Text="Data Format:" />
-            <ComboBox ItemsSource="{Binding DataSetup.DataFormatOptions}"
-                      SelectedIndex="{Binding DataSetup.DataFormatSelected, Converter={local:DataHashFormatEnumToInt}}"
-                      local:SelectionChangedProperty.Value="{Binding DataSetup.ChangedFormatCommand}" />
+            <ComboBox ItemsSource="{Binding DataInput.DataFormatOptions}"
+                      SelectedIndex="{Binding DataInput.DataFormatSelected, Converter={local:DataHashFormatEnumToInt}}"
+                      local:SelectionChangedProperty.Value="{Binding DataInput.ChangedFormatCommand}" />
 
             <!--Algorithims ComboBox-->
             <TextBlock Text="Algorithim"
@@ -55,14 +55,14 @@
                 </Grid.ColumnDefinitions>
                 
                 <!--Data text box-->
-                <TextBox Text="{Binding DataSetup.Data, UpdateSourceTrigger=PropertyChanged}"
-                         Background="{Binding DataSetup.DataIsCorrectlyFormatted, Converter={local:BoolToBackground}}"
+                <TextBox Text="{Binding DataInput.Data, UpdateSourceTrigger=PropertyChanged}"
+                         Background="{Binding DataInput.DataIsCorrectlyFormatted, Converter={local:BoolToBackground}}"
                          local:DragDropProperty.Value="True"
                          VerticalContentAlignment="Center"/>
                 
                 <!--File broswer dialog pop up button-->
-                <Button Command="{Binding DataSetup.OpenFolderDialogCommand}"
-                        Visibility="{Binding DataSetup.DataFormatSelected, Converter={local:DataFormatsToVisibility}, ConverterParameter=File}"
+                <Button Command="{Binding DataInput.OpenFolderDialogCommand}"
+                        Visibility="{Binding DataInput.DataFormatSelected, Converter={local:DataFormatsToVisibility}, ConverterParameter=File}"
                         Grid.Column="1"
                         Content="..."
                         ToolTip="Select file"

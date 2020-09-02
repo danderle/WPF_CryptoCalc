@@ -7,8 +7,7 @@
              xmlns:core="clr-namespace:CryptoCalc.Core;assembly=CryptoCalc.Core"
              mc:Ignorable="d" >
 
-    <Grid Background="{StaticResource WhiteBrush}"
-          d:DataContext="{x:Static core:SymmetricDesignModel.Instance}">
+    <Grid Background="{StaticResource WhiteBrush}">
         <Grid.RowDefinitions>
             <!--Output Textboxes-->
             <RowDefinition Height="*" />
@@ -20,11 +19,11 @@
         <StackPanel VerticalAlignment="Center"
                     Margin="8">
             <!--Text encryption input / output-->
-            <StackPanel Visibility="{Binding DataSetup.DataFormatSelected, Converter={local:DataFormatsToVisibility}, ConverterParameter=TextString}">
+            <StackPanel Visibility="{Binding DataInput.DataFormatSelected, Converter={local:DataFormatsToVisibility}, ConverterParameter=TextString}">
                 <TextBlock Text="Encrypted Text" 
                            />
                 <TextBox Text="{Binding EncryptedText, UpdateSourceTrigger=PropertyChanged}"
-                         ToolTip="{Binding DataSetup.DataFormatSelected, Converter={local:DataFormatsToToolTip}}"/>
+                         ToolTip="{Binding DataInput.DataFormatSelected, Converter={local:DataFormatsToToolTip}}"/>
 
                 <TextBlock Text="Decrypted Text" />
                 <TextBox Text="{Binding DecryptedText, UpdateSourceTrigger=PropertyChanged}" 
@@ -32,10 +31,10 @@
             </StackPanel>
 
             <!--hex encryption input / output-->
-            <StackPanel Visibility="{Binding DataSetup.DataFormatSelected, Converter={local:DataFormatsToVisibility}, ConverterParameter=HexString}">
+            <StackPanel Visibility="{Binding DataInput.DataFormatSelected, Converter={local:DataFormatsToVisibility}, ConverterParameter=HexString}">
                 <TextBlock Text="Encrypted Hex" />
                 <TextBox Text="{Binding EncryptedHex, UpdateSourceTrigger=PropertyChanged}" 
-                         ToolTip="{Binding DataSetup.DataFormatSelected, Converter={local:DataFormatsToToolTip}}"/>
+                         ToolTip="{Binding DataInput.DataFormatSelected, Converter={local:DataFormatsToToolTip}}"/>
 
                 <TextBlock Text="Decrypted Hex"/>
                 <TextBox Text="{Binding DecryptedHex, UpdateSourceTrigger=PropertyChanged}" 
@@ -43,10 +42,10 @@
             </StackPanel>
             
             <!--File encryption input / output-->
-            <StackPanel Visibility="{Binding DataSetup.DataFormatSelected, Converter={local:DataFormatsToVisibility}, ConverterParameter=File}">
+            <StackPanel Visibility="{Binding DataInput.DataFormatSelected, Converter={local:DataFormatsToVisibility}, ConverterParameter=File}">
                 <TextBlock Text="Encrypted File Path" />
                 <TextBox Text="{Binding EncryptedFilePath, UpdateSourceTrigger=PropertyChanged}"
-                         ToolTip="{Binding DataSetup.DataFormatSelected, Converter={local:DataFormatsToToolTip}}"
+                         ToolTip="{Binding DataInput.DataFormatSelected, Converter={local:DataFormatsToToolTip}}"
                          local:DragDropProperty.Value="True"/>
 
                 <TextBlock Text="Decrypted File Path"/>
@@ -55,25 +54,21 @@
             </StackPanel>
 
 
-        </StackPanel>
-
-        <!--Gradient sectioned line-->
-        <Border Style="{StaticResource SectionBorder}" />
-        
-        <!--De-/Encryption buttons-->
-        <StackPanel Grid.Row="1"
+            <!--De-/Encryption buttons-->
+            <StackPanel Grid.Row="1"
                     Orientation="Horizontal"
                     HorizontalAlignment="Center"
                     >
-            <!--Encryption button-->
-            <Button Content="Encrypt" 
+                <!--Encryption button-->
+                <Button Content="Encrypt" 
                     IsEnabled="{Binding ReadyForEncryption, Mode=OneWay}"
                     Command="{Binding EncryptCommand}"/>
-            <!--Decryption button-->
-            <Button Content="Decrypt" 
+                <!--Decryption button-->
+                <Button Content="Decrypt" 
                     IsEnabled="{Binding ReadyForDecryption, Mode=OneWay}"
                     Command="{Binding DecryptCommand}"
                     />
+            </StackPanel>
         </StackPanel>
     </Grid>
     

@@ -32,9 +32,9 @@ namespace CryptoCalc.Core
             SelectedKeySize = KeySizes[0];
             IvSize = SelectedCipherApi.GetIvSize(SelectedAlgorithim);
 
-            DataSetup.Data = "Some data";
-            DataSetup.DataFormatOptions = Enum.GetValues(typeof(Format)).Cast<Format>().Select(t => t.ToString()).ToList();
-            DataSetup.DataFormatSelected = Format.File;
+            DataInput.Data = "Some data";
+            DataInput.DataFormatOptions = Enum.GetValues(typeof(Format)).Cast<Format>().Select(t => t.ToString()).ToList();
+            DataInput.DataFormatSelected = Format.File;
             SecretKey = "FFFFFFFFFFFF";
             IV = "FFFFFFFFFFFF";
             IvSize = 6*8;
