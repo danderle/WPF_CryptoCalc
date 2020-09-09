@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Linq;
-
-namespace CryptoCalc.Core
+﻿namespace CryptoCalc.Core
 {
     /// <summary>
     /// The design time model for the asymmetric cipher page
@@ -25,7 +21,10 @@ namespace CryptoCalc.Core
         /// </summary>
         public AsymmetricDesignModel()
         {
-            
+            DataInput.DataFormatSelected = Format.File;
+            KeyName = "Some name";
+            PrivateKeyPath = $"C:/home/Desktop/Privatefile.txt";
+            PublicKeyPath = $"C:/home/Desktop/Publicfile.txt";
         }
 
         #endregion

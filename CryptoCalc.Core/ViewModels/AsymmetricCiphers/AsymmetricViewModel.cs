@@ -20,14 +20,9 @@ namespace CryptoCalc.Core
 
         #region Public Properties
 
-        public bool UsesEcCurves { get; set; }
+        public bool DataCorrect { get; set; }
 
-        public bool UsesKeySize { get; set; }
-
-        /// <summary>
-        /// The data to be hashed <see cref="Format"/> for hash data format options
-        /// </summary>
-        public string Data { get; set; } = string.Empty;
+        public bool ReadyForEncryption => DataCorrect;
 
         /// <summary>
         /// The encrypted file path
@@ -62,102 +57,42 @@ namespace CryptoCalc.Core
         /// <summary>
         /// The name to save the public and private key pair to
         /// </summary>
-        public string KeyName { get; set; }
+        public string KeyName { get; set; } = string.Empty;
 
         /// <summary>
         /// The path to the private key file
         /// </summary>
-        public string PrivateKeyPath { get; set; }
+        public string PrivateKeyPath { get; set; } = string.Empty;
 
         /// <summary>
-        /// 
+        /// The file path to the public key
         /// </summary>
-        public string PublicKeyPath { get; set; }
+        public string PublicKeyPath { get; set; } = string.Empty;
 
         /// <summary>
-        /// 
+        /// The file path to the private key
         /// </summary>
-        public string PrivateKey { get; set; }
+        public string PrivateKey { get; set; } = string.Empty;
 
         /// <summary>
-        /// 
+        /// The other parties public key used for key exchange
         /// </summary>
-        public string OtherPartyPublicKey { get; set; }
+        public string OtherPartyPublicKey { get; set; } = string.Empty;
 
         /// <summary>
-        /// 
+        /// The derived key when using key exchange
         /// </summary>
-        public string DerivedKey { get; set; }
-
-        /// <summary>
-        /// The currently selected key size index
-        /// </summary>
-        public int KeySizeIndex { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public int EcCurveIndex { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public int ProviderIndex { get; set; }
-
-        /// <summary>
-        /// Currently selected algorithim
-        /// </summary>
-        public int SelectedAlgorithimIndex { get; set; } = 0;
-
-        /// <summary>
-        /// Currently selected data format
-        /// </summary>
-        public Format DataFormatSelected { get; set; }
-
-        /// <summary>
-        /// The Public key operation to do
-        /// </summary>
-        public AsymmetricOperation SelectedOperation { get; set; }
-
-        /// <summary>
-        /// The selectred crypto library
-        /// </summary>
-        public CryptographyApi Api { get; set; }
-
-        /// <summary>
-        /// The selected crypto cipher algorithim
-        /// </summary>
-        public IAsymmetricCipher SelectedCipher { get; set; }
-
-        /// <summary>
-        /// The list off all symmetric algorithims
-        /// </summary>
-        public List<string> Algorithims { get; set; } = new List<string>();
-        
-        /// <summary>
-        /// Holds the data format options
-        /// </summary>
-        public List<string> DataFormatOptions { get; set; } = new List<string>();
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public ObservableCollection<string> Providers { get; set; } = new ObservableCollection<string>();
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public ObservableCollection<string> EcCurves { get; set; } = new ObservableCollection<string>();
-
-        /// <summary>
-        /// The list of all the different key size options
-        /// </summary>
-        public ObservableCollection<int> KeySizes { get; set; } = new ObservableCollection<int>();
+        public string DerivedKey { get; set; } = string.Empty;
 
         /// <summary>
         /// The View model for the data input control 
         /// </summary>
-        public DataInputViewModel DataSetup { get; set; } = new DataInputViewModel();
+        public DataInputViewModel DataInput { get; set; } = new DataInputViewModel();
+
+        /// <summary>
+        /// The view model for the key pair setup control
+        /// </summary>
+        public KeyPairSetupViewModel KeyPairSetup { get; set; } = new KeyPairSetupViewModel();
 
         #endregion
 
@@ -179,17 +114,38 @@ namespace CryptoCalc.Core
         public ICommand DropCommand { get; set; }
 
         /// <summary>
-        /// The command to when a cipher algorithim is selected
+        /// The command to change operation
         /// </summary>
-        public ICommand ChangedAlgorithimCommand { get; set; }
         public ICommand ChangedOperationCommand { get; set; }
-        public ICommand ChangedProviderCommand { get; set; }
-        public ICommand CreateKeyPairCommand { get; set; }
+
+        /// <summary>
+        /// The command to save a key pair
+        /// </summary>
         public ICommand SaveKeyPairCommand { get; set; }
+
+        /// <summary>
+        /// The command to load a key pair
+        /// </summary>
         public ICommand LoadPrivateKeyCommand { get; set; }
+
+        /// <summary>
+        /// The command to delete a key pair
+        /// </summary>
         public ICommand DeleteKeyPairCommand { get; set; }
+
+        /// <summary>
+        /// The command to create a signature
+        /// </summary>
         public ICommand SignCommand { get; set; }
+
+        /// <summary>
+        /// The command to verify a signature
+        /// </summary>
         public ICommand VerifyCommand { get; set; }
+
+        /// <summary>
+        /// The command to derive a shared key during a key exchange
+        /// </summary>
         public ICommand DeriveKeyCommand { get; set; }
 
         #endregion
@@ -216,23 +172,9 @@ namespace CryptoCalc.Core
         public AsymmetricViewModel(CryptographyApi api, AsymmetricOperation operation)
         {
             //Initialize the commands
-            InitializeCommands(); 
-            
-            Api = api;
-            SelectedOperation = operation;
-            switch (Api)
-            {
-                case CryptographyApi.MSDN:
-                    Algorithims = IAsymmetricCipher.GetMsdnAlgorthims(SelectedOperation);
-                    break;
-                case CryptographyApi.BouncyCastle:
-                    Algorithims = IAsymmetricCipher.GetBouncyAlgorthims(SelectedOperation);
-                    break;
-                default:
-                    Debugger.Break();
-                    break;
-            }
-            ChangedAlgorithim();
+            InitializeCommands();
+
+            KeyPairSetup = new KeyPairSetupViewModel(api, operation);
 
             //Initialize lists
             InitializeLists();
@@ -261,7 +203,7 @@ namespace CryptoCalc.Core
         {
             var otherPartyPublicKey = ByteConvert.HexStringToBytes(OtherPartyPublicKey.Replace(" ", string.Empty));
             var privateKey = File.ReadAllBytes(PrivateKeyPath);
-            var derivedKey = ((IAsymmetricKeyExchange)SelectedCipher).DeriveKey(privateKey, KeySizes[KeySizeIndex], otherPartyPublicKey);
+            var derivedKey = ((IAsymmetricKeyExchange)KeyPairSetup.SelectedCipher).DeriveKey(privateKey, KeyPairSetup.KeySizes[KeyPairSetup.KeySizeIndex], otherPartyPublicKey);
             DerivedKey = ByteConvert.BytesToHexString(derivedKey);
         }
 
@@ -273,16 +215,16 @@ namespace CryptoCalc.Core
             var pubKey = File.ReadAllBytes(PublicKeyPath);
             var signature = ByteConvert.HexStringToBytes(OriginalSignature);
             byte[] data = null;
-            switch(DataFormatSelected)
+            switch(DataInput.DataFormatSelected)
             {
                 case Format.File:
-                    data = File.ReadAllBytes(Data);
+                    data = File.ReadAllBytes(DataInput.Data);
                     break;
                 case Format.TextString:
-                    data = ByteConvert.StringToAsciiBytes(Data);
+                    data = ByteConvert.StringToAsciiBytes(DataInput.Data);
                     break;
             }
-            SignatureVerified = ((IAsymmetricSignature)SelectedCipher).Verify(signature, pubKey, data);
+            SignatureVerified = ((IAsymmetricSignature)KeyPairSetup.SelectedCipher).Verify(signature, pubKey, data);
         }
 
         /// <summary>
@@ -292,16 +234,16 @@ namespace CryptoCalc.Core
         {
             var privKey = File.ReadAllBytes(PrivateKeyPath);
             byte[] data = null;
-            switch (DataFormatSelected)
+            switch (DataInput.DataFormatSelected)
             {
                 case Format.File:
-                    data = File.ReadAllBytes(Data);
+                    data = File.ReadAllBytes(DataInput.Data);
                     break;
                 case Format.TextString:
-                    data = ByteConvert.StringToAsciiBytes(Data);
+                    data = ByteConvert.StringToAsciiBytes(DataInput.Data);
                     break;
             }
-            var signature = ((IAsymmetricSignature)SelectedCipher).Sign(privKey, data);
+            var signature = ((IAsymmetricSignature)KeyPairSetup.SelectedCipher).Sign(privKey, data);
             OriginalSignature = ByteConvert.BytesToHexString(signature);
         }
 
@@ -313,10 +255,12 @@ namespace CryptoCalc.Core
             if (File.Exists(PrivateKeyPath))
             {
                 File.Delete(PrivateKeyPath);
+                PrivateKeyPath = string.Empty;
             }
             if (File.Exists(PublicKeyPath))
             {
                 File.Delete(PublicKeyPath);
+                PublicKeyPath = string.Empty;
             }
         }
 
@@ -325,79 +269,14 @@ namespace CryptoCalc.Core
         /// </summary>
         private void SaveKeyPair()
         {
-            File.WriteAllBytes(PrivateKeyPath, SelectedCipher.GetPrivateKey());
-            File.WriteAllBytes(PublicKeyPath, SelectedCipher.GetPublicKey());
-        }
-
-        /// <summary>
-        /// The command method to create a key pair
-        /// </summary>
-        private void CreateKeyPair()
-        {
-            if(SelectedCipher is IECAlgorithims ecCipher)
+            if(File.Exists(PrivateKeyPath) && File.Exists(PublicKeyPath))
             {
-                if(EcCurves.Count != 0)
-                {
-                    ecCipher.CreateKeyPair(EcCurves[EcCurveIndex]);
-                }
-            }
-            else if(SelectedCipher is INonECAlgorithims nonEcCipher)
-            {
-                if(KeySizes.Count != 0)
-                {
-                    nonEcCipher.CreateKeyPair(KeySizes[KeySizeIndex]);
-                }
-            }
-            else
-            {
-                return;
-            }
-            PrivateKeyPath = pKeyPath + "\\" + KeyName + "_PrivateKey.pkcs1";
-            PublicKeyPath = pKeyPath + "\\" + KeyName + "_PublicKey.pkcs1";
-        }
-
-        private void ChangedProvider()
-        {
-            var provider = (EcCurveProvider)Enum.Parse(typeof(EcCurveProvider), Providers[ProviderIndex]);
-            EcCurves = ((IECAlgorithims)SelectedCipher).GetEcCurves(provider);
-            EcCurveIndex = 0;
-        }
-
-        /// <summary>
-        /// The command method when a different algrithim is selected
-        /// </summary>
-        private void ChangedAlgorithim()
-        {
-            switch(Api)
-            {
-                case CryptographyApi.MSDN:
-                     SelectedCipher = IAsymmetricCipher.GetMsdnCipher(Algorithims[SelectedAlgorithimIndex]);
-                    break;
-                case CryptographyApi.BouncyCastle:
-                    SelectedCipher = IAsymmetricCipher.GetBouncyCipher(Algorithims[SelectedAlgorithimIndex]);
-                    break;
-            }
-            if (SelectedCipher is IECAlgorithims ecCipher)
-            {
-                UsesKeySize = false;
-                UsesEcCurves = ecCipher.UsesCurves;
-                if (UsesEcCurves)
-                {
-                    Providers = ecCipher.GetEcProviders();
-                    var provider = (EcCurveProvider)Enum.Parse(typeof(EcCurveProvider), Providers[ProviderIndex]);
-                    EcCurves = ecCipher.GetEcCurves(provider);
-                    EcCurveIndex = 0;
-                }
-            }
-            else if(SelectedCipher is INonECAlgorithims nonEcCipher)
-            {
-                UsesEcCurves = false;
-                UsesKeySize = nonEcCipher.UsesKeySize;
-                KeySizes = nonEcCipher.GetKeySizes();
-                KeySizeIndex = 0;
+                File.WriteAllBytes(PrivateKeyPath, KeyPairSetup.SelectedCipher.GetPrivateKey());
+                File.WriteAllBytes(PublicKeyPath, KeyPairSetup.SelectedCipher.GetPublicKey());
             }
         }
 
+        
         /// <summary>
         /// The command method to decrypt the given data
         /// </summary>
@@ -406,18 +285,18 @@ namespace CryptoCalc.Core
             byte[] encrypted;
             
             var privateKey = File.ReadAllBytes(PrivateKeyPath);
-            switch (DataFormatSelected)
+            switch (DataInput.DataFormatSelected)
             {
                 case Format.File:
                     encrypted = ByteConvert.FileToBytes(EncryptedFilePath);
-                    var decryptedBytes = ((IAsymmetricEncryption)SelectedCipher).DecryptToBytes(privateKey, encrypted);
+                    var decryptedBytes = ((IAsymmetricEncryption)KeyPairSetup.SelectedCipher).DecryptToBytes(privateKey, encrypted);
                     var extension = Path.GetExtension(EncryptedFilePath);
                     DecryptedFilePath = Path.Combine(Directory.GetParent(EncryptedFilePath).ToString(), Path.GetFileNameWithoutExtension(EncryptedFilePath) + ".Decrypted" + extension);
                     File.WriteAllBytes(DecryptedFilePath, decryptedBytes);
                     break;
                 case Format.TextString:
                     encrypted = ByteConvert.HexStringToBytes(EncryptedText);
-                    DecryptedText = ((IAsymmetricEncryption)SelectedCipher).DecryptToText(privateKey, encrypted);
+                    DecryptedText = ((IAsymmetricEncryption)KeyPairSetup.SelectedCipher).DecryptToText(privateKey, encrypted);
                     break;
             }
         }
@@ -429,20 +308,20 @@ namespace CryptoCalc.Core
         {
             byte[] encrypted;
             var pubKey = File.ReadAllBytes(PublicKeyPath);
-            switch (DataFormatSelected)
+            switch (DataInput.DataFormatSelected)
             {
                 case Format.File:
-                    if (File.Exists(Data))
+                    if (File.Exists(DataInput.Data))
                     {
-                        var plainBytes = File.ReadAllBytes(Data);
-                        var encryptedBytes = ((IAsymmetricEncryption)SelectedCipher).EncryptBytes(pubKey, plainBytes);
-                        var extension = Path.GetExtension(Data);
-                        EncryptedFilePath = Path.Combine(Directory.GetParent(Data).ToString(), Path.GetFileNameWithoutExtension(Data) + ".Encrypted" + extension);
+                        var plainBytes = File.ReadAllBytes(DataInput.Data);
+                        var encryptedBytes = ((IAsymmetricEncryption)KeyPairSetup.SelectedCipher).EncryptBytes(pubKey, plainBytes);
+                        var extension = Path.GetExtension(DataInput.Data);
+                        EncryptedFilePath = Path.Combine(Directory.GetParent(DataInput.Data).ToString(), Path.GetFileNameWithoutExtension(DataInput.Data) + ".Encrypted" + extension);
                         File.WriteAllBytes(EncryptedFilePath, encryptedBytes);
                     }
                 break;
                 case Format.TextString:
-                    encrypted = ((IAsymmetricEncryption)SelectedCipher).EncryptText(pubKey, Data);
+                    encrypted = ((IAsymmetricEncryption)KeyPairSetup.SelectedCipher).EncryptText(pubKey, DataInput.Data);
                     EncryptedText = ByteConvert.BytesToHexString(encrypted);
                     break;
             }
@@ -452,29 +331,27 @@ namespace CryptoCalc.Core
 
         #region Private Methods
 
+        /// <summary>
+        /// Initialize any lists
+        /// </summary>
         private void InitializeLists()
         {
-            //Set the data format options
-            DataFormatOptions.Add(Format.File.ToString());
-            DataFormatOptions.Add(Format.TextString.ToString());
         }
 
+        /// <summary>
+        /// Initialize any commands
+        /// </summary>
         private void InitializeCommands()
         {
             EncryptCommand = new RelayCommand(Encrypt);
             DecryptCommand = new RelayCommand(Decrypt);
-            ChangedAlgorithimCommand = new RelayCommand(ChangedAlgorithim);
-            CreateKeyPairCommand = new RelayCommand(CreateKeyPair);
             SaveKeyPairCommand = new RelayCommand(SaveKeyPair);
             DeleteKeyPairCommand = new RelayCommand(DeleteKeyPair);
             SignCommand = new RelayCommand(Sign);
             VerifyCommand = new RelayCommand(Verify);
             DeriveKeyCommand = new RelayCommand(DeriveKey);
             LoadPrivateKeyCommand = new RelayCommand(LoadPrivateKey);
-            ChangedProviderCommand = new RelayCommand(ChangedProvider);
         }
-
-        
 
         #endregion
     }
