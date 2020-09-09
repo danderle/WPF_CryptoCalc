@@ -8,23 +8,33 @@
              mc:Ignorable="d"
              d:DesignWidth="400">
 
-    <Grid Background="{StaticResource WhiteBrush}">
+    <Grid Background="{StaticResource WhiteBrush}"
+          d:DataContext="{x:Static core:AsymmetricDesignModel.Instance}">
         <StackPanel>
+            <!--Key Name textbox-->
             <TextBlock Text="Key Name" />
-            <TextBox Text="{Binding KeyName, UpdateSourceTrigger=PropertyChanged}" />
-            <Button Content="Create" 
-                    HorizontalAlignment="Center"
-                    Command="{Binding CreateKeyPairCommand}"/>
+            <TextBox Text="{Binding KeyName, UpdateSourceTrigger=PropertyChanged}" 
+                     Background="{Binding KeyNameAcceptable, Converter={local:BoolToBackground}}"/>
+            
+            
+            <!--Private key Path textbox-->
             <TextBlock Text="Private Key Path" />
             <TextBox Text="{Binding PrivateKeyPath, UpdateSourceTrigger=PropertyChanged}" 
                      local:DragDropProperty.Value="{Binding DropCommand}"/>
+            
+            <!--Public key path textbox-->
             <TextBlock Text="Public Key Path" />
             <TextBox Text="{Binding PublicKeyPath, UpdateSourceTrigger=PropertyChanged}" 
                      local:DragDropProperty.Value="{Binding DropCommand}"/>
+            
+            <!--Buttons stackpanel-->
             <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Center">
+                <!--Save button-->
                 <Button Content="Save" 
                         Command="{Binding SaveKeyPairCommand}"/>
+                
+                <!--Delete button-->
                 <Button Content="Delete" 
                         Command="{Binding DeleteKeyPairCommand}"/>
             </StackPanel>
