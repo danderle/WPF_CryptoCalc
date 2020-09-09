@@ -93,7 +93,7 @@
             </StackPanel>
             
             <!--Random key generation button-->
-            <Button Content="Generate random key" 
+            <Button Content="Generate new key" 
                     Command="{Binding GenerateKeyCommand}"
                     HorizontalAlignment="Center"
                     Margin="8 8 8 0"/>

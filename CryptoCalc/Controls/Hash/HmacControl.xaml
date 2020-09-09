@@ -42,7 +42,6 @@
                     <ComboBox ItemsSource="{Binding KeyFormat}"
                               SelectedIndex="{Binding KeyFormatSelected, Converter={local:DataHashFormatEnumToInt}}"
                               IsEnabled="{Binding ElementName=hmacCheck, Path=IsChecked}"
-                              local:ComboBoxElementsMaxWidthProperty.Value="True"
                               local:SelectionChangedProperty.Value="{Binding DataFormatSelectionChangedCommand}"
                               />
                 </StackPanel>

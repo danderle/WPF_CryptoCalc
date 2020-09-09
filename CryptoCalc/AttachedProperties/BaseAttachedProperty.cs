@@ -14,7 +14,7 @@ namespace CryptoCalc
         #region Public Events
 
         /// <summary>
-        /// Fired when the value is changes
+        /// Fired when the value is changed
         /// </summary>
         public event Action<DependencyObject, DependencyPropertyChangedEventArgs> ValueChanged = (sender, evnt) => { };
 
