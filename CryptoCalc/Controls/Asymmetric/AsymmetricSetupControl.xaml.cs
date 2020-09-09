@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
 
 namespace CryptoCalc
 {
@@ -7,6 +8,7 @@ namespace CryptoCalc
     /// </summary>
     public partial class AsymmetricSetupControl : UserControl
     {
+        
         #region Constructor
 
         public AsymmetricSetupControl()
