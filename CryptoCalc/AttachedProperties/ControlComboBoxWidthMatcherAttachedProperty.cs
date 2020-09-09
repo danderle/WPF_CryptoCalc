@@ -40,43 +40,36 @@ namespace CryptoCalc
             {
                 if (child is DataInputControl inputControl)
                 {
-                    foreach(var chld in inputControl.StackPanel.Children)
+                    foreach(var controlChild in inputControl.StackPanelWithComboBox.Children)
                     {
-                        //cast to the Hash item control
-                        var comboBox = (chld as ComboBox);
-
-                        // Ignore any non ComboBoxes
-                        if (!(comboBox is ComboBox))
-                            continue;
-
-                        //set combobox width and max
-                        SetCombBoxWidthAndSaveMax(comboBox);
+                        if(controlChild is ComboBox comboBox)
+                        {
+                            //set combobox width and max
+                            SetCombBoxWidthAndSaveMax(comboBox);
+                        }
                     }
                 }
-                else if (child is Grid grid)
+                else if(child is KeyPairSetupControl keyPairSetupControl)
                 {
-                    foreach (var chld in grid.Children)
+                    foreach (var controlChild in keyPairSetupControl.StackPanelWithComboBox.Children)
                     {
-                        if(chld is StackPanel stackPanel)
+                        if (controlChild is ComboBox comboBox)
                         {
-                            if(stackPanel.Name.Equals("ComboBoxes"))
+                            //set combobox width and max
+                            SetCombBoxWidthAndSaveMax(comboBox);
+                        }
+                        else if(controlChild is StackPanel stackPanel)
+                        {
+                            foreach(var stackPanelChild in stackPanel.Children)
                             {
-                                foreach(var chd in stackPanel.Children)
+                                if (stackPanelChild is ComboBox combobox)
                                 {
-                                    //cast to the Hash item control
-                                    var comboBox = (chd as ComboBox);
-
-                                    // Ignore any non ComboBoxes
-                                    if (!(comboBox is ComboBox))
-                                        continue;
-
                                     //set combobox width and max
-                                    SetCombBoxWidthAndSaveMax(comboBox);
+                                    SetCombBoxWidthAndSaveMax(combobox);
                                 }
                             }
                         }
                     }
-
                 }
                 else
                 {
