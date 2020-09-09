@@ -19,13 +19,14 @@
 
         <!--Column 0-->
         <StackPanel Margin="8"
-                    x:Name="StackPanel">
+                    x:Name="StackPanelWithComboBox">
             <!--ComboBox of what type of format to hash-->
             <TextBlock Text="Data Format:" />
             <ComboBox ItemsSource="{Binding DataFormatOptions}"
                       SelectedIndex="{Binding DataFormatSelected, Converter={local:DataHashFormatEnumToInt}}"
                       local:SelectionChangedProperty.Value="{Binding ChangedFormatCommand}"
-                      x:Name="DataFormatComboBox"
+                      x:Name="ComboBox1"
+                      local:ComboBoxElementsMaxWidthProperty.Value="True"
                       HorizontalAlignment="Right"/>
         </StackPanel>
 
@@ -46,7 +47,7 @@
                 <TextBox Text="{Binding Data, UpdateSourceTrigger=PropertyChanged}"
                          Background="{Binding DataIsCorrectlyFormatted, Converter={local:BoolToBackground}}"
                          local:DragDropProperty.Value="True"
-                         ToolTip="{Binding ElementName=DataFormatComboBox, Path=SelectedIndex, Converter={local:IndexToToolTip}}"/>
+                         ToolTip="{Binding ElementName=ComboBox1, Path=SelectedIndex, Converter={local:IndexToToolTip}}"/>
                 
                 <!--File browser pop pup button-->
                 <Button Grid.Column="1"
