@@ -1,0 +1,91 @@
+﻿<UserControl x:Class="CryptoCalc.KeyPairSetupControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CryptoCalc"
+             xmlns:core="clr-namespace:CryptoCalc.Core;assembly=CryptoCalc.Core"
+             mc:Ignorable="d"
+             d:DesignWidth="400">
+
+    <Grid Background="{StaticResource WhiteBrush}"
+          d:DataContext="{x:Static core:KeyPairSetupDesignModel.Instance}">
+        <Grid.ColumnDefinitions>
+            <!--Comboboxes-->
+            <ColumnDefinition Width="Auto" />
+            <!--Textboxes and buttons-->
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!--Column 0-->
+        <!--ComboBoxes-->
+        <StackPanel x:Name="StackPanelWithComboBox"
+                    Margin="8">
+            
+            <!--Algorithim combobox-->
+            <TextBlock Text="Algorithim"
+                       Margin="0 8 0 0"/>
+            <ComboBox ItemsSource="{Binding Algorithims}"
+                      SelectedIndex ="{Binding SelectedAlgorithimIndex}"
+                      x:Name="ComboBox1"
+                      local:SelectionChangedProperty.Value="{Binding ChangedAlgorithimCommand}"/>
+
+            <!--Stackpanel visibile if key size selection is used-->
+            <StackPanel Visibility="{Binding UsesKeySize, Converter={local:BoolToVisibility}}">
+
+                <!--Key size combobox-->
+                <TextBlock Text="Key Size"
+                           Margin="0 8 0 0"/>
+                <ComboBox ItemsSource="{Binding KeySizes}"
+                          SelectedIndex="{Binding KeySizeIndex}"
+                          x:Name="ComboBox2"/>
+            </StackPanel>
+
+            <!--Stackpanel visible if Ec curves are used-->
+            <StackPanel Visibility="{Binding UsesEcCurves, Converter={local:BoolToVisibility}}">
+
+                <!--Ec curve provider combobox-->
+                <TextBlock Text="Curve Provider"
+                           Margin="0 8 0 0"/>
+                <ComboBox ItemsSource="{Binding Providers}"
+                          SelectedIndex ="{Binding ProviderIndex}"
+                          local:SelectionChangedProperty.Value="{Binding ChangedAlgorithimCommand}"/>
+
+                <!--Ec curve types combobox-->
+                <TextBlock Text="EC Curve"
+                           Margin="0 8 0 0"/>
+                <ComboBox ItemsSource="{Binding EcCurves}"
+                          SelectedIndex="{Binding EcCurveIndex}"/>
+            </StackPanel>
+        </StackPanel>
+
+        <!--Column 1-->
+        <!--Textboxes and create new button-->
+        <StackPanel Grid.Column="1"
+                    Margin="8">
+            <!--Secret Key text box-->
+            <TextBlock Margin="0 8 0 0">
+                    <Run Text="Private Key" />
+                    <Run Text="(" /><Run Text="{Binding SelectedKeySize, Mode=OneWay}" />
+                    <Run Text=" bits)" />
+            </TextBlock>
+            <TextBox Text="{Binding PrivateKey, UpdateSourceTrigger=PropertyChanged}" 
+                         Background="{Binding SecretKeyAcceptable, Converter={local:BoolToBackground}}"/>
+
+            <!--Public Key text box-->
+            <TextBlock >
+                    <Run Text="Public Key" />
+                    <Run Text="(" /><Run Text="{Binding PublicKeySize}" />
+                    <Run Text=" bits)" />
+            </TextBlock>
+            <TextBox Text="{Binding PublicKey, UpdateSourceTrigger=PropertyChanged}" 
+                            Background="{Binding PublicKeyAcceptable, Converter={local:BoolToBackground}}"/>
+
+            <!--Create key button-->
+            <Button Content="Create new key pair" 
+                    HorizontalAlignment="Center"
+                    Command="{Binding CreateKeyPairCommand}"/>
+
+        </StackPanel>
+    </Grid>
+</UserControl>
