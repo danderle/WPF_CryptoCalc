@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:CryptoCalc"
              xmlns:core="clr-namespace:CryptoCalc.Core;assembly=CryptoCalc.Core"
              mc:Ignorable="d"
-             d:DesignWidth="400">
+             d:DesignWidth="450">
 
     <Grid Background="{StaticResource WhiteBrush}"
           d:DataContext="{x:Static core:KeyPairSetupDesignModel.Instance}">
@@ -49,13 +49,15 @@
                            Margin="0 8 0 0"/>
                 <ComboBox ItemsSource="{Binding Providers}"
                           SelectedIndex ="{Binding ProviderIndex}"
-                          local:SelectionChangedProperty.Value="{Binding ChangedAlgorithimCommand}"/>
+                          local:SelectionChangedProperty.Value="{Binding ChangedAlgorithimCommand}"
+                          x:Name="ComboBox3"/>
 
                 <!--Ec curve types combobox-->
                 <TextBlock Text="EC Curve"
                            Margin="0 8 0 0"/>
                 <ComboBox ItemsSource="{Binding EcCurves}"
-                          SelectedIndex="{Binding EcCurveIndex}"/>
+                          SelectedIndex="{Binding EcCurveIndex}"
+                          x:Name="ComboBox4"/>
             </StackPanel>
         </StackPanel>
 
@@ -63,29 +65,46 @@
         <!--Textboxes and create new button-->
         <StackPanel Grid.Column="1"
                     Margin="8">
-            <!--Secret Key text box-->
-            <TextBlock Margin="0 8 0 0">
-                    <Run Text="Private Key" />
-                    <Run Text="(" /><Run Text="{Binding SelectedKeySize, Mode=OneWay}" />
-                    <Run Text=" bits)" />
-            </TextBlock>
-            <TextBox Text="{Binding PrivateKey, UpdateSourceTrigger=PropertyChanged}" 
-                         Background="{Binding SecretKeyAcceptable, Converter={local:BoolToBackground}}"/>
-
-            <!--Public Key text box-->
-            <TextBlock >
-                    <Run Text="Public Key" />
-                    <Run Text="(" /><Run Text="{Binding PublicKeySize}" />
-                    <Run Text=" bits)" />
-            </TextBlock>
-            <TextBox Text="{Binding PublicKey, UpdateSourceTrigger=PropertyChanged}" 
-                            Background="{Binding PublicKeyAcceptable, Converter={local:BoolToBackground}}"/>
+            
+            <!--Directory text box-->
+            <TextBlock Margin="0 8 0 0"
+                       Text="Key Directory"/>
+            <TextBox Text="{Binding KeyDirectoryPath, UpdateSourceTrigger=PropertyChanged}" 
+                         Background="{Binding KeyDirectoryPathExists, Converter={local:BoolToBackground}}"/>
 
             <!--Create key button-->
             <Button Content="Create new key pair" 
                     HorizontalAlignment="Center"
+                    IsEnabled="{Binding KeyDirectoryPathExists}"
                     Command="{Binding CreateKeyPairCommand}"/>
+            
+            <!--Secret Key text box-->
+            <TextBlock Margin="0 8 0 0">
+                <Run Text="Private Key File"/>
+                <Run Text="{Binding PrivateKeyLoaded, Converter={local:BoolToLoadedText}}"
+                     Foreground="{StaticResource DarkGreenBrush}"/>
+            </TextBlock>
+            <TextBox Text="{Binding PrivateKeyFilePath, UpdateSourceTrigger=PropertyChanged}" 
+                         Background="{Binding PrivateKeyFilePathExists, Converter={local:BoolToBackground}}"/>
 
+            <!--Public Key text box-->
+            <TextBlock Margin="0 8 0 0">
+                <Run Text="Public Key File"/>
+                <Run Text="{Binding PublicKeyLoaded, Converter={local:BoolToLoadedText}}"
+                     Foreground="{StaticResource DarkGreenBrush}"/>
+            </TextBlock>
+            <TextBox Text="{Binding PublicKeyFilePath, UpdateSourceTrigger=PropertyChanged}" 
+                         Background="{Binding PublicKeyFilePathExists, Converter={local:BoolToBackground}}"/>
+
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Center">
+                <Button Content="Load Keys"
+                        IsEnabled="{Binding KeysExist}"
+                        Command="{Binding LoadKeyCommand}"/>
+                <Button Content="Delete Keys"
+                        IsEnabled="{Binding KeysExist}"
+                        Command="{Binding DeleteKeyCommand}"/>
+            </StackPanel>
         </StackPanel>
     </Grid>
 </UserControl>
