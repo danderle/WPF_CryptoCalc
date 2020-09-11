@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.IO;
+﻿using System.IO;
 using System.Windows.Input;
 
 namespace CryptoCalc.Core
@@ -12,17 +8,32 @@ namespace CryptoCalc.Core
     /// </summary>
     public class AsymmetricViewModel : BaseViewModel
     {
-        #region Private fields
-
-        public string pKeyPath = @"C:\\Users\\beach\\Desktop\\Encryption tests";
-
-        #endregion
-
         #region Public Properties
 
-        public bool DataCorrect { get; set; }
+        /// <summary>
+        /// Flag to let us know if the private key is loaded
+        /// </summary>
+        public bool PrivateKeyLoaded { get; set; }
+        
+        /// <summary>
+        /// Flag to let us know if the public key is loaded
+        /// </summary>
+        public bool PublicKeyLoaded { get; set; }
 
-        public bool ReadyForEncryption => DataCorrect;
+        /// <summary>
+        /// Flag to let us know if the data format is correct
+        /// </summary>
+        public bool DataFormatCorrect { get; set; }
+
+        /// <summary>
+        /// A flag to let us know if we are ready for encryption
+        /// </summary>
+        public bool ReadyForEncryption => DataFormatCorrect && PublicKeyLoaded;
+
+        /// <summary>
+        /// A flag to let us know if we are ready for decryption
+        /// </summary>
+        public bool ReadyForDecryption => PrivateKeyLoaded;
 
         /// <summary>
         /// The encrypted file path
@@ -60,21 +71,6 @@ namespace CryptoCalc.Core
         public string KeyName { get; set; } = string.Empty;
 
         /// <summary>
-        /// The path to the private key file
-        /// </summary>
-        public string PrivateKeyPath { get; set; } = string.Empty;
-
-        /// <summary>
-        /// The file path to the public key
-        /// </summary>
-        public string PublicKeyPath { get; set; } = string.Empty;
-
-        /// <summary>
-        /// The file path to the private key
-        /// </summary>
-        public string PrivateKey { get; set; } = string.Empty;
-
-        /// <summary>
         /// The other parties public key used for key exchange
         /// </summary>
         public string OtherPartyPublicKey { get; set; } = string.Empty;
@@ -109,31 +105,6 @@ namespace CryptoCalc.Core
         public ICommand DecryptCommand { get; set; }
 
         /// <summary>
-        /// The command to drop files
-        /// </summary>
-        public ICommand DropCommand { get; set; }
-
-        /// <summary>
-        /// The command to change operation
-        /// </summary>
-        public ICommand ChangedOperationCommand { get; set; }
-
-        /// <summary>
-        /// The command to save a key pair
-        /// </summary>
-        public ICommand SaveKeyPairCommand { get; set; }
-
-        /// <summary>
-        /// The command to load a key pair
-        /// </summary>
-        public ICommand LoadPrivateKeyCommand { get; set; }
-
-        /// <summary>
-        /// The command to delete a key pair
-        /// </summary>
-        public ICommand DeleteKeyPairCommand { get; set; }
-
-        /// <summary>
         /// The command to create a signature
         /// </summary>
         public ICommand SignCommand { get; set; }
@@ -147,7 +118,7 @@ namespace CryptoCalc.Core
         /// The command to derive a shared key during a key exchange
         /// </summary>
         public ICommand DeriveKeyCommand { get; set; }
-
+        
         #endregion
 
         #region Constructor
@@ -160,8 +131,8 @@ namespace CryptoCalc.Core
             //Initialize the commands
             InitializeCommands();
 
-            //Initialize lists
-            InitializeLists();
+            //Initialize properties
+            InitializeProperties(CryptographyApi.MSDN, AsymmetricOperation.Encryption);
         }
 
         /// <summary>
@@ -174,10 +145,8 @@ namespace CryptoCalc.Core
             //Initialize the commands
             InitializeCommands();
 
-            KeyPairSetup = new KeyPairSetupViewModel(api, operation);
-
-            //Initialize lists
-            InitializeLists();
+            //Initialize properties
+            InitializeProperties(api, operation);
         }
 
         #endregion
@@ -185,24 +154,12 @@ namespace CryptoCalc.Core
         #region Command Methods
 
         /// <summary>
-        /// The command method to load a private key from file if it existss
-        /// </summary>
-        private void LoadPrivateKey()
-        {
-            if (File.Exists(PrivateKeyPath))
-            {
-                var privateKey = File.ReadAllBytes(PrivateKeyPath);
-                PrivateKey = ByteConvert.BytesToHexString(privateKey);
-            }
-        }
-
-        /// <summary>
         /// The command method to derived a shared secret key from the other party public key and our own keys
         /// </summary>
         private void DeriveKey()
         {
             var otherPartyPublicKey = ByteConvert.HexStringToBytes(OtherPartyPublicKey.Replace(" ", string.Empty));
-            var privateKey = File.ReadAllBytes(PrivateKeyPath);
+            var privateKey = File.ReadAllBytes(KeyPairSetup.PrivateKeyFilePath);
             var derivedKey = ((IAsymmetricKeyExchange)KeyPairSetup.SelectedCipher).DeriveKey(privateKey, KeyPairSetup.KeySizes[KeyPairSetup.KeySizeIndex], otherPartyPublicKey);
             DerivedKey = ByteConvert.BytesToHexString(derivedKey);
         }
@@ -212,7 +169,7 @@ namespace CryptoCalc.Core
         /// </summary>
         private void Verify()
         {
-            var pubKey = File.ReadAllBytes(PublicKeyPath);
+            var pubKey = File.ReadAllBytes(KeyPairSetup.PublicKeyFilePath);
             var signature = ByteConvert.HexStringToBytes(OriginalSignature);
             byte[] data = null;
             switch(DataInput.DataFormatSelected)
@@ -232,7 +189,7 @@ namespace CryptoCalc.Core
         /// </summary>
         private void Sign()
         {
-            var privKey = File.ReadAllBytes(PrivateKeyPath);
+            var privKey = File.ReadAllBytes(KeyPairSetup.PrivateKeyFilePath);
             byte[] data = null;
             switch (DataInput.DataFormatSelected)
             {
@@ -248,55 +205,50 @@ namespace CryptoCalc.Core
         }
 
         /// <summary>
-        /// the command method to delete a key pair
-        /// </summary>
-        private void DeleteKeyPair()
-        {
-            if (File.Exists(PrivateKeyPath))
-            {
-                File.Delete(PrivateKeyPath);
-                PrivateKeyPath = string.Empty;
-            }
-            if (File.Exists(PublicKeyPath))
-            {
-                File.Delete(PublicKeyPath);
-                PublicKeyPath = string.Empty;
-            }
-        }
-
-        /// <summary>
-        /// The command method to save a key pair
-        /// </summary>
-        private void SaveKeyPair()
-        {
-            if(File.Exists(PrivateKeyPath) && File.Exists(PublicKeyPath))
-            {
-                File.WriteAllBytes(PrivateKeyPath, KeyPairSetup.SelectedCipher.GetPrivateKey());
-                File.WriteAllBytes(PublicKeyPath, KeyPairSetup.SelectedCipher.GetPublicKey());
-            }
-        }
-
-        
-        /// <summary>
         /// The command method to decrypt the given data
         /// </summary>
         private void Decrypt()
         {
             byte[] encrypted;
-            
-            var privateKey = File.ReadAllBytes(PrivateKeyPath);
+            byte[] decrypted;
+
+            //Decryption sequence differs according to the selected data format
             switch (DataInput.DataFormatSelected)
             {
+                //Decrypt file
                 case Format.File:
+                    //Get the encrypted file bytes
                     encrypted = ByteConvert.FileToBytes(EncryptedFilePath);
-                    var decryptedBytes = ((IAsymmetricEncryption)KeyPairSetup.SelectedCipher).DecryptToBytes(privateKey, encrypted);
-                    var extension = Path.GetExtension(EncryptedFilePath);
-                    DecryptedFilePath = Path.Combine(Directory.GetParent(EncryptedFilePath).ToString(), Path.GetFileNameWithoutExtension(EncryptedFilePath) + ".Decrypted" + extension);
-                    File.WriteAllBytes(DecryptedFilePath, decryptedBytes);
+
+                    //Decrypt
+                    decrypted = KeyPairSetup.Decrypt(encrypted);
+
+                    //Create an encrypted file path
+                    DecryptedFilePath = DataInput.GetDecryptedFilePath(EncryptedFilePath);
+
+                    //Write decrypted bytes to file
+                    File.WriteAllBytes(DecryptedFilePath, decrypted);
                     break;
+
+                //Decrypt a text
                 case Format.TextString:
+                    //Convert the encrypted hex string to bytes
                     encrypted = ByteConvert.HexStringToBytes(EncryptedText);
-                    DecryptedText = ((IAsymmetricEncryption)KeyPairSetup.SelectedCipher).DecryptToText(privateKey, encrypted);
+
+                    //Decrypt as text
+                    DecryptedText = KeyPairSetup.DecryptToText(encrypted);
+                    break;
+
+                //Decrypt a hex value
+                case Format.HexString:
+                    //Convert the encrypted hex string to bytes
+                    encrypted = ByteConvert.HexStringToBytes(EncryptedText);
+
+                    //Decrypt
+                    decrypted = KeyPairSetup.Decrypt(encrypted);
+
+                    //Convert decrypted bytes to hex string
+                    DecryptedText = ByteConvert.BytesToHexString(decrypted);
                     break;
             }
         }
@@ -307,21 +259,44 @@ namespace CryptoCalc.Core
         private void Encrypt()
         {
             byte[] encrypted;
-            var pubKey = File.ReadAllBytes(PublicKeyPath);
+            byte[] plainBytes;
+
+            //Encryption sequence differs according to the selected data format
             switch (DataInput.DataFormatSelected)
             {
+                //Encrypt file
                 case Format.File:
-                    if (File.Exists(DataInput.Data))
-                    {
-                        var plainBytes = File.ReadAllBytes(DataInput.Data);
-                        var encryptedBytes = ((IAsymmetricEncryption)KeyPairSetup.SelectedCipher).EncryptBytes(pubKey, plainBytes);
-                        var extension = Path.GetExtension(DataInput.Data);
-                        EncryptedFilePath = Path.Combine(Directory.GetParent(DataInput.Data).ToString(), Path.GetFileNameWithoutExtension(DataInput.Data) + ".Encrypted" + extension);
-                        File.WriteAllBytes(EncryptedFilePath, encryptedBytes);
-                    }
+                    //Get plain file bytes
+                    plainBytes = DataInput.GetBytesFromFile();
+
+                    //Encrypt
+                    var encryptedBytes = KeyPairSetup.Encrypt(plainBytes);
+
+                    //Create encrypted file path
+                    EncryptedFilePath = DataInput.GetEncryptedFilePath();
+
+                    //Write the encrypted bytes to the new file path
+                    File.WriteAllBytes(EncryptedFilePath, encryptedBytes);
                 break;
+
+                //Encrypt text
                 case Format.TextString:
-                    encrypted = ((IAsymmetricEncryption)KeyPairSetup.SelectedCipher).EncryptText(pubKey, DataInput.Data);
+                    //Encrypt
+                    encrypted = KeyPairSetup.Encrypt(DataInput.Data);
+                    
+                    //Comvert the encrypted bytes to hex string
+                    EncryptedText = ByteConvert.BytesToHexString(encrypted);
+                    break;
+
+                //Encrypt hex string
+                case Format.HexString:
+                    //Convert hex string to plain bytes
+                    plainBytes = ByteConvert.HexStringToBytes(DataInput.Data);
+
+                    //Encrypt
+                    encrypted = KeyPairSetup.Encrypt(plainBytes);
+
+                    //Convert encrypted bytes to hex string
                     EncryptedText = ByteConvert.BytesToHexString(encrypted);
                     break;
             }
@@ -332,10 +307,38 @@ namespace CryptoCalc.Core
         #region Private Methods
 
         /// <summary>
-        /// Initialize any lists
+        /// Initialize any properties
         /// </summary>
-        private void InitializeLists()
+        /// <param name="api"></param>
+        /// <param name="operation"></param>
+        private void InitializeProperties(CryptographyApi api, AsymmetricOperation operation)
         {
+            DataInput.DataChanged += DataInput_DataChanged;
+            KeyPairSetup = new KeyPairSetupViewModel(api, operation);
+            KeyPairSetup.KeysLoaded += KeyPairSetup_KeysLoaded;
+        }
+
+        /// <summary>
+        /// Hook into the KeysLoaded event to let us know if a private/public key 
+        /// has been loaded
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="args"></param>
+        private void KeyPairSetup_KeysLoaded(object obj, System.EventArgs args)
+        {
+            PrivateKeyLoaded = KeyPairSetup.PrivateKeyLoaded;
+            PublicKeyLoaded = KeyPairSetup.PublicKeyLoaded;
+        }
+
+        /// <summary>
+        /// Function which is hooked into the DataChangedEvent, lets us know if the Data 
+        /// is correctly formatted and ready for processing
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="args"></param>
+        private void DataInput_DataChanged(object obj, System.EventArgs args)
+        {
+            DataFormatCorrect = DataInput.DataIsCorrectlyFormatted;
         }
 
         /// <summary>
@@ -345,12 +348,9 @@ namespace CryptoCalc.Core
         {
             EncryptCommand = new RelayCommand(Encrypt);
             DecryptCommand = new RelayCommand(Decrypt);
-            SaveKeyPairCommand = new RelayCommand(SaveKeyPair);
-            DeleteKeyPairCommand = new RelayCommand(DeleteKeyPair);
             SignCommand = new RelayCommand(Sign);
             VerifyCommand = new RelayCommand(Verify);
             DeriveKeyCommand = new RelayCommand(DeriveKey);
-            LoadPrivateKeyCommand = new RelayCommand(LoadPrivateKey);
         }
 
         #endregion
