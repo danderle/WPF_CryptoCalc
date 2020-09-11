@@ -118,6 +118,35 @@ namespace CryptoCalc.Core
 
         #endregion
 
+        /// <summary>
+        /// Gets the bytes from a file
+        /// </summary>
+        /// <returns>File bytes</returns>
+        public byte[] GetBytesFromFile()
+        {
+            return File.ReadAllBytes(Data);
+        }
+
+        /// <summary>
+        /// Create an encrypted file path from the plain file path
+        /// </summary>
+        /// <returns></returns>
+        public string GetEncryptedFilePath()
+        {
+            var extension = Path.GetExtension(Data);
+            return Path.Combine(Directory.GetParent(Data).ToString(), Path.GetFileNameWithoutExtension(Data) + ".Encrypted" + extension);
+        }
+
+        /// <summary>
+        /// Create an decrypted file path from the given encrypted file path
+        /// </summary>
+        /// <param name="encryptedFilePath"></param>
+        /// <returns></returns>
+        public string GetDecryptedFilePath(string encryptedFilePath)
+        {
+            var extension = Path.GetExtension(encryptedFilePath);
+            return Path.Combine(Directory.GetParent(encryptedFilePath).ToString(), Path.GetFileNameWithoutExtension(encryptedFilePath) + ".Decrypted" + extension);
+        }
         #region Private Methods
 
         /// <summary>
