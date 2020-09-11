@@ -43,7 +43,7 @@ namespace CryptoCalc
         /// <summary>
         /// The minimum height of the window
         /// </summary>
-        public double MinimumHeight { get; set; } = 500;
+        public double MinimumHeight { get; set; } = 650;
 
         /// <summary>
         /// True if the window should be borderless

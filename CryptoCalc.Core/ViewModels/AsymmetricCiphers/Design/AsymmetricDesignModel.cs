@@ -23,8 +23,6 @@
         {
             DataInput.DataFormatSelected = Format.File;
             KeyName = "Some name";
-            PrivateKeyPath = $"C:/home/Desktop/Privatefile.txt";
-            PublicKeyPath = $"C:/home/Desktop/Publicfile.txt";
         }
 
         #endregion

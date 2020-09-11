@@ -24,7 +24,8 @@
             <local:KeyPairSetupControl DataContext="{Binding KeyPairSetup}" 
                                        local:ComboBoxMaxWidthAttachedProperty.Value="{Binding ElementName=DataInput, Path=ComboBoxMaxWidth}"
                                        x:Name="KeyPair"/>
-            
+
+            <Border Style="{StaticResource SectionBorder}" />
         </StackPanel>
     </Grid>
 </UserControl>

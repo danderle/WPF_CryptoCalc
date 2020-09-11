@@ -9,7 +9,7 @@
         WindowStartupLocation="CenterScreen"
         Activated="Window_Activated"
         Deactivated="Window_Deactivated"
-        Height="600" 
+        Height="650" 
         Width="800"
         x:Name="AppWindow"
         WindowStyle="None"
