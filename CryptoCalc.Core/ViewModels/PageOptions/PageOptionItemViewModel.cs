@@ -1,25 +1,37 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Text;
 using System.Windows.Input;
 
 namespace CryptoCalc.Core
 {
     /// <summary>
-    /// The view model for the page option items
+    /// The view model for a page option item
     /// </summary>
     public class PageOptionItemViewModel : BaseViewModel
     {
         #region Public Properties
 
-        public bool IsChecked{ get; set; } 
+        /// <summary>
+        /// Flag to know if the page option is currently checked
+        /// </summary>
+        public bool IsChecked{ get; set; }
+
+        /// <summary>
+        /// The page name
+        /// </summary>
         public string PageName { get; set; }
+
+        /// <summary>
+        /// The page type
+        /// </summary>
         public ApplicationPage SelectedPage { get; set; }
 
         #endregion
 
         #region Commands
 
+        /// <summary>
+        /// The command when the page is selected
+        /// </summary>
         public ICommand PageSelectedCommand { get; set; }
 
         #endregion
@@ -35,27 +47,24 @@ namespace CryptoCalc.Core
             PageSelectedCommand = new RelayCommand(PageSelected);
         }
 
-
-
-
-
         #endregion
 
         #region Command Methods
 
+        /// <summary>
+        /// The command method when selecting a page
+        /// </summary>
         private void PageSelected()
         {
-            var api = PageName.Contains("MSDN") ? CryptographyApi.MSDN : CryptographyApi.BouncyCastle;
+            //convert the page name to the page enum
             SelectedPage = (ApplicationPage)Enum.Parse(typeof(ApplicationPage), PageName.Replace(" ", ""));
-           
-            Ioc.Application.GoToPage(SelectedPage);
+
+            //true if not already selected then go to the next page
+            if(Ioc.Application.CurrentPage != SelectedPage)
+            {
+                Ioc.Application.GoToPage(SelectedPage);
+            }
         }
-
-        #endregion
-
-        #region Private Methods
-
-
 
         #endregion
     }
