@@ -9,9 +9,11 @@
              d:DesignWidth="500">
 
     <Grid Background="{StaticResource WhiteBrush}"
-          d:DataContext="{x:Static core:SymmetricDesignModel.Instance}">
+          d:DataContext="{x:Static core:AsymmetricKeyExchangeDesignModel.Instance}">
         <Grid.RowDefinitions>
+            <!--Setup control-->
             <RowDefinition Height="Auto" />
+            <!--Derive key control-->
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 

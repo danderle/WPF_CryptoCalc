@@ -9,9 +9,11 @@
              d:DesignWidth="500">
 
     <Grid Background="{StaticResource WhiteBrush}"
-          d:DataContext="{x:Static core:SymmetricDesignModel.Instance}">
+          d:DataContext="{x:Static core:AsymmetricSignatureDesignModel.Instance}">
         <Grid.RowDefinitions>
+            <!--Setup control-->
             <RowDefinition Height="Auto" />
+            <!--Signatur input control-->
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
@@ -20,6 +22,6 @@
 
         <!--Signatur input control-->
         <local:SignatureInputControl Grid.Row="1"
-                                       DataContext="{Binding}" />
+                                     DataContext="{Binding}" />
     </Grid>
 </UserControl>

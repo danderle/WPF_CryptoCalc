@@ -9,22 +9,27 @@
 
     <Grid Background="{StaticResource WhiteBrush}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
+            <!--File encryption input / output-->
+            <RowDefinition Height="*" />
+            <!--Sign/Verify buttons-->
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <StackPanel >
-            <!--File encryption input / output-->
-            <StackPanel >
-                <TextBlock Text="Original Signature" />
-                <TextBox Text="{Binding OriginalSignature, UpdateSourceTrigger=PropertyChanged}" />
+        
+        <StackPanel Margin="8">
+            <!--Signature-->
+            <TextBlock Text="Original Signature" />
+            <TextBox Text="{Binding OriginalSignature, UpdateSourceTrigger=PropertyChanged}" />
 
-                <TextBlock Text="Verified Signature" />
-                <TextBox Text="{Binding SignatureVerified, UpdateSourceTrigger=PropertyChanged}" 
-                             IsReadOnly="True"/>
-            </StackPanel>
-
+            <!--Verified Flag-->
+            <TextBlock Text="Verified Signature" />
+            <TextBox Text="{Binding SignatureVerified, UpdateSourceTrigger=PropertyChanged}" 
+                     IsReadOnly="True"/>
         </StackPanel>
 
+        <!--Section separator-->
+        <Border Style="{StaticResource SectionBorder}" />
+
+        <!--Sign and verify buttons-->
         <StackPanel Grid.Row="1" 
                     Orientation="Horizontal"
                     HorizontalAlignment="Center">

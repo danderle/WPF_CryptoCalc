@@ -1,16 +1,16 @@
 ﻿namespace CryptoCalc.Core
 {
     /// <summary>
-    /// The design time model for the asymmetric cipher page
+    /// The design time model for the asymmetric encryption page
     /// </summary>
-    public class AsymmetricDesignModel : AsymmetricViewModel
+    public class AsymmetricEncryptionDesignModel : AsymmetricViewModel
     {
         #region Singleton
 
         /// <summary>
         /// A single instance of the design model
         /// </summary>
-        public static AsymmetricDesignModel Instance => new AsymmetricDesignModel();
+        public static AsymmetricEncryptionDesignModel Instance => new AsymmetricEncryptionDesignModel();
 
         #endregion
 
@@ -19,10 +19,12 @@
         /// <summary>
         /// Default constructor
         /// </summary>
-        public AsymmetricDesignModel()
+        public AsymmetricEncryptionDesignModel()
         {
             DataInput.DataFormatSelected = Format.File;
+            DataInput.Data = @"FilePath\Desktop\file.txt";
             KeyName = "Some name";
+            KeyPairSetup = new KeyPairSetupViewModel(CryptographyApi.MSDN, AsymmetricOperation.Encryption);
         }
 
         #endregion

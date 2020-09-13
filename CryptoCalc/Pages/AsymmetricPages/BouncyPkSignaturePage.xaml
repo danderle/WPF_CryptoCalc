@@ -9,7 +9,7 @@
                 mc:Ignorable="d">
 
     <Border Style="{StaticResource MainPageBorder}"
-            d:DataContext="{x:Static core:AsymmetricDesignModel.Instance}">
+            d:DataContext="{x:Static core:AsymmetricSignatureDesignModel.Instance}">
         <Grid>
             <Grid.RowDefinitions>
                 <!--Setup control-->
@@ -20,7 +20,7 @@
 
             <!--Header text-->
             <TextBlock Text="Bouncy Castle Public Key Signatures"
-                    Style="{StaticResource HeaderText}"/>
+                       Style="{StaticResource HeaderText}"/>
 
             <!--Signature control-->
             <local:AsymmetricSignatureControl Grid.Row="1"

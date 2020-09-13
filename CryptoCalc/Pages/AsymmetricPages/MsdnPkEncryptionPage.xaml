@@ -9,7 +9,7 @@
                 mc:Ignorable="d">
 
     <Border Style="{StaticResource MainPageBorder}"
-            d:DataContext="{x:Static core:AsymmetricDesignModel.Instance}">
+            d:DataContext="{x:Static core:AsymmetricEncryptionDesignModel.Instance}">
         <Grid>
             <Grid.RowDefinitions>
                 <!--setup control-->
@@ -24,7 +24,7 @@
 
             <!--Encryption control-->
             <local:AsymmetricEncryptionControl Grid.Row="1"
-                                            DataContext="{Binding}" />
+                                               DataContext="{Binding}" />
         </Grid>
     </Border>
 </local:BasePage>

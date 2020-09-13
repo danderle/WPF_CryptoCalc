@@ -19,7 +19,7 @@
             </Grid.ColumnDefinitions>
 
             <!--Selected mark-->
-            <Border Width="45"
+            <Border Width="20"
                     Background="{StaticResource LightBlueBrush}"
                     Visibility="{Binding IsChecked, Converter={local:BoolToVisibility}}"/>
             
@@ -27,7 +27,7 @@
             <RadioButton Grid.Column="1"
                          Height="35"
                          VerticalContentAlignment="Center"
-                         Margin="0 0 3 0"
+                         Margin="0 0 8 0"
                          Content="{Binding PageName}"
                          GroupName="Pages"
                          IsChecked="{Binding IsChecked}"
