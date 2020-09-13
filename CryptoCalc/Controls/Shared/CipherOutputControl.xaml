@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:CryptoCalc"
              xmlns:core="clr-namespace:CryptoCalc.Core;assembly=CryptoCalc.Core"
-             mc:Ignorable="d" >
+             mc:Ignorable="d">
 
     <Grid Background="{StaticResource WhiteBrush}">
         <Grid.RowDefinitions>
@@ -52,23 +52,25 @@
                 <TextBox Text="{Binding DecryptedFilePath, UpdateSourceTrigger=PropertyChanged}" 
                              IsReadOnly="True"/>
             </StackPanel>
+        </StackPanel>
 
+        <!--Section separator-->
+        <Border Style="{StaticResource SectionBorder}" />
 
-            <!--De-/Encryption buttons-->
-            <StackPanel Grid.Row="1"
+        <!--De-/Encryption buttons-->
+        <StackPanel Grid.Row="1"
                     Orientation="Horizontal"
-                    HorizontalAlignment="Center"
-                    >
-                <!--Encryption button-->
-                <Button Content="Encrypt" 
+                    HorizontalAlignment="Center">
+            
+            <!--Encryption button-->
+            <Button Content="Encrypt" 
                     IsEnabled="{Binding ReadyForEncryption, Mode=OneWay}"
                     Command="{Binding EncryptCommand}"/>
-                <!--Decryption button-->
-                <Button Content="Decrypt" 
+            <!--Decryption button-->
+            <Button Content="Decrypt" 
                     IsEnabled="{Binding ReadyForDecryption, Mode=OneWay}"
                     Command="{Binding DecryptCommand}"
                     />
-            </StackPanel>
         </StackPanel>
     </Grid>
     

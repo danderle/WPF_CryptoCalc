@@ -8,14 +8,28 @@
                 xmlns:core="clr-namespace:CryptoCalc.Core;assembly=CryptoCalc.Core"
                 mc:Ignorable="d">
 
-    <Border Background="{StaticResource WhiteBrush}"
-            Padding="5">
-        <StackPanel>
-            <TextBlock Text="MSDN Public Key Exchange"
-                       FontWeight="Bold"
-                       HorizontalAlignment="Center" />
-            <local:AsymmetricSetupControl DataContext="{Binding}"/>
-            <local:DeriveKeyControl DataContext="{Binding}" />
-        </StackPanel>
+    <Border Style="{StaticResource MainPageBorder}"
+            d:DataContext="{x:Static core:AsymmetricDesignModel.Instance}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <!--Setup control-->
+                <RowDefinition Height="Auto" />
+                <!--derive key control-->
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <StackPanel>
+                <!--Header text-->
+                <TextBlock Text="MSDN Public Key Exchange"
+                       Style="{StaticResource HeaderText}"/>
+
+                <!--Setup control-->
+                <local:AsymmetricSetupControl DataContext="{Binding}"/>
+            </StackPanel>
+
+            <!--Derive key control-->
+            <local:DeriveKeyControl Grid.Row="1"
+                                       DataContext="{Binding}" />
+        </Grid>
     </Border>
 </local:BasePage>

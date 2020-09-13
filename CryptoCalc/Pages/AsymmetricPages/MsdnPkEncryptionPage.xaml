@@ -12,27 +12,29 @@
             d:DataContext="{x:Static core:AsymmetricDesignModel.Instance}">
         <Grid>
             <Grid.RowDefinitions>
-                <!--Header text and setup control-->
+                <!--setup control-->
                 <RowDefinition Height="Auto" />
-                <!--Cipher output control-->
+                <!--Output control-->
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            
-            <!--Row 0-->
+
             <StackPanel>
-                <!--Header Text-->
+                <!--Page title-->
                 <TextBlock Text="MSDN Public Key Encryption"
                        Style="{StaticResource HeaderText}"/>
-                
+
                 <!--Asymmetric setup control-->
                 <local:AsymmetricSetupControl DataContext="{Binding}"/>
+                
+                <!--Section separator-->
+                <Border Style="{StaticResource SectionBorder}" 
+                        Margin="0 0 0 5"/>
             </StackPanel>
-            
-            <!--Row 1-->
-            <!--Cipher output control-->
-            <local:CipherOutputControl DataContext="{Binding}" 
-                                       Grid.Row="1"
-                                       VerticalAlignment="Center"/>
+
+            <!--Output control-->
+            <local:CipherOutputControl Grid.Row="1" 
+                                       DataContext="{Binding}"/>
+
         </Grid>
     </Border>
 </local:BasePage>

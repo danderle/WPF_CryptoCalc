@@ -23,8 +23,7 @@
                     Margin="8">
             
             <!--Algorithim combobox-->
-            <TextBlock Text="Algorithim"
-                       Margin="0 8 0 0"/>
+            <TextBlock Text="Algorithim"/>
             <ComboBox ItemsSource="{Binding Algorithims}"
                       SelectedIndex ="{Binding SelectedAlgorithimIndex}"
                       x:Name="ComboBox1"
@@ -67,8 +66,7 @@
                     Margin="8">
             
             <!--Directory text box-->
-            <TextBlock Margin="0 8 0 0"
-                       Text="Key Directory"/>
+            <TextBlock Text="Key Directory"/>
             <TextBox Text="{Binding KeyDirectoryPath, UpdateSourceTrigger=PropertyChanged}" 
                          Background="{Binding KeyDirectoryPathExists, Converter={local:BoolToBackground}}"/>
 

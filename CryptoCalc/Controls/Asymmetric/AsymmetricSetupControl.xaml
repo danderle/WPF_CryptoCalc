@@ -23,7 +23,8 @@
             <!--Key pair control-->
             <local:KeyPairSetupControl DataContext="{Binding KeyPairSetup}" 
                                        local:ComboBoxMaxWidthAttachedProperty.Value="{Binding ElementName=DataInput, Path=ComboBoxMaxWidth}"
-                                       x:Name="KeyPair"/>
+                                       x:Name="KeyPair"
+                                       Margin="0 -16 0 0"/>
 
             <Border Style="{StaticResource SectionBorder}" />
         </StackPanel>

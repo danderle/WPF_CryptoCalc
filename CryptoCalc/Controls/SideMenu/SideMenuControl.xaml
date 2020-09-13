@@ -7,29 +7,29 @@
              xmlns:core="clr-namespace:CryptoCalc.Core;assembly=CryptoCalc.Core"
              mc:Ignorable="d" >
 
-    <!--Left column-->
-    <Border>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <!--Page list-->
+            <ColumnDefinition Width="*" />
+            <!--Hide/Show Button-->
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
 
-            <ToggleButton Grid.Column="1"
-                          VerticalAlignment="Top"
-                          x:Name="VisibilityToggleButton"
-                          Style="{StaticResource SideMenuToggleButton}"/>
+        <!--Page selection list-->
+        <local:PageOptionListItemControl Grid.Row="1"
+                                        DataContext="{Binding ApplicationViewModel.PageList,
+                                        Source={x:Static local:ViewModelLocator.Instance}}" 
+                                            Visibility="{Binding ElementName=VisibilityToggleButton, Path=IsChecked, Converter={local:BoolToVisibility}}"   
+                                            VerticalAlignment="Center"/>
 
-            <!--Page selection list-->
-            <local:PageOptionListItemControl Grid.Row="1"
-                                            DataContext="{Binding ApplicationViewModel.PageList,
-                                            Source={x:Static local:ViewModelLocator.Instance}}" 
-                                             Visibility="{Binding ElementName=VisibilityToggleButton, Path=IsChecked, Converter={local:BoolToVisibility}}"   
-                                             VerticalAlignment="Center"/>
-
-            <Border Grid.RowSpan="2" 
-                    Style="{StaticResource VerticalLine}" />
-        </Grid>
-    </Border>
-
+        <!--Vertical line seperator-->
+        <Border Grid.RowSpan="2" 
+                Style="{StaticResource VerticalLine}" />
+        
+        <!--Hide/show toggle button-->
+        <ToggleButton Grid.Column="1"
+                        VerticalAlignment="Top"
+                        x:Name="VisibilityToggleButton"
+                        Style="{StaticResource SideMenuToggleButton}"/>
+    </Grid>
 </UserControl>
