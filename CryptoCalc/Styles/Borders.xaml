@@ -28,4 +28,30 @@
         <Setter Property="Background" Value="{StaticResource WhiteBrush}"/>
         <Setter Property="Padding" Value="0 0 5 0"/>
     </Style>
+
+
+    <!--Selectable page option border-->
+    <Style TargetType="Border" x:Key="PageOptionBorder">
+        <Style.Triggers>
+            <EventTrigger RoutedEvent="MouseEnter">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <ColorAnimation Duration="0:0:0.3" 
+                                            To="{StaticResource LightGreen}"
+                                            Storyboard.TargetProperty="Background.Color"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+            <EventTrigger RoutedEvent="MouseLeave">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <ColorAnimation Duration="0:0:0.3"
+                                            To="{StaticResource White}"
+                                            Storyboard.TargetProperty="Background.Color"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+        </Style.Triggers>
+    </Style>
+
 </ResourceDictionary>

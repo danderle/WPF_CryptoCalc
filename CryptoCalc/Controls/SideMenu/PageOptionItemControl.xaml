@@ -7,56 +7,32 @@
              xmlns:core="clr-namespace:CryptoCalc.Core;assembly=CryptoCalc.Core"
              mc:Ignorable="d" >
 
-    <Border Background="{StaticResource WhiteBrush}">
-        <Border.Style>
-            <Style TargetType="Border">
-                <Style.Triggers>
-                    <EventTrigger RoutedEvent="MouseEnter">
-                        <BeginStoryboard>
-                            <Storyboard>
-                                <ColorAnimation Duration="0:0:0.3" 
-                                                To="{StaticResource LightGreen}"
-                                                Storyboard.TargetProperty="Background.Color"/>
-                            </Storyboard>
-                        </BeginStoryboard>
-                    </EventTrigger>
-                    <EventTrigger RoutedEvent="MouseLeave">
-                        <BeginStoryboard>
-                            <Storyboard>
-                                <ColorAnimation Duration="0:0:0.3"
-                                                To="{StaticResource White}"
-                                                Storyboard.TargetProperty="Background.Color"/>
-                            </Storyboard>
-                        </BeginStoryboard>
-                    </EventTrigger>
-                </Style.Triggers>
-            </Style>
-        </Border.Style>
+    <Border Background="{StaticResource WhiteBrush}"
+            Style="{StaticResource PageOptionBorder}">
         
         <Grid d:DataContext="{x:Static core:PageOptionItemDesignModel.Instance}">
             <Grid.ColumnDefinitions>
+                <!--Selection mark-->
                 <ColumnDefinition Width="auto" />
+                <!--Page name-->
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <Grid.RowDefinitions>
-                <RowDefinition Height="35" />
-            </Grid.RowDefinitions>
+            <!--Selected mark-->
             <Border Width="45"
                     Background="{StaticResource LightBlueBrush}"
-                    Visibility="{Binding IsChecked, Converter={local:BoolToVisibility}}"
-                    />
-
+                    Visibility="{Binding IsChecked, Converter={local:BoolToVisibility}}"/>
+            
+            <!--Page option radio button-->
             <RadioButton Grid.Column="1"
-                         VerticalAlignment="Center"
+                         Height="35"
+                         VerticalContentAlignment="Center"
                          Margin="0 0 3 0"
-                        Content="{Binding PageName}"
-                        GroupName="Pages"
-                        IsChecked="{Binding IsChecked}" 
-                        Style="{StaticResource TransparentRadioButton}"
-                        Command="{Binding PageSelectedCommand}"/>
+                         Content="{Binding PageName}"
+                         GroupName="Pages"
+                         IsChecked="{Binding IsChecked}"
+                         Style="{StaticResource TransparentRadioButton}"
+                         Command="{Binding PageSelectedCommand}"/>
         </Grid>
     </Border>
-
-
 </UserControl>
