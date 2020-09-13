@@ -13,7 +13,7 @@
         public ApplicationPage CurrentPage { get; private set; } = ApplicationPage.MSDNHash;
 
         /// <summary>
-        /// 
+        /// The list of available pages view model
         /// </summary>
         public PageOptionListItemViewModel PageList { get; set; } = new PageOptionListItemViewModel();
 

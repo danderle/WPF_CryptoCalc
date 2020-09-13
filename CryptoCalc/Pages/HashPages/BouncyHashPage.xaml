@@ -21,7 +21,7 @@
             <TextBlock Text="Bouncy Castle Hash Algorithims" 
                    Style="{StaticResource HeaderText}"/>
 
-            <!--Hsh control-->
+            <!--Hash control-->
             <local:HashControl Grid.Row="1"
                            DataContext="{Binding}" />
         </Grid>

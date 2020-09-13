@@ -27,8 +27,8 @@
             SelectedAlgorithimIndex = 0;
             IAsymmetricCipher.GetMsdnCipher(Algorithims[SelectedAlgorithimIndex]);
 
-            PrivateKey = "FFFFFFFFF111000";
-            PublicKey = "00000000FFFFFFF";
+            PrivateKey = ByteConvert.HexStringToBytes("FFFFFFFFF111000");
+            PublicKey = ByteConvert.HexStringToBytes("00000000FFFFFFF");
         }
 
         #endregion
