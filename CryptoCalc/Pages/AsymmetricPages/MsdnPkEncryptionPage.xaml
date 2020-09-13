@@ -14,27 +14,17 @@
             <Grid.RowDefinitions>
                 <!--setup control-->
                 <RowDefinition Height="Auto" />
-                <!--Output control-->
+                <!--Encryption control-->
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <StackPanel>
-                <!--Page title-->
-                <TextBlock Text="MSDN Public Key Encryption"
-                       Style="{StaticResource HeaderText}"/>
+            <!--Page title-->
+            <TextBlock Text="MSDN Public Key Encryption"
+                    Style="{StaticResource HeaderText}"/>
 
-                <!--Asymmetric setup control-->
-                <local:AsymmetricSetupControl DataContext="{Binding}"/>
-                
-                <!--Section separator-->
-                <Border Style="{StaticResource SectionBorder}" 
-                        Margin="0 0 0 5"/>
-            </StackPanel>
-
-            <!--Output control-->
-            <local:CipherOutputControl Grid.Row="1" 
-                                       DataContext="{Binding}"/>
-
+            <!--Encryption control-->
+            <local:AsymmetricEncryptionControl Grid.Row="1"
+                                            DataContext="{Binding}" />
         </Grid>
     </Border>
 </local:BasePage>

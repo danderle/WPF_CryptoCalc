@@ -14,22 +14,17 @@
             <Grid.RowDefinitions>
                 <!--Setup control-->
                 <RowDefinition Height="Auto" />
-                <!--derive key control-->
+                <!--Key exchange control-->
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <StackPanel>
-                <!--Header text-->
-                <TextBlock Text="MSDN Public Key Exchange"
-                       Style="{StaticResource HeaderText}"/>
+            <!--Header text-->
+            <TextBlock Text="MSDN Public Key Exchange"
+                    Style="{StaticResource HeaderText}"/>
 
-                <!--Setup control-->
-                <local:AsymmetricSetupControl DataContext="{Binding}"/>
-            </StackPanel>
-
-            <!--Derive key control-->
-            <local:DeriveKeyControl Grid.Row="1"
-                                       DataContext="{Binding}" />
+            <!--Key exchange control-->
+            <local:AsymmetricKeyExchangeControl Grid.Row="1"
+                                                DataContext="{Binding}" />
         </Grid>
     </Border>
 </local:BasePage>

@@ -14,23 +14,17 @@
             <Grid.RowDefinitions>
                 <!--Setup control-->
                 <RowDefinition Height="Auto" />
-                <!--Output control-->
+                <!--Signature control-->
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <StackPanel>
-                <!--Header text-->
-                <TextBlock Text="Bouncy Castle Public Key Signatures"
-                       Style="{StaticResource HeaderText}"/>
+            <!--Header text-->
+            <TextBlock Text="Bouncy Castle Public Key Signatures"
+                    Style="{StaticResource HeaderText}"/>
 
-                <!--Setup control-->
-                <local:AsymmetricSetupControl DataContext="{Binding}"/>
-
-            </StackPanel>
-
-            <!--Signatur input control-->
-            <local:SignatureInputControl Grid.Row="1"
-                                       DataContext="{Binding}" />
+            <!--Signature control-->
+            <local:AsymmetricSignatureControl Grid.Row="1"
+                                                DataContext="{Binding}" />
         </Grid>
     </Border>
 </local:BasePage>

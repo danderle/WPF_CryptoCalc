@@ -132,10 +132,19 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Update="Controls\Asymmetric\AsymmetricKeyExchangeControl.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\Asymmetric\AsymmetricSignatureControl.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Controls\Asymmetric\AsymmetricSetupControl.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Controls\Asymmetric\KeyPairSetupControl.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\Asymmetric\AsymmetricEncryptionControl.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Controls\Hash\HashControl.xaml">
@@ -175,6 +184,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Controls\Hash\HmacControl.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\Symmetric\SymmetricControl.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="DialogWindow.xaml">
