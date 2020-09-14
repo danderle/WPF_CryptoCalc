@@ -9,24 +9,138 @@
              d:DesignWidth="400">
 
     <Grid Background="{StaticResource WhiteBrush}"
-          d:DataContext="{x:Static core:AsymmetricDesignModel.Instance}">
-        
-        <!--Controls-->
-        <StackPanel >
+          d:DataContext="{x:Static core:AsymmetricEncryptionDesignModel.Instance}">
 
-            <!--Data input control-->
-            <local:DataInputControl d:DataContext="{x:Static core:DataInputDesignModel.Instance}"
-                                    DataContext="{Binding DataInput}"
-                                    local:ComboBoxMaxWidthAttachedProperty.Value="{Binding ElementName=KeyPair, Path=ComboBoxMaxWidth}"
-                                    x:Name="DataInput"/>
+        <Grid.ColumnDefinitions>
+            <!--Option to select what type of format to hash-->
+            <ColumnDefinition Width="Auto" />
+            <!--The data that will be hashed plus optional entries-->
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
 
-            <!--Key pair control-->
-            <local:KeyPairSetupControl DataContext="{Binding KeyPairSetup}" 
-                                       local:ComboBoxMaxWidthAttachedProperty.Value="{Binding ElementName=DataInput, Path=ComboBoxMaxWidth}"
-                                       x:Name="KeyPair"
-                                       Margin="0 -16 0 0"/>
+        <!--Column 0-->
+        <StackPanel Margin="8"
+                    local:ComboBoxWidthMatcherProperty.Value="True">
 
-            <Border Style="{StaticResource SectionBorder}" />
+            <!--ComboBox of what type of format to hash-->
+            <TextBlock Text="Data Format:" />
+            <ComboBox ItemsSource="{Binding DataInput.DataFormatOptions}"
+                      SelectedIndex="{Binding DataInput.DataFormatSelected, Converter={local:DataHashFormatEnumToInt}}"
+                      local:SelectionChangedProperty.Value="{Binding DataInput.ChangedFormatCommand}"
+                      x:Name="ComboBox0"
+                      HorizontalAlignment="Right"/>
+
+            <!--Algorithim combobox-->
+            <TextBlock Text="Algorithim"/>
+            <ComboBox ItemsSource="{Binding KeyPairSetup.Algorithims}"
+                      SelectedIndex ="{Binding KeyPairSetup.SelectedAlgorithimIndex}"
+                      x:Name="ComboBox1"
+                      local:SelectionChangedProperty.Value="{Binding KeyPairSetup.ChangedAlgorithimCommand}"/>
+
+            <!--Stackpanel visibile if key size selection is used-->
+            <StackPanel Visibility="{Binding KeyPairSetup.UsesKeySize, Converter={local:BoolToVisibility}}">
+
+                <!--Key size combobox-->
+                <TextBlock Text="Key Size"
+                           Margin="0 8 0 0"/>
+                <ComboBox ItemsSource="{Binding KeyPairSetup.KeySizes}"
+                          SelectedIndex="{Binding KeyPairSetup.KeySizeIndex}"
+                          x:Name="ComboBox2"/>
+            </StackPanel>
+
+            <!--Stackpanel visible if Ec curves are used-->
+            <StackPanel Visibility="{Binding KeyPairSetup.UsesEcCurves, Converter={local:BoolToVisibility}}">
+
+                <!--Ec curve provider combobox-->
+                <TextBlock Text="Curve Provider"
+                           Margin="0 8 0 0"/>
+                <ComboBox ItemsSource="{Binding KeyPairSetup.Providers}"
+                          SelectedIndex ="{Binding KeyPairSetup.ProviderIndex}"
+                          local:SelectionChangedProperty.Value="{Binding ChangedAlgorithimCommand}"
+                          x:Name="ComboBox3"/>
+
+                <!--Ec curve types combobox-->
+                <TextBlock Text="EC Curve"
+                           Margin="0 8 0 0"/>
+                <ComboBox ItemsSource="{Binding KeyPairSetup.EcCurves}"
+                          SelectedIndex="{Binding KeyPairSetup.EcCurveIndex}"
+                          x:Name="ComboBox4"/>
+            </StackPanel>
+        </StackPanel>
+
+
+        <!--Column 1-->
+        <StackPanel Grid.Column="1"
+                    Margin="8">
+            <StackPanel DataContext="{Binding DataInput}">
+                <!--Data to be hashed-->
+                <TextBlock Text="Data:"/>
+                <Grid >
+                    <Grid.ColumnDefinitions>
+                        <!--Data entry textbox-->
+                        <ColumnDefinition Width="*" />
+                        <!--File browser pop up button-->
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <!--Data entry textbox-->
+                    <TextBox Text="{Binding Data, UpdateSourceTrigger=PropertyChanged}"
+                         Background="{Binding DataIsCorrectlyFormatted, Converter={local:BoolToBackground}}"
+                         local:DragDropProperty.Value="True"
+                         ToolTip="{Binding ElementName=ComboBox0, Path=SelectedIndex, Converter={local:IndexToToolTip}}"/>
+
+                    <!--File browser pop pup button-->
+                    <Button Grid.Column="1"
+                        Command="{Binding OpenFolderDialogCommand}" 
+                        Visibility="{Binding DataFormatSelected, Converter={local:DataFormatsToVisibility}, ConverterParameter=File}"
+                        Content="..."
+                        ToolTip="Select file"
+                        VerticalAlignment="Top"
+                        Margin="8 0 0 0"
+                        Height="30"/>
+                </Grid>
+            </StackPanel>
+
+            <StackPanel DataContext="{Binding KeyPairSetup}">
+                <!--Directory text box-->
+                <TextBlock Text="Key Directory"/>
+                <TextBox Text="{Binding KeyDirectoryPath, UpdateSourceTrigger=PropertyChanged}" 
+                         Background="{Binding KeyDirectoryPathExists, Converter={local:BoolToBackground}}"/>
+
+                <!--Create key button-->
+                <Button Content="Create new key pair" 
+                    HorizontalAlignment="Center"
+                    IsEnabled="{Binding KeyDirectoryPathExists}"
+                    Command="{Binding CreateKeyPairCommand}"/>
+
+                <!--Secret Key text box-->
+                <TextBlock Margin="0 8 0 0">
+                <Run Text="Private Key File"/>
+                <Run Text="{Binding PrivateKeyLoaded, Converter={local:BoolToLoadedText}}"
+                     Foreground="{StaticResource DarkGreenBrush}"/>
+                </TextBlock>
+                <TextBox Text="{Binding PrivateKeyFilePath, UpdateSourceTrigger=PropertyChanged}" 
+                         Background="{Binding PrivateKeyFilePathExists, Converter={local:BoolToBackground}}"/>
+
+                <!--Public Key text box-->
+                <TextBlock Margin="0 8 0 0">
+                <Run Text="Public Key File"/>
+                <Run Text="{Binding PublicKeyLoaded, Converter={local:BoolToLoadedText}}"
+                     Foreground="{StaticResource DarkGreenBrush}"/>
+                </TextBlock>
+                <TextBox Text="{Binding PublicKeyFilePath, UpdateSourceTrigger=PropertyChanged}" 
+                         Background="{Binding PublicKeyFilePathExists, Converter={local:BoolToBackground}}"/>
+
+                <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Center">
+                    <Button Content="Load Keys"
+                        IsEnabled="{Binding KeysExist}"
+                        Command="{Binding LoadKeyCommand}"/>
+                    <Button Content="Delete Keys"
+                        IsEnabled="{Binding KeysExist}"
+                        Command="{Binding DeleteKeyCommand}"/>
+                </StackPanel>
+            </StackPanel>
         </StackPanel>
     </Grid>
 </UserControl>
