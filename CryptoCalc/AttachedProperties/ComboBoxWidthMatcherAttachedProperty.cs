@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace CryptoCalc
@@ -8,8 +9,19 @@ namespace CryptoCalc
     /// </summary>
     public class ComboBoxWidthMatcherProperty : BaseAttachedProperty<ComboBoxWidthMatcherProperty, bool>
     {
-        //The maximum width to set for all the comboboxes
+        #region Private fields
+
+        /// <summary>
+        /// The maximum width to set for all the comboboxes
+        /// </summary>
         double maxWidth = 0;
+
+        /// <summary>
+        /// saves all the comboboxes found
+        /// </summary>
+        List<ComboBox> comboBoxes = new List<ComboBox>();
+
+        #endregion
 
         /// <summary>
         /// Fires when the property is set
@@ -22,7 +34,7 @@ namespace CryptoCalc
             var panel = (sender as Panel);
 
             // Hooks into the panel sizeChanged event
-            panel.SizeChanged += Panel_SizeChanged;
+            panel.Loaded += Panel_Loaded;
         }
 
         /// <summary>
@@ -30,65 +42,58 @@ namespace CryptoCalc
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Panel_SizeChanged(object sender, SizeChangedEventArgs e)
+        private void Panel_Loaded(object sender, RoutedEventArgs e)
         {
-            //Cycle through all comboboxes and get the maximum width
-            foreach (UIElement child in ((Panel)sender).Children)
-            {
-                //cast to the Hash item control
-                var comboBox = (child as ComboBox);
-
-                // Ignore any non ComboBoxes
-                if (!(comboBox is ComboBox))
-                    continue;
-
-                //the maximum length of the items inside the combobox
-                double max = 0;
-
-                //cycle through the combobox items
-                foreach (var item in comboBox.Items)
-                {
-                    //Create a label for measuring the item text
-                    Label label = new Label();
-
-                    //set the combobox item as the label content 
-                    label.Content = item.ToString();
-                    
-                    //measure the text length
-                    label.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-                    
-                    //arranges the uiElement size
-                    label.Arrange(new Rect(label.DesiredSize));
-
-                    //get the width of the label
-                    double width = label.ActualWidth;
-
-                    //save the maximum item width
-                    max = width > max ? width : max;
-                }
-
-                //set the maximum dropdown width on combobox
-                //TODO figure out how to get the size of dropdown arrow or size when empty
-                comboBox.Width = max + 20;
-
-                // save the maximum combobox width
-                maxWidth = comboBox.Width > maxWidth ? comboBox.Width : maxWidth;
-            }
+            CheckChildren((Panel)sender);
 
             //Cycle through all the comboboxes and set the maximum width
-            foreach (UIElement child in ((Panel)sender).Children)
+            foreach (var comboBox in comboBoxes)
             {
-                //cast to the Hash item control
-                var comboBox = (child as ComboBox);
-
-                // Ignore any non ComboBoxes
-                if (!(comboBox is ComboBox))
-                    continue;
-
-                // Set the max width on all comboboxes
-                comboBox.Width = maxWidth;
+                comboBox.Width = maxWidth + 20;
             }
         }
 
+        /// <summary>
+        /// Checks thew children for stackpanels and comboboxes
+        /// </summary>
+        /// <param name="sender"></param>
+        private void CheckChildren(Panel sender)
+        {
+            //Cycle through all comboboxes and get the maximum width
+            foreach (UIElement child in sender.Children)
+            {
+                if (child is StackPanel stackPanel)
+                {
+                    CheckChildren(stackPanel);
+                }
+
+                if (child is ComboBox comboBox)
+                {
+                    //cycle through the combobox items
+                    foreach (var item in comboBox.Items)
+                    {
+                        //Create a label for measuring the item text
+                        Label label = new Label();
+
+                        //set the combobox item as the label content 
+                        label.Content = item.ToString();
+
+                        //measure the text length
+                        label.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+
+                        //arranges the uiElement size
+                        label.Arrange(new Rect(label.DesiredSize));
+
+                        //get the width of the label
+                        double width = label.ActualWidth;
+
+                        //save the maximum item width
+                        maxWidth = width > maxWidth ? width : maxWidth;
+                    }
+
+                    comboBoxes.Add(comboBox);
+                }
+            }
+        }
     }
 }
