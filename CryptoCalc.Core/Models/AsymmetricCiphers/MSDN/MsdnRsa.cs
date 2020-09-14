@@ -52,7 +52,7 @@ namespace CryptoCalc.Core
                     keySizes.Add(keySize);
                     if (legalkeySize.SkipSize == 0)
                         break;
-                    keySize += legalkeySize.SkipSize;
+                    keySize += 512;
                 }
             }
             return keySizes;
