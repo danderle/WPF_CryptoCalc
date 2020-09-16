@@ -72,6 +72,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Controls\Asymmetric\KeyExchangeSetupControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Controls\Asymmetric\AsymmetricSetupControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -133,6 +136,9 @@
 
   <ItemGroup>
     <Page Update="Controls\Asymmetric\AsymmetricKeyExchangeControl.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\Asymmetric\KeyExchangeSetupControl.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Controls\Asymmetric\AsymmetricSignatureControl.xaml">

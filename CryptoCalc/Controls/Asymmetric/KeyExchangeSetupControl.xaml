@@ -1,0 +1,114 @@
+﻿<UserControl x:Class="CryptoCalc.KeyExchangeSetupControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:CryptoCalc"
+             xmlns:core="clr-namespace:CryptoCalc.Core;assembly=CryptoCalc.Core"
+             mc:Ignorable="d" 
+             d:DesignWidth="450">
+
+    <Grid Background="{StaticResource WhiteBrush}"
+          d:DataContext="{x:Static core:AsymmetricEncryptionDesignModel.Instance}">
+
+        <Grid.ColumnDefinitions>
+            <!--Option to select what type of format to hash-->
+            <ColumnDefinition Width="Auto" />
+            <!--The data that will be hashed plus optional entries-->
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!--Column 0-->
+        <StackPanel Margin="8"
+                    local:ComboBoxWidthMatcherProperty.Value="True">
+
+            <!--Algorithim combobox-->
+            <TextBlock Text="Algorithim"/>
+            <ComboBox ItemsSource="{Binding KeyPairSetup.Algorithims}"
+                      SelectedIndex ="{Binding KeyPairSetup.SelectedAlgorithimIndex}"
+                      x:Name="ComboBox1"
+                      local:SelectionChangedProperty.Value="{Binding KeyPairSetup.ChangedAlgorithimCommand}"/>
+
+            <!--Stackpanel visibile if key size selection is used-->
+            <StackPanel Visibility="{Binding KeyPairSetup.UsesKeySize, Converter={local:BoolToVisibility}}">
+
+                <!--Key size combobox-->
+                <TextBlock Text="Key Size"
+                           Margin="0 8 0 0"/>
+                <ComboBox ItemsSource="{Binding KeyPairSetup.KeySizes}"
+                          SelectedIndex="{Binding KeyPairSetup.KeySizeIndex}"
+                          x:Name="ComboBox2"/>
+            </StackPanel>
+
+            <!--Stackpanel visible if Ec curves are used-->
+            <StackPanel Visibility="{Binding KeyPairSetup.UsesEcCurves, Converter={local:BoolToVisibility}}">
+
+                <!--Ec curve provider combobox-->
+                <TextBlock Text="Curve Provider"
+                           Margin="0 8 0 0"/>
+                <ComboBox ItemsSource="{Binding KeyPairSetup.Providers}"
+                          SelectedIndex ="{Binding KeyPairSetup.ProviderIndex}"
+                          local:SelectionChangedProperty.Value="{Binding ChangedAlgorithimCommand}"
+                          x:Name="ComboBox3"/>
+
+                <!--Ec curve types combobox-->
+                <TextBlock Text="EC Curve"
+                           Margin="0 8 0 0"/>
+                <ComboBox ItemsSource="{Binding KeyPairSetup.EcCurves}"
+                          SelectedIndex="{Binding KeyPairSetup.EcCurveIndex}"
+                          x:Name="ComboBox4"/>
+            </StackPanel>
+        </StackPanel>
+
+
+        <!--Column 1-->
+        <StackPanel Grid.Column="1"
+                    Margin="8">
+            <StackPanel DataContext="{Binding KeyPairSetup}">
+                <!--Directory text box-->
+                <TextBlock Text="Key Directory"/>
+                <TextBox Text="{Binding KeyDirectoryPath, UpdateSourceTrigger=PropertyChanged}" 
+                         Background="{Binding KeyDirectoryPathExists, Converter={local:BoolToBackground}}"/>
+
+                <!--Create key button-->
+                <Button Content="Create new key pair" 
+                        Style="{StaticResource DefaultButton}"
+                        HorizontalAlignment="Center"
+                        IsEnabled="{Binding KeyDirectoryPathExists}"
+                        Command="{Binding CreateKeyPairCommand}"/>
+
+                <!--Secret Key text box-->
+                <TextBlock Margin="0 8 0 0">
+                <Run Text="Private Key File"/>
+                <Run Text="{Binding PrivateKeyLoaded, Converter={local:BoolToLoadedText}}"
+                     Foreground="{StaticResource DarkGreenBrush}"/>
+                </TextBlock>
+                <TextBox Text="{Binding PrivateKeyFilePath, UpdateSourceTrigger=PropertyChanged}" 
+                         Background="{Binding PrivateKeyFilePathExists, Converter={local:BoolToBackground}}"/>
+
+                <!--Public Key text box-->
+                <TextBlock Margin="0 8 0 0">
+                <Run Text="Public Key File"/>
+                <Run Text="{Binding PublicKeyLoaded, Converter={local:BoolToLoadedText}}"
+                     Foreground="{StaticResource DarkGreenBrush}"/>
+                </TextBlock>
+                <TextBox Text="{Binding PublicKeyFilePath, UpdateSourceTrigger=PropertyChanged}" 
+                         Background="{Binding PublicKeyFilePathExists, Converter={local:BoolToBackground}}"/>
+
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Center">
+                    <Button Content="Load Keys"
+                            Style="{StaticResource DefaultButton}"
+                            IsEnabled="{Binding KeysExist}"
+                            Command="{Binding LoadKeyCommand}"
+                            Width="140"/>
+                    <Button Content="Delete Keys"
+                            Style="{StaticResource DefaultButton}"
+                            IsEnabled="{Binding KeysExist}"
+                            Command="{Binding DeleteKeyCommand}"
+                            Width="140"/>
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>
