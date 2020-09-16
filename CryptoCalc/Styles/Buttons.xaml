@@ -8,6 +8,8 @@
 
     </ResourceDictionary.MergedDictionaries>
 
+    <!--Buttons-->
+    
     <!--Hoverless Button-->
     <Style TargetType="{x:Type Button}" x:Key="Hoverless">
         <Setter Property="Background" Value="Transparent" />
@@ -78,7 +80,7 @@
     </Style>
 
     <!--Regular Button-->
-    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource BaseStyle}">
+    <Style TargetType="{x:Type Button}" x:Key="DefaultButton" BasedOn="{StaticResource BaseStyle}">
 
         <Setter Property="Background" Value="{StaticResource MediumBlueBrush}" />
         <Setter Property="Foreground" Value="{StaticResource LightWhiteBrush}" />
@@ -149,6 +151,17 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+
+    <!--File Browser button-->
+    <Style TargetType="{x:Type Button}" x:Key="FileBrowserButton" BasedOn="{StaticResource DefaultButton}">
+        <Setter Property="Content" Value="..."/>
+        <Setter Property="ToolTip" Value="Select file"/>
+        <Setter Property="Margin" Value="8 0 0 0"/>
+        <Setter Property="Height" Value="30"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+    </Style>
+    
+    <!--ToggleButtons-->
     
     <!--Side Menu Open/Close Button-->
     <Style TargetType="{x:Type ToggleButton}" x:Key="SideMenuToggleButton" BasedOn="{StaticResource BaseStyle}">
@@ -217,6 +230,8 @@
     </Style>
 
 
+    <!--RadioButtons-->
+    
     <!--Transparent Radiobutton-->
     <Style TargetType="{x:Type RadioButton}" x:Key="TransparentRadioButton" >
         <Setter Property="Background" Value="Transparent"/>

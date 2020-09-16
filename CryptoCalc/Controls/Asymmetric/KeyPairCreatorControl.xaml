@@ -9,7 +9,7 @@
              d:DesignWidth="400">
 
     <Grid Background="{StaticResource WhiteBrush}"
-          d:DataContext="{x:Static core:AsymmetricDesignModel.Instance}">
+          d:DataContext="{x:Static core:AsymmetricEncryptionDesignModel.Instance}">
         <StackPanel>
             <!--Key Name textbox-->
             <TextBlock Text="Key Name" />
@@ -32,11 +32,15 @@
                         HorizontalAlignment="Center">
                 <!--Save button-->
                 <Button Content="Save" 
-                        Command="{Binding SaveKeyPairCommand}"/>
+                        Style="{StaticResource DefaultButton}"
+                        Command="{Binding SaveKeyPairCommand}"
+                        Width="80"/>
                 
                 <!--Delete button-->
                 <Button Content="Delete" 
-                        Command="{Binding DeleteKeyPairCommand}"/>
+                        Style="{StaticResource DefaultButton}"
+                        Command="{Binding DeleteKeyPairCommand}"
+                        Width="80"/>
             </StackPanel>
         </StackPanel>
     </Grid>

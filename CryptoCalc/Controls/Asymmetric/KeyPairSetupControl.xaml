@@ -72,6 +72,7 @@
 
             <!--Create key button-->
             <Button Content="Create new key pair" 
+                    Style="{StaticResource DefaultButton}"
                     HorizontalAlignment="Center"
                     IsEnabled="{Binding KeyDirectoryPathExists}"
                     Command="{Binding CreateKeyPairCommand}"/>
@@ -97,11 +98,15 @@
             <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Center">
                 <Button Content="Load Keys"
+                        Style="{StaticResource DefaultButton}"
                         IsEnabled="{Binding KeysExist}"
-                        Command="{Binding LoadKeyCommand}"/>
+                        Command="{Binding LoadKeyCommand}"
+                        Width="130"/>
                 <Button Content="Delete Keys"
+                        Style="{StaticResource DefaultButton}"
                         IsEnabled="{Binding KeysExist}"
-                        Command="{Binding DeleteKeyCommand}"/>
+                        Command="{Binding DeleteKeyCommand}"
+                        Width="130"/>
             </StackPanel>
         </StackPanel>
     </Grid>

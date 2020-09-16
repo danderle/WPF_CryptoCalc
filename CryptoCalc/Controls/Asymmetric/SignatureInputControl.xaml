@@ -15,7 +15,8 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         
-        <StackPanel Margin="8">
+        <StackPanel Margin="8"
+                    VerticalAlignment="Center">
             <!--Signature-->
             <TextBlock Text="Original Signature" />
             <TextBox Text="{Binding OriginalSignature, UpdateSourceTrigger=PropertyChanged}" />
@@ -34,11 +35,15 @@
                     Orientation="Horizontal"
                     HorizontalAlignment="Center">
             <Button Content="Sign" 
-                    Margin="15 5"
-                    Command="{Binding SignCommand}"/>
-            <Button Content="Verify" 
-                    Margin="15 5"
-                    Command="{Binding VerifyCommand}"/>
+                    IsEnabled="{Binding ReadyToSign}"
+                    Command="{Binding SignCommand}"
+                    Style="{StaticResource DefaultButton}"
+                    Width="80"/>
+            <Button Content="Verify"
+                    Style="{StaticResource DefaultButton}"
+                    IsEnabled="{Binding ReadyToVerify}"
+                    Command="{Binding VerifyCommand}"
+                    Width="80"/>
         </StackPanel>
     </Grid>
     
