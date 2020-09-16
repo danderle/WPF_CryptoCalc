@@ -47,6 +47,7 @@
         
         <!--Calculate button-->
         <Button Content="Calculate"
+                Style="{StaticResource DefaultButton}"
                 Command="{Binding CalculateCommand}"
                 IsEnabled="{Binding DataIsReadyForProcessing, Mode=OneWay}"
                 HorizontalAlignment="Center"

@@ -53,11 +53,7 @@
                 <Button Grid.Column="1"
                         Command="{Binding OpenFolderDialogCommand}" 
                         Visibility="{Binding DataFormatSelected, Converter={local:DataFormatsToVisibility}, ConverterParameter=File}"
-                        Content="..."
-                        ToolTip="Select file"
-                        VerticalAlignment="Top"
-                        Margin="8 0 0 0"
-                        Height="30"/>
+                        Style="{StaticResource FileBrowserButton}"/>
             </Grid>
         </StackPanel>
     </Grid>

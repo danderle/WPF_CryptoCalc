@@ -63,11 +63,13 @@
                     HorizontalAlignment="Center">
             
             <!--Encryption button-->
-            <Button Content="Encrypt" 
+            <Button Content="Encrypt"
+                    Style="{StaticResource DefaultButton}"
                     IsEnabled="{Binding ReadyForEncryption, Mode=OneWay}"
                     Command="{Binding EncryptCommand}"/>
             <!--Decryption button-->
             <Button Content="Decrypt" 
+                    Style="{StaticResource DefaultButton}"
                     IsEnabled="{Binding ReadyForDecryption, Mode=OneWay}"
                     Command="{Binding DecryptCommand}"
                     />

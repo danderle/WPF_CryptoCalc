@@ -64,11 +64,7 @@
                 <Button Command="{Binding DataInput.OpenFolderDialogCommand}"
                         Visibility="{Binding DataInput.DataFormatSelected, Converter={local:DataFormatsToVisibility}, ConverterParameter=File}"
                         Grid.Column="1"
-                        Content="..."
-                        ToolTip="Select file"
-                        VerticalAlignment="Top"
-                        Margin="8 0 0 0"
-                        Height="30"/>
+                        Style="{StaticResource FileBrowserButton}"/>
             </Grid>
             
             <StackPanel>
@@ -95,8 +91,8 @@
             <!--Random key generation button-->
             <Button Content="Generate new key" 
                     Command="{Binding GenerateKeyCommand}"
-                    HorizontalAlignment="Center"
-                    Margin="8 8 8 0"/>
+                    Style="{StaticResource DefaultButton}"
+                    HorizontalAlignment="Center"/>
         </StackPanel>
         
     </Grid>
