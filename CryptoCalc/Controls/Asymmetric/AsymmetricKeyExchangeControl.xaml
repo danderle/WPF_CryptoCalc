@@ -18,7 +18,10 @@
         </Grid.RowDefinitions>
 
         <!--Setup control-->
-        <local:AsymmetricSetupControl DataContext="{Binding}"/>
+        <local:KeyExchangeSetupControl DataContext="{Binding}"/>
+
+        <!--Section Separator-->
+        <Border Style="{StaticResource SectionBorder}" />
 
         <!--Derive key control-->
         <local:DeriveKeyControl Grid.Row="1"

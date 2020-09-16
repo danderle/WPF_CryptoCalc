@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:CryptoCalc"
              xmlns:core="clr-namespace:CryptoCalc.Core;assembly=CryptoCalc.Core"
              mc:Ignorable="d" 
-             d:DesignWidth="400">
+             d:DesignWidth="450">
 
     <Grid Background="{StaticResource WhiteBrush}"
           d:DataContext="{x:Static core:AsymmetricEncryptionDesignModel.Instance}">
@@ -31,7 +31,8 @@
                       HorizontalAlignment="Right"/>
 
             <!--Algorithim combobox-->
-            <TextBlock Text="Algorithim"/>
+            <TextBlock Text="Algorithim"
+                       Margin="0 8 0 0"/>
             <ComboBox ItemsSource="{Binding KeyPairSetup.Algorithims}"
                       SelectedIndex ="{Binding KeyPairSetup.SelectedAlgorithimIndex}"
                       x:Name="ComboBox1"
@@ -93,11 +94,7 @@
                     <Button Grid.Column="1"
                         Command="{Binding OpenFolderDialogCommand}" 
                         Visibility="{Binding DataFormatSelected, Converter={local:DataFormatsToVisibility}, ConverterParameter=File}"
-                        Content="..."
-                        ToolTip="Select file"
-                        VerticalAlignment="Top"
-                        Margin="8 0 0 0"
-                        Height="30"/>
+                        Style="{StaticResource FileBrowserButton}"/>
                 </Grid>
             </StackPanel>
 
@@ -108,10 +105,11 @@
                          Background="{Binding KeyDirectoryPathExists, Converter={local:BoolToBackground}}"/>
 
                 <!--Create key button-->
-                <Button Content="Create new key pair" 
-                    HorizontalAlignment="Center"
-                    IsEnabled="{Binding KeyDirectoryPathExists}"
-                    Command="{Binding CreateKeyPairCommand}"/>
+                <Button Content="Create new key pair"
+                        Style="{StaticResource DefaultButton}"
+                        HorizontalAlignment="Center"
+                        IsEnabled="{Binding KeyDirectoryPathExists}"
+                        Command="{Binding CreateKeyPairCommand}"/>
 
                 <!--Secret Key text box-->
                 <TextBlock Margin="0 8 0 0">
@@ -132,13 +130,17 @@
                          Background="{Binding PublicKeyFilePathExists, Converter={local:BoolToBackground}}"/>
 
                 <StackPanel Orientation="Horizontal"
-                        HorizontalAlignment="Center">
+                            HorizontalAlignment="Center">
                     <Button Content="Load Keys"
-                        IsEnabled="{Binding KeysExist}"
-                        Command="{Binding LoadKeyCommand}"/>
+                        Style="{StaticResource DefaultButton}"
+                            IsEnabled="{Binding KeysExist}"
+                            Command="{Binding LoadKeyCommand}"
+                            Width="140"/>
                     <Button Content="Delete Keys"
-                        IsEnabled="{Binding KeysExist}"
-                        Command="{Binding DeleteKeyCommand}"/>
+                        Style="{StaticResource DefaultButton}"
+                            IsEnabled="{Binding KeysExist}"
+                            Command="{Binding DeleteKeyCommand}"
+                            Width="140"/>
                 </StackPanel>
             </StackPanel>
         </StackPanel>

@@ -20,6 +20,9 @@
         <!--Setup control-->
         <local:AsymmetricSetupControl DataContext="{Binding}"/>
 
+        <!--Section Separator-->
+        <Border Style="{StaticResource SectionBorder}" />
+
         <!--Signatur input control-->
         <local:SignatureInputControl Grid.Row="1"
                                      DataContext="{Binding}" />

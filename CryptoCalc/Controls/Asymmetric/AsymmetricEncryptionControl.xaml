@@ -11,13 +11,17 @@
     <Grid Background="{StaticResource WhiteBrush}"
           d:DataContext="{x:Static core:SymmetricDesignModel.Instance}">
         <Grid.RowDefinitions>
+            <!--Setup control-->
             <RowDefinition Height="Auto" />
+            <!--Output control-->
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
         <!--Setup control-->
         <local:AsymmetricSetupControl DataContext="{Binding}"/>
 
+        <!--Section Separator-->
+        <Border Style="{StaticResource SectionBorder}" />
 
         <!--Output control-->
         <local:CipherOutputControl Grid.Row="1"
