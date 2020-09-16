@@ -12,26 +12,49 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <StackPanel >
-            <TextBlock Text="My Private Key" />
-            <TextBox Text="{Binding PrivateKey, UpdateSourceTrigger=PropertyChanged}"/>
+        
+            <Grid >
+                <Grid.ColumnDefinitions>
+                    <!--Data entry textbox-->
+                    <ColumnDefinition Width="*" />
+                    <!--File browser pop up button-->
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
 
-            <Button Content="Load From File"
-                    Command="{Binding LoadPrivateKeyCommand}"
-                    HorizontalAlignment="Center"/>
-            <TextBlock Text="Other Party Public Key" />
-            <TextBox Text="{Binding OtherPartyPublicKey, UpdateSourceTrigger=PropertyChanged}"/>
-            
-            <TextBlock Text="Derived Key" />
+            <StackPanel>
+                <TextBlock Text="My Private Key" />
+                <TextBox Text="{Binding PrivateKey, UpdateSourceTrigger=PropertyChanged}"/>
+
+
+                <TextBlock Text="Other Party Public Key" />
+                <TextBox Text="{Binding OtherPartyPublicKey, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <TextBlock Text="Derived Key" />
                 <TextBox Text="{Binding DerivedKey, UpdateSourceTrigger=PropertyChanged}" 
                              IsReadOnly="True"/>
-        </StackPanel>
+            </StackPanel>
 
-        <StackPanel Grid.Row="1" 
-                    Orientation="Horizontal"
-                    HorizontalAlignment="Center">
+            <StackPanel Grid.Column="1">
+                <!--File browser pop pup button-->
+                <Button Command="{Binding OpenFolderDialogCommand}" 
+                        Visibility="{Binding DataFormatSelected, Converter={local:DataFormatsToVisibility}, ConverterParameter=File}"
+                        Style="{StaticResource FileBrowserButton}"
+                        Margin="8 17 0 0"/>
+            </StackPanel>
+            </Grid>
+            
+
+        
+        <Border Style="{StaticResource SectionBorder}" />
+
+        <StackPanel Grid.Row="1"
+                    Orientation="Horizontal">
+            <Button Content="Load From File"
+                    Style="{StaticResource DefaultButton}"
+                    Command="{Binding LoadPrivateKeyCommand}"/>
+
             <Button Content="Derive Key" 
-                    Margin="15 5"
+                    Style="{StaticResource DefaultButton}"
                     Command="{Binding DeriveKeyCommand}"/>
         </StackPanel>
     </Grid>
