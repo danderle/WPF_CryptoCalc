@@ -154,7 +154,8 @@
 
     <!--File Browser button-->
     <Style TargetType="{x:Type Button}" x:Key="FileBrowserButton" BasedOn="{StaticResource DefaultButton}">
-        <Setter Property="Content" Value="..."/>
+        <Setter Property="FontFamily" Value="{StaticResource FontAwesomeSolid}"/>
+        <Setter Property="Content" Value="{StaticResource FontAwesomeFileImport}"/>
         <Setter Property="ToolTip" Value="Select file"/>
         <Setter Property="Margin" Value="8 0 0 0"/>
         <Setter Property="Height" Value="30"/>
