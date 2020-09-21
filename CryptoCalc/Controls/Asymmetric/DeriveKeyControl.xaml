@@ -5,58 +5,32 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:CryptoCalc"
              xmlns:core="clr-namespace:CryptoCalc.Core;assembly=CryptoCalc.Core"
-             mc:Ignorable="d" >
+             mc:Ignorable="d"
+             d:DesignHeight="200">
 
     <Grid Background="{StaticResource WhiteBrush}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         
-            <Grid >
-                <Grid.ColumnDefinitions>
-                    <!--Data entry textbox-->
-                    <ColumnDefinition Width="*" />
-                    <!--File browser pop up button-->
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-
-            <StackPanel>
-                <TextBlock Text="My Private Key" />
-                <TextBox Text="{Binding PrivateKey, UpdateSourceTrigger=PropertyChanged}"/>
-
-
-                <TextBlock Text="Other Party Public Key" />
-                <TextBox Text="{Binding OtherPartyPublicKey, UpdateSourceTrigger=PropertyChanged}"/>
-
-                <TextBlock Text="Derived Key" />
-                <TextBox Text="{Binding DerivedKey, UpdateSourceTrigger=PropertyChanged}" 
-                             IsReadOnly="True"/>
-            </StackPanel>
-
-            <StackPanel Grid.Column="1">
-                <!--File browser pop pup button-->
-                <Button Command="{Binding OpenFolderDialogCommand}" 
-                        Visibility="{Binding DataFormatSelected, Converter={local:DataFormatsToVisibility}, ConverterParameter=File}"
-                        Style="{StaticResource FileBrowserButton}"
-                        Margin="8 17 0 0"/>
-            </StackPanel>
-            </Grid>
+        <StackPanel Margin="8"
+                    VerticalAlignment="Center">
             
+            <TextBlock Text="Derived Key" />
+            <TextBox Text="{Binding DerivedKey, UpdateSourceTrigger=PropertyChanged}" 
+                            IsReadOnly="True"/>
 
-        
+        </StackPanel>
+
+        <!--Section Separator-->
         <Border Style="{StaticResource SectionBorder}" />
 
-        <StackPanel Grid.Row="1"
-                    Orientation="Horizontal">
-            <Button Content="Load From File"
-                    Style="{StaticResource DefaultButton}"
-                    Command="{Binding LoadPrivateKeyCommand}"/>
-
-            <Button Content="Derive Key" 
-                    Style="{StaticResource DefaultButton}"
-                    Command="{Binding DeriveKeyCommand}"/>
-        </StackPanel>
+        <Button Grid.Row="1"
+                Content="Derive Key" 
+                Style="{StaticResource DefaultButton}"
+                Command="{Binding DeriveKeyCommand}"
+                HorizontalAlignment="Center"/>
     </Grid>
     
 </UserControl>
