@@ -35,5 +35,8 @@
 
     <system:String x:Key="FontAwesomeAngleLeft">&#xf104;</system:String>
     <system:String x:Key="FontAwesomeAngleRight">&#xf105;</system:String>
+    <system:String x:Key="FontAwesomeFileImport">&#xf56f;</system:String>
+    <system:String x:Key="FontAwesomeFileUpload">&#xf574;</system:String>
+    <system:String x:Key="FontAwesomeTrash">&#xf1f8;</system:String>
     
 </ResourceDictionary>
