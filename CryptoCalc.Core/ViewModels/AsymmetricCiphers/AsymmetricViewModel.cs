@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Windows.Input;
 
 namespace CryptoCalc.Core
@@ -33,7 +34,17 @@ namespace CryptoCalc.Core
         /// <summary>
         /// A flag to let us know if we are ready for decryption
         /// </summary>
-        public bool ReadyForDecryption => PrivateKeyLoaded;
+        public bool ReadyForDecryption => PrivateKeyLoaded && (EncryptedText.HasOnlyHex() || File.Exists(EncryptedFilePath));
+
+        /// <summary>
+        /// Flag to let us know if we can sign data
+        /// </summary>
+        public bool ReadyToSign => ReadyForEncryption;
+
+        /// <summary>
+        /// Flag to let us know if we can verify a signature
+        /// </summary>
+        public bool ReadyToVerify => PrivateKeyLoaded && OriginalSignature.HasOnlyHex() && DataFormatCorrect;
 
         /// <summary>
         /// The encrypted file path
@@ -69,11 +80,6 @@ namespace CryptoCalc.Core
         /// The name to save the public and private key pair to
         /// </summary>
         public string KeyName { get; set; } = string.Empty;
-
-        /// <summary>
-        /// The other parties public key used for key exchange
-        /// </summary>
-        public string OtherPartyPublicKey { get; set; } = string.Empty;
 
         /// <summary>
         /// The derived key when using key exchange
@@ -118,6 +124,7 @@ namespace CryptoCalc.Core
         /// The command to derive a shared key during a key exchange
         /// </summary>
         public ICommand DeriveKeyCommand { get; set; }
+
         
         #endregion
 
@@ -154,13 +161,11 @@ namespace CryptoCalc.Core
         #region Command Methods
 
         /// <summary>
-        /// The command method to derived a shared secret key from the other party public key and our own keys
+        /// The command method to derive a shared secret key from the other party public key and our own keys
         /// </summary>
         private void DeriveKey()
         {
-            var otherPartyPublicKey = ByteConvert.HexStringToBytes(OtherPartyPublicKey.Replace(" ", string.Empty));
-            var privateKey = File.ReadAllBytes(KeyPairSetup.PrivateKeyFilePath);
-            var derivedKey = ((IAsymmetricKeyExchange)KeyPairSetup.SelectedCipher).DeriveKey(privateKey, KeyPairSetup.KeySizes[KeyPairSetup.KeySizeIndex], otherPartyPublicKey);
+            var derivedKey = KeyPairSetup.DeriveKey();
             DerivedKey = ByteConvert.BytesToHexString(derivedKey);
         }
 
@@ -339,6 +344,8 @@ namespace CryptoCalc.Core
         private void DataInput_DataChanged(object obj, System.EventArgs args)
         {
             DataFormatCorrect = DataInput.DataIsCorrectlyFormatted;
+            EncryptedFilePath = string.Empty;
+            EncryptedText = string.Empty;
         }
 
         /// <summary>
