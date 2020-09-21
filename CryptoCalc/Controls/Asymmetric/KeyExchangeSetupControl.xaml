@@ -71,38 +71,82 @@
                          Background="{Binding KeyDirectoryPathExists, Converter={local:BoolToBackground}}"/>
 
                 <!--Create key button-->
-                <Button Content="Create new key pair" 
+                <Button Content="New Key Pair" 
                         Style="{StaticResource DefaultButton}"
                         HorizontalAlignment="Center"
                         IsEnabled="{Binding KeyDirectoryPathExists}"
                         Command="{Binding CreateKeyPairCommand}"/>
 
-                <!--Secret Key text box-->
-                <TextBlock Margin="0 8 0 0">
-                <Run Text="Private Key File"/>
-                <Run Text="{Binding PrivateKeyLoaded, Converter={local:BoolToLoadedText}}"
-                     Foreground="{StaticResource DarkGreenBrush}"/>
-                </TextBlock>
-                <TextBox Text="{Binding PrivateKeyFilePath, UpdateSourceTrigger=PropertyChanged}" 
-                         Background="{Binding PrivateKeyFilePathExists, Converter={local:BoolToBackground}}"/>
+                
+                <Grid Margin="0 3 0 0">
+                    <Grid.ColumnDefinitions>
+                        <!--Data entry textbox-->
+                        <ColumnDefinition Width="*" />
+                        <!--File browser pop up button-->
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
 
-                <!--Public Key text box-->
-                <TextBlock Margin="0 8 0 0">
-                <Run Text="Public Key File"/>
-                <Run Text="{Binding PublicKeyLoaded, Converter={local:BoolToLoadedText}}"
-                     Foreground="{StaticResource DarkGreenBrush}"/>
-                </TextBlock>
-                <TextBox Text="{Binding PublicKeyFilePath, UpdateSourceTrigger=PropertyChanged}" 
-                         Background="{Binding PublicKeyFilePathExists, Converter={local:BoolToBackground}}"/>
+                    <StackPanel>
+                        <!--Secret Key text box-->
+                        <TextBlock>
+                            <Run Text="Private Key File"/>
+                            <Run Text="{Binding PrivateKeyLoaded, Converter={local:BoolToLoadedText}}"
+                                 Foreground="{StaticResource DarkGreenBrush}"/>
+                        </TextBlock>
+                        <TextBox Text="{Binding PrivateKeyFilePath, UpdateSourceTrigger=PropertyChanged}" 
+                                 Background="{Binding PrivateKeyFilePathExists, Converter={local:BoolToBackground}}"
+                                 local:DragDropProperty.Value="True"/>
 
+                        <!--Public Key text box-->
+                        <TextBlock>
+                            <Run Text="Public Key File"/>
+                            <Run Text="{Binding PublicKeyLoaded, Converter={local:BoolToLoadedText}}"
+                                 Foreground="{StaticResource DarkGreenBrush}"/>
+                        </TextBlock>
+                        <TextBox Text="{Binding PublicKeyFilePath, UpdateSourceTrigger=PropertyChanged}" 
+                                 Background="{Binding PublicKeyFilePathExists, Converter={local:BoolToBackground}}"
+                                 local:DragDropProperty.Value="True"/>
+
+
+                        <TextBlock>
+                            <Run Text="Other Party Public Key" />
+                            <Run Text="{Binding OtherPublicKeyLoaded, Converter={local:BoolToLoadedText}}"
+                                 Foreground="{StaticResource DarkestGreenBrush}"/>
+                        </TextBlock>
+                        <TextBox Text="{Binding OtherPartyPublicKeyFilePath, UpdateSourceTrigger=PropertyChanged}"
+                                 Background="{Binding OtherPartyPublicKeyFilePathExists, Converter={local:BoolToBackground}}"
+                                 local:DragDropProperty.Value="True"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1">
+                        <!--File browser pop pup button-->
+                        <Button Command="{Binding GetPrivateKeyFilePathCommand}" 
+                            Style="{StaticResource FileBrowserButton}"
+                            Margin="8 17 0 0"/>
+
+                        <!--File browser pop pup button-->
+                        <Button Command="{Binding OpenFolderDialogCommand}" 
+                            Visibility="{Binding DataFormatSelected, Converter={local:DataFormatsToVisibility}, ConverterParameter=File}"
+                            Style="{StaticResource FileBrowserButton}"
+                            Margin="8 25 0 0"/>
+
+                        <!--File browser pop pup button-->
+                        <Button Command="{Binding OpenFolderDialogCommand}" 
+                            Visibility="{Binding DataFormatSelected, Converter={local:DataFormatsToVisibility}, ConverterParameter=File}"
+                            Style="{StaticResource FileBrowserButton}"
+                            Margin="8 25 0 0"/>
+                    </StackPanel>
+                </Grid>
                 <StackPanel Orientation="Horizontal"
                             HorizontalAlignment="Center">
-                    <Button Content="Load Keys"
+                    <Button FontFamily="{StaticResource FontAwesomeSolid}"
+                            Content="{StaticResource FontAwesomeFileUpload}"
                             Style="{StaticResource DefaultButton}"
                             IsEnabled="{Binding KeysExist}"
                             Command="{Binding LoadKeyCommand}"
                             Width="140"/>
-                    <Button Content="Delete Keys"
+                    <Button FontFamily="{StaticResource FontAwesomeSolid}"
+                            Content="{StaticResource FontAwesomeTrash}"
                             Style="{StaticResource DefaultButton}"
                             IsEnabled="{Binding KeysExist}"
                             Command="{Binding DeleteKeyCommand}"
@@ -110,5 +154,10 @@
                 </StackPanel>
             </StackPanel>
         </StackPanel>
+
+
+        <!--Section Separator-->
+        <Border Style="{StaticResource SectionBorder}" 
+                Grid.ColumnSpan="2"/>
     </Grid>
 </UserControl>
