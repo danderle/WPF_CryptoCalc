@@ -46,7 +46,7 @@
                 Style="{StaticResource SectionBorder}"/>
         
         <!--Calculate button-->
-        <Button Content="Calculate"
+        <Button Content="Hash"
                 Style="{StaticResource DefaultButton}"
                 Command="{Binding CalculateCommand}"
                 IsEnabled="{Binding DataIsReadyForProcessing, Mode=OneWay}"

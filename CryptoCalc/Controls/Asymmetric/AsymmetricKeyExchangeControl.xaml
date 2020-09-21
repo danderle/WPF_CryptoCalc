@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:CryptoCalc"
              xmlns:core="clr-namespace:CryptoCalc.Core;assembly=CryptoCalc.Core"
              mc:Ignorable="d" 
-             d:DesignWidth="500">
+             d:DesignHeight="500">
 
     <Grid Background="{StaticResource WhiteBrush}"
           d:DataContext="{x:Static core:AsymmetricKeyExchangeDesignModel.Instance}">
@@ -20,11 +20,8 @@
         <!--Setup control-->
         <local:KeyExchangeSetupControl DataContext="{Binding}"/>
 
-        <!--Section Separator-->
-        <Border Style="{StaticResource SectionBorder}" />
-
         <!--Derive key control-->
         <local:DeriveKeyControl Grid.Row="1"
-                                       DataContext="{Binding}" />
+                                DataContext="{Binding}" />
     </Grid>
 </UserControl>

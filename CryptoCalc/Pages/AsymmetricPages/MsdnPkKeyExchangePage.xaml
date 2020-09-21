@@ -6,7 +6,8 @@
                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
                 xmlns:local="clr-namespace:CryptoCalc"
                 xmlns:core="clr-namespace:CryptoCalc.Core;assembly=CryptoCalc.Core"
-                mc:Ignorable="d">
+                mc:Ignorable="d"
+                d:Height="600">
 
     <Border Style="{StaticResource MainPageBorder}"
             d:DataContext="{x:Static core:AsymmetricKeyExchangeDesignModel.Instance}">
