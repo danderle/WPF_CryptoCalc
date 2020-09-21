@@ -46,6 +46,11 @@ namespace CryptoCalc.Core
         public bool PublicKeyFilePathExists => File.Exists(PublicKeyFilePath);
 
         /// <summary>
+        /// Flag to let us know if the other persons public key file path exists
+        /// </summary>
+        public bool OtherPartyPublicKeyFilePathExists => File.Exists(OtherPartyPublicKeyFilePath);
+
+        /// <summary>
         /// Flag to let us know if the Private key is loaded
         /// </summary>
         public bool PrivateKeyLoaded { get; set; }
@@ -54,6 +59,11 @@ namespace CryptoCalc.Core
         /// Flag to let us know if the public key is loaded
         /// </summary>
         public bool PublicKeyLoaded { get; set; }
+
+        /// <summary>
+        /// Flag to let us know if the other public key is loaded
+        /// </summary>
+        public bool OtherPublicKeyLoaded { get; set; }
 
         /// <summary>
         /// Flag to let us know if any key exist
@@ -96,6 +106,11 @@ namespace CryptoCalc.Core
         public string PublicKeyFilePath { get; set; } = string.Empty;
 
         /// <summary>
+        /// The other parties public key used for key exchange
+        /// </summary>
+        public string OtherPartyPublicKeyFilePath { get; set; } = string.Empty;
+
+        /// <summary>
         /// The Public key operation to do
         /// </summary>
         public AsymmetricOperation SelectedOperation { get; set; }
@@ -131,6 +146,11 @@ namespace CryptoCalc.Core
         /// The public key
         /// </summary>
         public byte[] PublicKey { get; set; }
+
+        /// <summary>
+        /// The Other Party Public key
+        /// </summary>
+        public byte[] OtherPartyPublicKey { get; set; }
 
         /// <summary>
         /// The list off all symmetric algorithims
@@ -181,6 +201,16 @@ namespace CryptoCalc.Core
         /// </summary>
         public ICommand DeleteKeyCommand { get; set; }
 
+        /// <summary>
+        /// The command to get the private key from file browser
+        /// </summary>
+        public ICommand GetPrivateKeyFilePathCommand { get; set; }
+
+        /// <summary>
+        /// The command to get the other person public key from file browser
+        /// </summary>
+        public ICommand GetOtherPublicKeyFilePathCommand { get; set; }
+
         #endregion
 
         #region Constructor
@@ -228,6 +258,24 @@ namespace CryptoCalc.Core
         #endregion
 
         #region Command Methods
+
+        private async void GetOtherPublicKeyFilePathAsync()
+        {
+            //Opens a pop up window folder browser dialog
+            await Ioc.UI.ShowFolderDialog(new FolderBrowserDialogViewModel());
+
+            //Saves the selected path
+            OtherPartyPublicKeyFilePath = Ioc.Application.FilePathFromDialogSelection;
+        }
+
+        private async void GetPrivateKeyFilePathAsync()
+        {
+            //Opens a pop up window folder browser dialog
+            await Ioc.UI.ShowFolderDialog(new FolderBrowserDialogViewModel());
+
+            //Saves the selected path
+            PrivateKeyFilePath = Ioc.Application.FilePathFromDialogSelection;
+        }
 
         /// <summary>
         /// The command method to change a provider
@@ -342,6 +390,11 @@ namespace CryptoCalc.Core
                 PublicKey = File.ReadAllBytes(PublicKeyFilePath);
                 PublicKeyLoaded = true;
             }
+            if (OtherPartyPublicKeyFilePathExists)
+            {
+                OtherPartyPublicKey = File.ReadAllBytes(PublicKeyFilePath);
+                OtherPublicKeyLoaded = true;
+            }
             OnKeyLoad();
         }
 
@@ -407,6 +460,15 @@ namespace CryptoCalc.Core
             return ((IAsymmetricEncryption)SelectedCipher).DecryptToText(PrivateKey, encrypted);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public byte[] DeriveKey()
+        {
+            return ((IAsymmetricKeyExchange)SelectedCipher).DeriveKey(PrivateKey, KeySizes[KeySizeIndex], OtherPartyPublicKey);
+        }
+
         #region Private Methods
 
         /// <summary>
@@ -438,6 +500,8 @@ namespace CryptoCalc.Core
             ChangedProviderCommand = new RelayCommand(ChangedProvider);
             LoadKeyCommand = new RelayCommand(LoadKey);
             DeleteKeyCommand = new RelayCommand(DeleteKey);
+            GetPrivateKeyFilePathCommand = new RelayCommand(GetPrivateKeyFilePathAsync);
+            GetOtherPublicKeyFilePathCommand = new RelayCommand(GetOtherPublicKeyFilePathAsync);
         }
 
         /// <summary>
