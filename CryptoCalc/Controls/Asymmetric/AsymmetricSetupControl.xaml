@@ -9,7 +9,7 @@
              d:DesignWidth="450">
 
     <Grid Background="{StaticResource WhiteBrush}"
-          d:DataContext="{x:Static core:AsymmetricEncryptionDesignModel.Instance}">
+          d:DataContext="{x:Static core:AsymmetricSignatureDesignModel.Instance}">
 
         <Grid.ColumnDefinitions>
             <!--Option to select what type of format to hash-->
@@ -111,15 +111,17 @@
                         IsEnabled="{Binding KeyDirectoryPathExists}"
                         Command="{Binding CreateKeyPairCommand}"/>
 
-                <Grid>
+                <Grid Margin="0 -5 0 0">
                     <Grid.ColumnDefinitions>
+                        <!--Textboxes-->
                         <ColumnDefinition Width="*" />
+                        <!--File browser buttons-->
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
-                    <StackPanel>
-                        <!--Secret Key text box-->
-                        <TextBlock Margin="0 8 0 0">
+                    <StackPanel Margin="0 8 0 0">
+                    <!--Secret Key text box-->
+                        <TextBlock>
                             <Run Text="Private Key File"/>
                             <Run Text="{Binding PrivateKeyLoaded, Converter={local:BoolToLoadedText}}"
                                  Foreground="{StaticResource DarkGreenBrush}"/>
@@ -136,8 +138,26 @@
                         <TextBox Text="{Binding PublicKeyFilePath, UpdateSourceTrigger=PropertyChanged}" 
                          Background="{Binding PublicKeyFilePathExists, Converter={local:BoolToBackground}}"/>
 
+                        <!--Load and Delete Key buttons-->
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center">
+                            <Button FontFamily="{StaticResource FontAwesomeSolid}"
+                                    Content="{StaticResource FontAwesomeFileUpload}"
+                                    Style="{StaticResource DefaultButton}"
+                                    IsEnabled="{Binding KeysExist}"
+                                    Command="{Binding LoadKeyCommand}"
+                                    Width="80"/>
+                            <Button FontFamily="{StaticResource FontAwesomeSolid}"
+                                    Content="{StaticResource FontAwesomeTrash}"
+                                    Style="{StaticResource DefaultButton}"
+                                    IsEnabled="{Binding KeysExist}"
+                                    Command="{Binding DeleteKeyCommand}"
+                                    Width="80"
+                                    Margin="30 8 0 8"/>
+                        </StackPanel>
                     </StackPanel>
 
+                    <!--File browser buttons-->
                     <StackPanel Grid.Column="1">
                         <!--File browser pop pup button-->
                         <Button Command="{Binding GetPrivateKeyFilePathCommand}" 
@@ -150,23 +170,11 @@
                             Style="{StaticResource FileBrowserButton}"
                             Margin="8 32 0 0"/>
                     </StackPanel>
+                    
+                    
                 </Grid>
                 
-                <StackPanel Orientation="Horizontal"
-                            HorizontalAlignment="Center">
-                    <Button FontFamily="{StaticResource FontAwesomeSolid}"
-                            Content="{StaticResource FontAwesomeFileUpload}"
-                            Style="{StaticResource DefaultButton}"
-                            IsEnabled="{Binding KeysExist}"
-                            Command="{Binding LoadKeyCommand}"
-                            Width="140"/>
-                    <Button FontFamily="{StaticResource FontAwesomeSolid}"
-                            Content="{StaticResource FontAwesomeTrash}"
-                            Style="{StaticResource DefaultButton}"
-                            IsEnabled="{Binding KeysExist}"
-                            Command="{Binding DeleteKeyCommand}"
-                            Width="140"/>
-                </StackPanel>
+                
             </StackPanel>
         </StackPanel>
     </Grid>

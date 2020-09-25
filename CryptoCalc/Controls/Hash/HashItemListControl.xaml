@@ -22,7 +22,7 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                             <local:HashItemControl DataContext="{Binding }" 
-                                                   />
+                                                   Margin="0 8 0 0"/>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

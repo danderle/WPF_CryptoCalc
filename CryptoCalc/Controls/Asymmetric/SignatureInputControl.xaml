@@ -22,7 +22,8 @@
             <TextBox Text="{Binding OriginalSignature, UpdateSourceTrigger=PropertyChanged}" />
 
             <!--Verified Flag-->
-            <TextBlock Text="Verified Signature" />
+            <TextBlock Text="Verified Signature" 
+                       Margin="0 8 0 0"/>
             <TextBox Text="{Binding SignatureVerified, UpdateSourceTrigger=PropertyChanged}" 
                      IsReadOnly="True"/>
         </StackPanel>
@@ -43,7 +44,8 @@
                     Style="{StaticResource DefaultButton}"
                     IsEnabled="{Binding ReadyToVerify}"
                     Command="{Binding VerifyCommand}"
-                    Width="80"/>
+                    Width="80"
+                    Margin="30 8 8 8"/>
         </StackPanel>
     </Grid>
     

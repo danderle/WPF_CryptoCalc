@@ -25,7 +25,8 @@
                 <TextBox Text="{Binding EncryptedText, UpdateSourceTrigger=PropertyChanged}"
                          ToolTip="{Binding DataInput.DataFormatSelected, Converter={local:DataFormatsToToolTip}}"/>
 
-                <TextBlock Text="Decrypted Text" />
+                <TextBlock Text="Decrypted Text" 
+                           Margin="0 8 0 0"/>
                 <TextBox Text="{Binding DecryptedText, UpdateSourceTrigger=PropertyChanged}" 
                          IsReadOnly="True"/>
             </StackPanel>
@@ -36,7 +37,8 @@
                 <TextBox Text="{Binding EncryptedText, UpdateSourceTrigger=PropertyChanged}" 
                          ToolTip="{Binding DataInput.DataFormatSelected, Converter={local:DataFormatsToToolTip}}"/>
 
-                <TextBlock Text="Decrypted Hex"/>
+                <TextBlock Text="Decrypted Hex"
+                           Margin="0 8 0 0"/>
                 <TextBox Text="{Binding DecryptedText, UpdateSourceTrigger=PropertyChanged}" 
                              IsReadOnly="True"/>
             </StackPanel>
@@ -48,7 +50,8 @@
                          ToolTip="{Binding DataInput.DataFormatSelected, Converter={local:DataFormatsToToolTip}}"
                          local:DragDropProperty.Value="True"/>
 
-                <TextBlock Text="Decrypted File Path"/>
+                <TextBlock Text="Decrypted File Path"
+                           Margin="0 8 0 0"/>
                 <TextBox Text="{Binding DecryptedFilePath, UpdateSourceTrigger=PropertyChanged}" 
                              IsReadOnly="True"/>
             </StackPanel>
@@ -72,7 +75,7 @@
                     Style="{StaticResource DefaultButton}"
                     IsEnabled="{Binding ReadyForDecryption, Mode=OneWay}"
                     Command="{Binding DecryptCommand}"
-                    />
+                    Margin="30 8 8 8"/>
         </StackPanel>
     </Grid>
     

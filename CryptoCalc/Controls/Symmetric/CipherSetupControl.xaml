@@ -30,8 +30,7 @@
                        Margin="0 8 0 0"/>
             <ComboBox ItemsSource="{Binding Algorithims}"
                       SelectedIndex ="{Binding SelectedAlgorithim}"
-                      local:SelectionChangedProperty.Value="{Binding ChangedAlgorithimCommand}" 
-                      />
+                      local:SelectionChangedProperty.Value="{Binding ChangedAlgorithimCommand}"/>
 
             <!--Key size comboBox-->
             <TextBlock Text="Key Size" 

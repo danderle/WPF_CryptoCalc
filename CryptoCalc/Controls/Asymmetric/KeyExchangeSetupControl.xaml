@@ -98,8 +98,8 @@
                                  local:DragDropProperty.Value="True"/>
 
                         <!--Public Key text box-->
-                        <TextBlock>
-                            <Run Text="Public Key File"/>
+                        <TextBlock Margin="0 8 0 0">
+                        <Run Text="Public Key File"/>
                             <Run Text="{Binding PublicKeyLoaded, Converter={local:BoolToLoadedText}}"
                                  Foreground="{StaticResource DarkGreenBrush}"/>
                         </TextBlock>
@@ -108,14 +108,32 @@
                                  local:DragDropProperty.Value="True"/>
 
 
-                        <TextBlock>
-                            <Run Text="Other Party Public Key" />
+                        <TextBlock Margin="0 8 0 0">
+                        <Run Text="Other Party Public Key" />
                             <Run Text="{Binding OtherPublicKeyLoaded, Converter={local:BoolToLoadedText}}"
                                  Foreground="{StaticResource DarkestGreenBrush}"/>
                         </TextBlock>
                         <TextBox Text="{Binding OtherPartyPublicKeyFilePath, UpdateSourceTrigger=PropertyChanged}"
                                  Background="{Binding OtherPartyPublicKeyFilePathExists, Converter={local:BoolToBackground}}"
                                  local:DragDropProperty.Value="True"/>
+
+                        <!--Load and delete key buttons-->
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center">
+                            <Button FontFamily="{StaticResource FontAwesomeSolid}"
+                                    Content="{StaticResource FontAwesomeFileUpload}"
+                                    Style="{StaticResource DefaultButton}"
+                                    IsEnabled="{Binding KeysExist}"
+                                    Command="{Binding LoadKeyCommand}"
+                                    Width="80"/>
+                            <Button FontFamily="{StaticResource FontAwesomeSolid}"
+                                    Content="{StaticResource FontAwesomeTrash}"
+                                    Style="{StaticResource DefaultButton}"
+                                    IsEnabled="{Binding KeysExist}"
+                                    Command="{Binding DeleteKeyCommand}"
+                                    Width="80"
+                                    Margin="30 8 0 8"/>
+                        </StackPanel>
                     </StackPanel>
 
                     <StackPanel Grid.Column="1">
@@ -128,30 +146,16 @@
                         <Button Command="{Binding OpenFolderDialogCommand}" 
                             Visibility="{Binding DataFormatSelected, Converter={local:DataFormatsToVisibility}, ConverterParameter=File}"
                             Style="{StaticResource FileBrowserButton}"
-                            Margin="8 25 0 0"/>
+                            Margin="8 33 0 0"/>
 
                         <!--File browser pop pup button-->
                         <Button Command="{Binding OpenFolderDialogCommand}" 
                             Visibility="{Binding DataFormatSelected, Converter={local:DataFormatsToVisibility}, ConverterParameter=File}"
                             Style="{StaticResource FileBrowserButton}"
-                            Margin="8 25 0 0"/>
+                            Margin="8 33 0 0"/>
                     </StackPanel>
                 </Grid>
-                <StackPanel Orientation="Horizontal"
-                            HorizontalAlignment="Center">
-                    <Button FontFamily="{StaticResource FontAwesomeSolid}"
-                            Content="{StaticResource FontAwesomeFileUpload}"
-                            Style="{StaticResource DefaultButton}"
-                            IsEnabled="{Binding KeysExist}"
-                            Command="{Binding LoadKeyCommand}"
-                            Width="140"/>
-                    <Button FontFamily="{StaticResource FontAwesomeSolid}"
-                            Content="{StaticResource FontAwesomeTrash}"
-                            Style="{StaticResource DefaultButton}"
-                            IsEnabled="{Binding KeysExist}"
-                            Command="{Binding DeleteKeyCommand}"
-                            Width="140"/>
-                </StackPanel>
+                
             </StackPanel>
         </StackPanel>
 
