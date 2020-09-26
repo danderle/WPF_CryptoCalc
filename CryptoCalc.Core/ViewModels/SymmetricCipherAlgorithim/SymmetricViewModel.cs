@@ -89,7 +89,7 @@ namespace CryptoCalc.Core
                         break;
                 }
                 //true if the encrypted format matches the criteria
-                if(encrypted.Length != 0 && encrypted.Length / 2 * 8 >= SelectedKeySize && (encrypted.Length / 2 * 8) % SelectedKeySize == 0)
+                if(encrypted.Length != 0)
                 {
                     bool ready = ByteConvert.OnlyHexInString(encrypted) && SecretKeyAcceptable;
                     if(ready && HasIv)
@@ -159,6 +159,9 @@ namespace CryptoCalc.Core
         /// </summary>
         public int SelectedKeySize { get; set; }
 
+        /// <summary>
+        /// The currently selected <see cref="Format"/>
+        /// </summary>
         public Format CurrentFormat { get; set; }
 
         /// <summary>
@@ -355,7 +358,7 @@ namespace CryptoCalc.Core
                     //Adds the "Encrypted" text to the encrypted file name
                     EncryptedFilePath = Path.Combine(Directory.GetParent(DataInput.Data).ToString(), Path.GetFileNameWithoutExtension(DataInput.Data) + ".Encrypted" + extension);
                     
-                    //Writes alll the bytes to the encrypted file
+                    //Writes all the bytes to the encrypted file
                     File.WriteAllBytes(EncryptedFilePath, encrypted);
                     break;
             }
