@@ -25,6 +25,8 @@
             DataInput.Data = "ffaa1111ff";
             KeyName = "Some name";
             KeyPairSetup = new KeyPairSetupViewModel(CryptographyApi.MSDN, AsymmetricOperation.Signature);
+            KeyPairSetup.SelectedAlgorithimIndex = 2;
+            KeyPairSetup.ChangedAlgorithim();
         }
 
         #endregion

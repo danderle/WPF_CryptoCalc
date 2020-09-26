@@ -290,7 +290,7 @@ namespace CryptoCalc.Core
         /// <summary>
         /// The command method when a different algrithim is selected
         /// </summary>
-        private void ChangedAlgorithim()
+        public void ChangedAlgorithim()
         {
             //Find out which api is beeing used
             switch (Api)
