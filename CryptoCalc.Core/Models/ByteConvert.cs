@@ -58,6 +58,16 @@ namespace CryptoCalc.Core
         }
 
         /// <summary>
+        /// Converts text to byte array
+        /// </summary>
+        /// <param name="text">the string to convert to bytes</param>
+        /// <returns>A byte array</returns>
+        public static byte[] StringToUTF8Bytes(string text)
+        {
+            return string.IsNullOrEmpty(text) ? null : Encoding.UTF8.GetBytes(text);
+        }
+
+        /// <summary>
         /// Converts bytes to a hex string
         /// </summary>
         /// <param name="bytes"></param>
@@ -75,6 +85,16 @@ namespace CryptoCalc.Core
         public static string BytesToAsciiString(byte[] bytes)
         {
             return Encoding.ASCII.GetString(bytes);
+        }
+
+        /// <summary>
+        /// Converts bytes to a UTF8 string
+        /// </summary>
+        /// <param name="bytes"></param>
+        /// <returns></returns>
+        public static string BytesToUTF8String(byte[] bytes)
+        {
+            return Encoding.UTF8.GetString(bytes);
         }
 
         /// <summary>
