@@ -45,7 +45,7 @@ namespace CryptoCalc.Core
         {
             var algorithim = ((SymmetricBouncyCastleCipher)selectedAlgorithim).ToString().Replace("_","-");;
             bufferedCipher = CipherUtilities.GetCipher(algorithim);
-            var plain = ByteConvert.StringToAsciiBytes(plainText);
+            var plain = ByteConvert.StringToUTF8Bytes(plainText);
             if (GetIvSize(selectedAlgorithim) > 0)
             {
                 var kp = new KeyParameter(secretKey);
@@ -107,7 +107,7 @@ namespace CryptoCalc.Core
                 bufferedCipher.Init(false, new KeyParameter(secretKey));
             }
             var output = bufferedCipher.DoFinal(encrypted);
-            return ByteConvert.BytesToAsciiString(output);
+            return ByteConvert.BytesToUTF8String(output);
         }
 
         /// <summary>
@@ -144,6 +144,7 @@ namespace CryptoCalc.Core
         {
             var keySizes = new ObservableCollection<int>(); 
             int keySkipSize;
+            int keySize = 0;
             int maxKeySize;
             var algorithim = (SymmetricBouncyCastleCipher)selectedAlgorithim;
             switch(algorithim)
@@ -157,56 +158,62 @@ namespace CryptoCalc.Core
                     return new ObservableCollection<int> { 128, 192, 256 };
                 case SymmetricBouncyCastleCipher.BLOWFISH:
                     keySkipSize = 32;
+                    keySize = keySkipSize;
                     maxKeySize = 448;
-                    while (keySkipSize <= maxKeySize)
+                    while (keySize <= maxKeySize)
                     {
-                        keySizes.Add(keySkipSize);
-                        keySkipSize++;
+                        keySizes.Add(keySize);
+                        keySize += keySkipSize;
                     }
                     return keySizes;
                 case SymmetricBouncyCastleCipher.CAST5:
                     keySkipSize = 40;
+                    keySize = keySkipSize;
                     maxKeySize = 128;
-                    while (keySkipSize <= maxKeySize)
+                    while (keySize <= maxKeySize)
                     {
-                        keySizes.Add(keySkipSize);
-                        keySkipSize++;
+                        keySizes.Add(keySize);
+                        keySize += keySkipSize;
                     }
                     return keySizes;
                 case SymmetricBouncyCastleCipher.CAST6:
                     keySkipSize = 128;
+                    keySize = keySkipSize;
                     maxKeySize = 256;
-                    while (keySkipSize <= maxKeySize)
+                    while (keySize <= maxKeySize)
                     {
-                        keySizes.Add(keySkipSize);
-                        keySkipSize++;
+                        keySizes.Add(keySize);
+                        keySize += keySkipSize;
                     }
                     return keySizes;
                 case SymmetricBouncyCastleCipher.RC2:
                     keySkipSize = 8;
+                    keySize = keySkipSize;
                     maxKeySize = 1024;
-                    while (keySkipSize <= maxKeySize)
+                    while (keySize <= maxKeySize)
                     {
-                        keySizes.Add(keySkipSize);
-                        keySkipSize+=8;
+                        keySizes.Add(keySize);
+                        keySize += keySkipSize;
                     }
                     return keySizes;
                 case SymmetricBouncyCastleCipher.RC5:
-                    keySkipSize = 0;
+                    keySkipSize = 64;
+                    keySize = keySkipSize;
                     maxKeySize = 2040;
-                    while (keySkipSize <= maxKeySize)
+                    while (keySize <= maxKeySize)
                     {
-                        keySizes.Add(keySkipSize);
-                        keySkipSize += 64;
+                        keySizes.Add(keySize);
+                        keySize += keySkipSize;
                     }
                     return keySizes;
                 case SymmetricBouncyCastleCipher.RC6:
                     keySkipSize = 128;
+                    keySize = keySkipSize;
                     maxKeySize = 2040;
-                    while (keySkipSize <= maxKeySize)
+                    while (keySize <= maxKeySize)
                     {
-                        keySizes.Add(keySkipSize);
-                        keySkipSize += 64;
+                        keySizes.Add(keySize);
+                        keySize += keySkipSize/2;
                     }
                     return keySizes;
                 case SymmetricBouncyCastleCipher.CHACHA:
