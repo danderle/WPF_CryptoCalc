@@ -12,6 +12,9 @@ using System.Collections.ObjectModel;
 
 namespace CryptoCalc.Core
 {
+    /// <summary>
+    /// Bouncy castle RSA class for doing encryption and signatures
+    /// </summary>
     public class BouncyRsa : IAsymmetricEncryption, IAsymmetricSignature, INonECAlgorithims
     {
         #region Private Fields

@@ -101,7 +101,7 @@
                     <TextBox Text="{Binding PublicKeyFilePath, UpdateSourceTrigger=PropertyChanged}" 
                              Background="{Binding PublicKeyFilePathExists, Converter={local:BoolToBackground}}"/>
 
-                    
+                    <!--Load and delte keys button-->
                     <StackPanel Orientation="Horizontal"
                                 HorizontalAlignment="Center">
                         <Button FontFamily="{StaticResource FontAwesomeSolid}"

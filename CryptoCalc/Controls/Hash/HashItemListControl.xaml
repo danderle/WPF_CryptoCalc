@@ -7,18 +7,22 @@
              xmlns:core="clr-namespace:CryptoCalc.Core;assembly=CryptoCalc.Core"
              mc:Ignorable="d" >
 
+    <!--List border-->
     <Border d:DataContext="{x:Static core:HashItemListDesignModel.Instance}"
           Background="{StaticResource WhiteBrush}"
             BorderThickness="0 0 0 1">
-            <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <!--Scrollbar when list is too lonf-->
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <!--Hahs option item-->
             <ItemsControl ItemsSource="{Binding Items}"
-                          x:Name="TheItemsControl">
+                            x:Name="TheItemsControl">
+                <!--Stackpanel to place all the items in-->
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <StackPanel local:CheckBoxWidthMatcherProperty.Value="True"
-                                    x:Name="TheStackPanel"/>
+                        <StackPanel local:CheckBoxWidthMatcherProperty.Value="True"/>
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
+                <!--Items-->
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                             <local:HashItemControl DataContext="{Binding }" 

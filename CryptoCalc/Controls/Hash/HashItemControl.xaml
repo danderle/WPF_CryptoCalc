@@ -13,7 +13,9 @@
         
         <Grid VerticalAlignment="Center">
             <Grid.ColumnDefinitions>
+                <!--Checkbox option-->
                 <ColumnDefinition Name="CheckBoxColumn" Width="Auto" />
+                <!--The calculated hash-->
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             
