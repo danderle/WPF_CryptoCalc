@@ -59,7 +59,7 @@ namespace CryptoCalc.Core
         {
             var keySizes = new ObservableCollection<int>();
             int maxStrength = 16384;
-            for(int strength = 384; strength < maxStrength; strength += 8)
+            for(int strength = 384; strength < maxStrength; strength += 512)
             {
                 keySizes.Add(strength);
             }
