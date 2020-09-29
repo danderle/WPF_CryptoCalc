@@ -57,7 +57,7 @@
                            Margin="0 8 0 0"/>
                 <ComboBox ItemsSource="{Binding KeyPairSetup.Providers}"
                           SelectedIndex ="{Binding KeyPairSetup.ProviderIndex}"
-                          local:SelectionChangedProperty.Value="{Binding ChangedAlgorithimCommand}"
+                          local:SelectionChangedProperty.Value="{Binding KeyPairSetup.ChangedProviderCommand}"
                           x:Name="ComboBox3"/>
 
                 <!--Ec curve types combobox-->
