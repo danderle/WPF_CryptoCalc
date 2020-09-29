@@ -93,9 +93,9 @@ namespace CryptoCalc.Core
                 case AsymmetricOperation.Signature:
                     return new List<string> 
                     { 
+                        AsymmetricMsdnCiphers.ECDsa.ToString(),
                         AsymmetricMsdnCiphers.RSA.ToString(),
                         AsymmetricMsdnCiphers.DSA.ToString(),
-                        AsymmetricMsdnCiphers.ECDsa.ToString()
                     };
 
                 case AsymmetricOperation.KeyExchange:
