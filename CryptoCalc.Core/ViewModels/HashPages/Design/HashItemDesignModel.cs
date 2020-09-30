@@ -23,7 +23,7 @@
         {
             IsChecked = true;
             HashName = "MD5";
-            HashValue = "436547f766gfwcdsg546745";
+            HashValue = "436547f766gfwcdsg546745436547f766gfwcdsg546745436gfwcdsg546745436547f766gfwcdsg546745";
         } 
 
         #endregion

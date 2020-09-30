@@ -19,7 +19,7 @@
         public DataInputDesignModel()
         {
             DataFormatSelected = Format.File;
-            Data = "Some Data to be processed";
+            Data = "Some Data to be processed, Some Data to be processed,Some Data to be processed,Some Data to be processed";
         } 
 
         #endregion
