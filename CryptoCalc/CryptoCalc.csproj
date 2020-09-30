@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="AttachedProperties\ComboBoxMaxWidthAttachedProperty.cs" />
+    <Compile Remove="AttachedProperties\ControlComboBoxWidthMatcherAttachedProperty.cs" />
+    <Compile Remove="Controls\Asymmetric\KeyPairSetupControl.xaml.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Resources\Fonts\Font Awesome 5 Brands-Regular-400.otf" />
     <None Remove="Resources\Fonts\Font Awesome 5 Free-Regular-400.otf" />
     <None Remove="Resources\Fonts\Font Awesome 5 Free-Solid-900.otf" />
@@ -31,6 +37,10 @@
     <None Remove="Resources\Images\drive.png" />
     <None Remove="Resources\Images\file.png" />
     <None Remove="Resources\Images\folder.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Remove="Controls\Asymmetric\KeyPairSetupControl.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -76,9 +86,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Controls\Asymmetric\AsymmetricSetupControl.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Controls\Asymmetric\KeyPairSetupControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Controls\Hash\HashControl.xaml.cs">
@@ -145,9 +152,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Controls\Asymmetric\AsymmetricSetupControl.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Controls\Asymmetric\KeyPairSetupControl.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Controls\Asymmetric\AsymmetricEncryptionControl.xaml">
