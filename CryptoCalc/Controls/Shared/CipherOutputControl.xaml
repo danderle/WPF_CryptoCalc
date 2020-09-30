@@ -23,24 +23,28 @@
                 <TextBlock Text="Encrypted Text" 
                            />
                 <TextBox Text="{Binding EncryptedText, UpdateSourceTrigger=PropertyChanged}"
-                         ToolTip="{Binding DataInput.DataFormatSelected, Converter={local:DataFormatsToToolTip}}"/>
+                         ToolTip="{Binding DataInput.DataFormatSelected, Converter={local:DataFormatsToToolTip}}"
+                         local:WrappingTextBoxHeightProperty.Value="8"/>
 
                 <TextBlock Text="Decrypted Text" 
                            Margin="0 8 0 0"/>
                 <TextBox Text="{Binding DecryptedText, UpdateSourceTrigger=PropertyChanged}" 
-                         IsReadOnly="True"/>
+                         IsReadOnly="True"
+                         local:WrappingTextBoxHeightProperty.Value="8"/>
             </StackPanel>
 
             <!--hex encryption input / output-->
             <StackPanel Visibility="{Binding DataInput.DataFormatSelected, Converter={local:DataFormatsToVisibility}, ConverterParameter=HexString}">
                 <TextBlock Text="Encrypted Hex" />
                 <TextBox Text="{Binding EncryptedText, UpdateSourceTrigger=PropertyChanged}" 
-                         ToolTip="{Binding DataInput.DataFormatSelected, Converter={local:DataFormatsToToolTip}}"/>
+                         ToolTip="{Binding DataInput.DataFormatSelected, Converter={local:DataFormatsToToolTip}}"
+                         local:WrappingTextBoxHeightProperty.Value="8"/>
 
                 <TextBlock Text="Decrypted Hex"
                            Margin="0 8 0 0"/>
                 <TextBox Text="{Binding DecryptedText, UpdateSourceTrigger=PropertyChanged}" 
-                             IsReadOnly="True"/>
+                         IsReadOnly="True"
+                         local:WrappingTextBoxHeightProperty.Value="8"/>
             </StackPanel>
             
             <!--File encryption input / output-->
@@ -48,12 +52,14 @@
                 <TextBlock Text="Encrypted File Path" />
                 <TextBox Text="{Binding EncryptedFilePath, UpdateSourceTrigger=PropertyChanged}"
                          ToolTip="{Binding DataInput.DataFormatSelected, Converter={local:DataFormatsToToolTip}}"
-                         local:DragDropProperty.Value="True"/>
+                         local:DragDropProperty.Value="True"
+                         local:WrappingTextBoxHeightProperty.Value="8"/>
 
                 <TextBlock Text="Decrypted File Path"
                            Margin="0 8 0 0"/>
                 <TextBox Text="{Binding DecryptedFilePath, UpdateSourceTrigger=PropertyChanged}" 
-                             IsReadOnly="True"/>
+                         IsReadOnly="True"
+                         local:WrappingTextBoxHeightProperty.Value="8"/>
             </StackPanel>
         </StackPanel>
 

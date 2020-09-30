@@ -19,7 +19,8 @@
                     VerticalAlignment="Center">
             <!--Signature-->
             <TextBlock Text="Original Signature" />
-            <TextBox Text="{Binding OriginalSignature, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBox Text="{Binding OriginalSignature, UpdateSourceTrigger=PropertyChanged}" 
+                     local:WrappingTextBoxHeightProperty.Value="3"/>
 
             <!--Verified Flag-->
             <TextBlock Text="Verified Signature" 

@@ -6,7 +6,8 @@
              xmlns:local="clr-namespace:CryptoCalc"
              xmlns:core="clr-namespace:CryptoCalc.Core;assembly=CryptoCalc.Core"
              mc:Ignorable="d" 
-             d:DesignHeight="50" >
+             d:DesignHeight="100"
+             d:DesignWidth="450">
     
     <Border Background="{StaticResource WhiteBrush}"
             d:DataContext="{x:Static core:HashItemDesignModel.Instance}">
@@ -29,9 +30,12 @@
             
             <!--The calculated hash value-->
             <TextBox Grid.Column="1"
-                    Text="{Binding HashValue}" 
+                     Text="{Binding HashValue}" 
                      Style="{StaticResource OutputTextBox}"
-                     VerticalAlignment="Center"/>
+                     VerticalAlignment="Center"
+                     TextWrapping="Wrap"
+                     MaxLines="3">
+            </TextBox>
         </Grid>
     </Border>
 </UserControl>

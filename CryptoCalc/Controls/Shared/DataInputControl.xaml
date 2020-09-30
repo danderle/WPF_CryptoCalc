@@ -42,13 +42,14 @@
                     <!--File browser pop up button-->
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                
+
                 <!--Data entry textbox-->
                 <TextBox Text="{Binding Data, UpdateSourceTrigger=PropertyChanged}"
                          Background="{Binding DataIsCorrectlyFormatted, Converter={local:BoolToBackground}}"
                          local:DragDropProperty.Value="True"
-                         ToolTip="{Binding ElementName=ComboBox1, Path=SelectedIndex, Converter={local:IndexToToolTip}}"/>
-                
+                         ToolTip="{Binding ElementName=ComboBox1, Path=SelectedIndex, Converter={local:IndexToToolTip}}"
+                         local:WrappingTextBoxHeightProperty.Value="8"/>
+
                 <!--File browser pop pup button-->
                 <Button Grid.Column="1"
                         Command="{Binding OpenFolderDialogCommand}" 

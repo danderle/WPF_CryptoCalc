@@ -57,7 +57,8 @@
                 <TextBox Text="{Binding DataInput.Data, UpdateSourceTrigger=PropertyChanged}"
                          Background="{Binding DataInput.DataIsCorrectlyFormatted, Converter={local:BoolToBackground}}"
                          local:DragDropProperty.Value="True"
-                         VerticalContentAlignment="Center"/>
+                         VerticalContentAlignment="Center"
+                         local:WrappingTextBoxHeightProperty.Value="8"/>
                 
                 <!--File broswer dialog pop up button-->
                 <Button Command="{Binding DataInput.OpenFolderDialogCommand}"
@@ -74,7 +75,8 @@
                     <Run Text=" bits)" />
                 </TextBlock>
                 <TextBox Text="{Binding SecretKey, UpdateSourceTrigger=PropertyChanged}" 
-                         Background="{Binding SecretKeyAcceptable, Converter={local:BoolToBackground}}"/>
+                         Background="{Binding SecretKeyAcceptable, Converter={local:BoolToBackground}}"
+                         local:WrappingTextBoxHeightProperty.Value="3"/>
                 
                 <!--Initial value text box-->
                 <TextBlock >
@@ -83,8 +85,9 @@
                     <Run Text=" bits)" />
                 </TextBlock>
                     <TextBox Text="{Binding IV, UpdateSourceTrigger=PropertyChanged}" 
-                            IsEnabled="{Binding HasIv}"
-                            Background="{Binding IvAcceptable, Converter={local:BoolToBackground}}"/>
+                             IsEnabled="{Binding HasIv}"
+                             Background="{Binding IvAcceptable, Converter={local:BoolToBackground}}"
+                             local:WrappingTextBoxHeightProperty.Value="3"/>
             </StackPanel>
             
             <!--Random key generation button-->
