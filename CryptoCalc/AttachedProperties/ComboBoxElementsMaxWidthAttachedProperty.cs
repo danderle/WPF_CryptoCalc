@@ -39,10 +39,6 @@ namespace CryptoCalc
                 return;
             }
 
-            // Ignore any non ComboBoxes
-            if (!(comboBox is ComboBox))
-                return;
-
             //the maximum length of the items inside the combobox
             double max = 0;
 
@@ -68,8 +64,8 @@ namespace CryptoCalc
                 max = width > max ? width : max;
             }
 
-            //TODO figure out how to get the size of dropdown arrow or size when empty
-            comboBox.Width = max + 20;
+            //set max width plus 25 for the dropdown arrow
+            comboBox.Width = max + 25;
         }
     }
 }

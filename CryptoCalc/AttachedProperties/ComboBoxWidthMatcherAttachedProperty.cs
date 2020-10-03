@@ -49,7 +49,8 @@ namespace CryptoCalc
             //Cycle through all the comboboxes and set the maximum width
             foreach (var comboBox in comboBoxes)
             {
-                comboBox.Width = maxWidth + 20;
+                //set max width plus 25 for the dropdown arrow
+                comboBox.Width = maxWidth + 25;
             }
         }
 

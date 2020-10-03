@@ -8,7 +8,7 @@
 
     </ResourceDictionary.MergedDictionaries>
 
-    <!--TODO Redo ComboBox default style-->
+    <!--ComboBox default style-->
     <Style x:Key="ComboBoxToggleButton" TargetType="{x:Type ToggleButton}">
             <Setter Property="OverridesDefaultStyle" Value="true"/>
             <Setter Property="IsTabStop" Value="false"/>
@@ -57,76 +57,100 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-        </Style>
+    </Style>
     <Style TargetType="{x:Type ComboBox}">
+        <Setter Property="ItemContainerStyle">
+            <Setter.Value>
+                <Style TargetType="ComboBoxItem">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ComboBoxItem">
+                                    <Border Background="{TemplateBinding Background}"
+                                            BorderBrush="{StaticResource BlueGrayBrush}"
+                                            BorderThickness="0.5"
+                                            HorizontalAlignment="Stretch"
+                                            Width="{TemplateBinding Width}">
+                                        <ContentPresenter Content="{TemplateBinding Content}"
+                                                          Margin="3 0"/>
+                                    </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="{StaticResource LightBlueBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{StaticResource LightGreenBrush}"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Setter.Value>
+        </Setter>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ComboBox}">
-            <Grid x:Name="templateRoot" 
-                  SnapsToDevicePixels="true">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition MinWidth="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}" Width="0"/>
-                </Grid.ColumnDefinitions>
-                <Popup x:Name="PART_Popup" 
-                       AllowsTransparency="true" 
-                       Grid.ColumnSpan="2" 
-                       IsOpen="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" 
-                       Placement="Bottom" 
-                       PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
-                        <Border x:Name="dropDownBorder" 
-                                Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" 
-                                BorderThickness="1" 
-                                BorderBrush="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}"
-                                Width="{TemplateBinding Width}"
-                                CornerRadius="2">
-                            <ScrollViewer x:Name="DropDownScrollViewer"
-                                          BorderThickness="2">
-                                <Grid x:Name="grid" 
-                                      RenderOptions.ClearTypeHint="Enabled">
-                                    <ItemsPresenter x:Name="ItemsPresenter" 
-                                                    KeyboardNavigation.DirectionalNavigation="Contained" 
-                                                    SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                                    Margin="-1"/>
-                                </Grid>
-                            </ScrollViewer>
-                        </Border>
-                </Popup>
-                <ToggleButton x:Name="toggleButton" 
-                              Background="{TemplateBinding Background}" 
-                              BorderThickness="{TemplateBinding BorderThickness}" 
-                              BorderBrush="{TemplateBinding BorderBrush}" 
-                              Grid.ColumnSpan="2" 
-                              IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" 
-                              Style="{StaticResource ComboBoxToggleButton}"
-                              HorizontalAlignment="Stretch"
-                              VerticalContentAlignment="Center"/>
-                <ContentPresenter x:Name="contentPresenter" 
-                                  ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" 
-                                  Content="{TemplateBinding SelectionBoxItem}" 
-                                  ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" 
-                                  ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}" 
-                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
-                                  IsHitTestVisible="false" 
-                                  Margin="{TemplateBinding Padding}" 
-                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
-                                  VerticalAlignment="Center"
-                                  />
-            </Grid>
-            <ControlTemplate.Triggers>
-                
-                
-                <MultiTrigger>
-                    <MultiTrigger.Conditions>
-                        <Condition Property="IsGrouping" Value="true"/>
-                        <Condition Property="VirtualizingPanel.IsVirtualizingWhenGrouping" Value="false"/>
-                    </MultiTrigger.Conditions>
-                    <Setter Property="ScrollViewer.CanContentScroll" Value="false"/>
-                </MultiTrigger>
-                
-            </ControlTemplate.Triggers>
-        </ControlTemplate>
-                
+                    <Grid x:Name="templateRoot" 
+                          SnapsToDevicePixels="true">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition MinWidth="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}" Width="0"/>
+                        </Grid.ColumnDefinitions>
+                        <Popup x:Name="PART_Popup" 
+                               AllowsTransparency="true" 
+                               Grid.ColumnSpan="2" 
+                               IsOpen="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" 
+                               Placement="Bottom" 
+                               PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
+                            <Border x:Name="dropDownBorder" 
+                                    Background="{StaticResource WhiteBrush}" 
+                                    BorderThickness="1" 
+                                    BorderBrush="{StaticResource BlueGrayBrush}"
+                                    Width="{TemplateBinding Width}"
+                                    CornerRadius="2">
+                                <ScrollViewer x:Name="DropDownScrollViewer"
+                                              BorderThickness="2">
+                                    <Grid x:Name="grid" 
+                                          RenderOptions.ClearTypeHint="Enabled">
+                                        <ItemsPresenter x:Name="ItemsPresenter" 
+                                                        KeyboardNavigation.DirectionalNavigation="Contained" 
+                                                        SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                                        />
+                                    </Grid>
+                                </ScrollViewer>
+                            </Border>
+                        </Popup>
+                        <ToggleButton x:Name="toggleButton" 
+                                  Background="{TemplateBinding Background}" 
+                                  BorderThickness="{TemplateBinding BorderThickness}" 
+                                  BorderBrush="{TemplateBinding BorderBrush}" 
+                                  Grid.ColumnSpan="2" 
+                                  IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" 
+                                  Style="{StaticResource ComboBoxToggleButton}"
+                                  HorizontalAlignment="Stretch"
+                                  VerticalContentAlignment="Center"/>
+                        <ContentPresenter x:Name="contentPresenter" 
+                                      ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" 
+                                      Content="{TemplateBinding SelectionBoxItem}" 
+                                      ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" 
+                                      ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}" 
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                      IsHitTestVisible="false" 
+                                      Margin="{TemplateBinding Padding}" 
+                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
+                                      VerticalAlignment="Center"
+                                      />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsGrouping" Value="true"/>
+                                <Condition Property="VirtualizingPanel.IsVirtualizingWhenGrouping" Value="false"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="ScrollViewer.CanContentScroll" Value="false"/>
+                        </MultiTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
