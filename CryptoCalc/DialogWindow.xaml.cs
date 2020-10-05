@@ -45,7 +45,7 @@ namespace CryptoCalc
         {
             InitializeComponent();
 
-            //Settting the dialog windo view model 
+            //Settting the dialog window view model 
             DataContext = new DialogWindowViewModel(this);
         } 
 
