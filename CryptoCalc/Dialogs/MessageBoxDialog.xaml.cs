@@ -1,13 +1,13 @@
 ﻿namespace CryptoCalc
 {
     /// <summary>
-    /// Interaction logic for DialogMessageBox.xaml
+    /// Interaction logic for MessageBoxDialog.xaml
     /// </summary>
-    public partial class DialogMessageBox : BaseDialogUserControl
+    public partial class MessageBoxDialog : BaseDialogUserControl
     {
         #region Constructor
 
-        public DialogMessageBox()
+        public MessageBoxDialog()
         {
             InitializeComponent();
         } 
