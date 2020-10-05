@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Security.Cryptography;
 
 namespace CryptoCalc.Core
@@ -19,6 +20,9 @@ namespace CryptoCalc.Core
 
         #region Public Properties
 
+        /// <summary>
+        /// A flag for knowing if the algorithim uses key sizes for key creation
+        /// </summary>
         public bool UsesCurves => false;
 
         #endregion
@@ -81,8 +85,39 @@ namespace CryptoCalc.Core
         public byte[] EncryptBytes(byte[] publicKey, byte[] plainBytes)
         {
             int bytesRead;
-            cipher.ImportRSAPublicKey(publicKey, out bytesRead);
-            return cipher.Encrypt(plainBytes, false);
+            byte[] encryption;
+
+            try
+            {
+                //imnport the public key
+                cipher.ImportRSAPublicKey(publicKey, out bytesRead);
+
+                //Encrypt the plain bytes
+                encryption = cipher.Encrypt(plainBytes, false);
+            }
+            catch(CryptographicException exception)
+            {
+                if(exception.Message == "ASN1 corrupted data.")
+                {
+                    string message = "Encryption failed!\n" +
+                        "The public key seems to be corrupted\n" +
+                        "Verify if the key is correct, try another key or create a new key";
+                    throw new CryptographicException(message, exception);
+                }
+                if(cipher.KeySize < plainBytes.Length * 8)
+                {
+                    string message = "Encryption failed!\n" +
+                        "The plain bit length is greater than the selected key size. The key size must be greater than the plain bit size!\n" +
+                        $"Key bit size: {cipher.KeySize}\n" +
+                        $"Plain bit size: {plainBytes.Length*8}";
+                    throw new CryptographicException(message, exception);
+                }
+                else
+                {
+                    throw new CryptographicException("Contact developer for help", exception);
+                }
+            }
+            return encryption;
         }
 
         /// <summary>
