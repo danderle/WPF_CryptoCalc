@@ -9,5 +9,10 @@
         /// The dialog title text
         /// </summary>
         public string Title { get; set; }
+
+        /// <summary>
+        /// The type of dialog
+        /// </summary>
+        public WindowDialogType DialogType { get; set; }
     }
 }
