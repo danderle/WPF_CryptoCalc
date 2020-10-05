@@ -38,5 +38,8 @@
     <system:String x:Key="FontAwesomeFileImport">&#xf56f;</system:String>
     <system:String x:Key="FontAwesomeFileUpload">&#xf574;</system:String>
     <system:String x:Key="FontAwesomeTrash">&#xf1f8;</system:String>
+    <system:String x:Key="FontAwesomeWarning">&#xf071;</system:String>
+    <system:String x:Key="FontAwesomeError">&#xf057;</system:String>
+    <system:String x:Key="FontAwesomeSearch">&#xf002;</system:String>
     
 </ResourceDictionary>
