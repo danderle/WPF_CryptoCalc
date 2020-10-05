@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.Security.Cryptography;
 using System.Windows.Input;
 
 namespace CryptoCalc.Core
@@ -424,20 +425,40 @@ namespace CryptoCalc.Core
         /// Encrypt plain bytes
         /// </summary>
         /// <param name="plainBytes">The plain bytes to encrypt</param>
-        /// <returns>The encrypted bytes</returns>
+        /// <returns>The encrypted bytes and null if failed</returns>
         public byte[] Encrypt(byte[] plainBytes)
         {
-            return ((IAsymmetricEncryption)SelectedCipher).EncryptBytes(PublicKey, plainBytes);
+            byte[] encryption = null;
+            try
+            {
+                encryption = ((IAsymmetricEncryption)SelectedCipher).EncryptBytes(PublicKey, plainBytes);
+            }
+            catch (CryptographicException exception)
+            {
+                //Show error prop up dialog to user
+                OpenErrorPopupAsync(exception);
+            }
+            return encryption;
         }
 
         /// <summary>
         /// Encrypt plain text
         /// </summary>
         /// <param name="plainText">The plain text to encrypt</param>
-        /// <returns>The encrypted bytes</returns>
+        /// <returns>The encrypted bytes and null if failed</returns>
         public byte[] Encrypt(string plainText)
         {
-            return ((IAsymmetricEncryption)SelectedCipher).EncryptText(PublicKey, plainText);
+            byte[] encryption = null;
+            try
+            {
+                //Encrypt the plain text
+                encryption = ((IAsymmetricEncryption)SelectedCipher).EncryptText(PublicKey, plainText);
+            }
+            catch (CryptographicException exception)
+            {
+                OpenErrorPopupAsync(exception);
+            }
+            return encryption;
         }
 
         /// <summary>
@@ -461,7 +482,7 @@ namespace CryptoCalc.Core
         }
 
         /// <summary>
-        /// 
+        /// Derives a shared key from a private key and another persons public key
         /// </summary>
         /// <returns></returns>
         public byte[] DeriveKey()
@@ -470,6 +491,21 @@ namespace CryptoCalc.Core
         }
 
         #region Private Methods
+
+        /// <summary>
+        /// The command method to show an error dialog window and displays the exception message to the user
+        /// </summary>
+        private async void OpenErrorPopupAsync(Exception exception)
+        {
+            //Opens a pop up window folder browser dialog
+            await Ioc.UI.ShowMessage(new MessageBoxDialogViewModel
+            {
+                Title = "Encryption Failure",
+                Message = exception.Message,
+                OkText = "Continue",
+                DialogType = WindowDialogType.Error
+            });
+        }
 
         /// <summary>
         /// Initialize any lists
