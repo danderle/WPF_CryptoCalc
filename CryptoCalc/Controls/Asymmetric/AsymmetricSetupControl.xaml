@@ -150,14 +150,16 @@
                                     Style="{StaticResource DefaultButton}"
                                     IsEnabled="{Binding KeysExist}"
                                     Command="{Binding LoadKeyCommand}"
-                                    Width="80"/>
+                                    Width="80"
+                                    ToolTip="Load Keys from file"/>
                             <Button FontFamily="{StaticResource FontAwesomeSolid}"
                                     Content="{StaticResource FontAwesomeTrash}"
                                     Style="{StaticResource DefaultButton}"
                                     IsEnabled="{Binding KeysExist}"
                                     Command="{Binding DeleteKeyCommand}"
                                     Width="80"
-                                    Margin="30 8 0 8"/>
+                                    Margin="30 8 0 8"
+                                    ToolTip="Delete files"/>
                         </StackPanel>
                     </StackPanel>
 
@@ -169,7 +171,7 @@
                             Margin="8 25 0 0"/>
 
                         <!--File browser pop pup button-->
-                        <Button Command="{Binding OpenFolderDialogCommand}" 
+                        <Button Command="{Binding GetPublicKeyFilePathCommand}" 
                             Visibility="{Binding DataFormatSelected, Converter={local:DataFormatsToVisibility}, ConverterParameter=File}"
                             Style="{StaticResource FileBrowserButton}"
                             Margin="8 32 0 0"/>
