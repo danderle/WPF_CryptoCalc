@@ -18,9 +18,10 @@
         /// </summary>
         public MessageBoxDialogDesignModel()
         {
-            Message = "Design Time Message Box";
-            OkText = "The ok Button";
-            Title = "Desgin Time";
+            DialogType = WindowDialogType.FolderBrowser;
+            Message = "Encryption failed. The plain byte length is greater than the selected key size. The key size must greater than the plain bytes   ";
+            OkText = "Continue";
+            Title = "Encryption Failure";
         } 
 
         #endregion

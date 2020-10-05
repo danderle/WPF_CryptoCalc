@@ -26,7 +26,8 @@
                  Padding="5"/>
             
             <!--The button to close the dialog-->
-            <Button Content="{Binding OkText}" 
+            <Button Style="{StaticResource DefaultButton}"
+                    Content="{Binding OkText}" 
                     HorizontalAlignment="Center"
                     Margin="5"
                     Padding="5"

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Channels;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 
 namespace CryptoCalc.Core
 {
@@ -57,6 +55,8 @@ namespace CryptoCalc.Core
             FileSelectedCommand = new RelayParameterizedCommand(FileSelected);
                  
             FolderDialogTree = new TreeViewModel(FileSelectedCommand);
+
+            Title = "Folder Browser";
         }
 
         #endregion
