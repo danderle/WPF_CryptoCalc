@@ -16,11 +16,11 @@ namespace CryptoCalc
             switch((Format)index)
             {
                 case Format.TextString:
-                    return "Enter a text to be hashed";
+                    return "Enter a text";
                 case Format.HexString:
-                    return "Enter a hexadecimal value to be hashed";
+                    return "Enter a hexadecimal value";
                 case Format.File:
-                    return "Enter a file path, to hash a file";
+                    return "Enter a valid file path";
                 default:
                     Debugger.Break();
                     return null;
