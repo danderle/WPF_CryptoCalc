@@ -38,12 +38,12 @@ namespace CryptoCalc
         /// <summary>
         /// The maximum width of this dialog window
         /// </summary>
-        public int WindowMaximumWidth { get; set; } = 800;
+        public int WindowMaximumWidth { get; set; } = 500;
 
         /// <summary>
         /// The maximum height of this dialog window
         /// </summary>
-        public int WindowMaximumHeight { get; set; } = 600;
+        public int WindowMaximumHeight { get; set; } = 800;
 
         /// <summary>
         /// The height of the title bar
@@ -107,7 +107,10 @@ namespace CryptoCalc
                     dialogWindow.MaxHeight = WindowMaximumHeight;
                     dialogWindow.MaxWidth = WindowMaximumWidth;
                     dialogWindow.ViewModel.TitleHeight = TitleHeight;
-                    dialogWindow.ViewModel.Title = string.IsNullOrEmpty(viewModel.Title) ? Title : viewModel.Title;
+                    dialogWindow.ViewModel.BaseDialog.Title = string.IsNullOrEmpty(viewModel.Title) ? Title : viewModel.Title;
+
+                    //Set the type of dialog to show
+                    dialogWindow.ViewModel.BaseDialog.DialogType = viewModel.DialogType;
 
                     // Set this control to the dialog window content
                     dialogWindow.ViewModel.Content = this;
