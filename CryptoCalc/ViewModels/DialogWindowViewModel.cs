@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using CryptoCalc.Core;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace CryptoCalc
@@ -13,22 +14,22 @@ namespace CryptoCalc
         /// <summary>
         /// The maximum height of this dialog
         /// </summary>
-        public int MaximumHeight { get; set; } = 600;
+        public int MaximumHeight { get; set; } = 800;
 
         /// <summary>
         /// The maximum width of this dialog window
         /// </summary>
-        public int MaximumWidth { get; set; } = 800;
-
-        /// <summary>
-        /// The title of this dialog window
-        /// </summary>
-        public string Title { get; set; }
+        public int MaximumWidth { get; set; } = 600;
 
         /// <summary>
         /// The content to host inside the dialog window
         /// </summary>
         public Control Content { get; set; }
+
+        /// <summary>
+        /// The base dialog object
+        /// </summary>
+        public BaseDialogViewModel BaseDialog { get; set; } = new BaseDialogViewModel();
 
         #endregion
 
