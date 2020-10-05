@@ -15,7 +15,7 @@ namespace CryptoCalc
         /// <returns></returns>
         public Task ShowMessage(MessageBoxDialogViewModel viewModel)
         {
-            return new DialogMessageBox().ShowMessage(viewModel);
+            return new MessageBoxDialog().ShowMessage(viewModel);
         }
 
         /// <summary>
