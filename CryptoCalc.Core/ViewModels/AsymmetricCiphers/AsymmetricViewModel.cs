@@ -274,22 +274,30 @@ namespace CryptoCalc.Core
                     plainBytes = DataInput.GetBytesFromFile();
 
                     //Encrypt
-                    var encryptedBytes = KeyPairSetup.Encrypt(plainBytes);
+                    encrypted = KeyPairSetup.Encrypt(plainBytes);
 
-                    //Create encrypted file path
-                    EncryptedFilePath = DataInput.GetEncryptedFilePath();
+                    //Verify that the encryption is successfull
+                    if(encrypted != null)
+                    {
+                        //Create encrypted file path
+                        EncryptedFilePath = DataInput.GetEncryptedFilePath();
 
-                    //Write the encrypted bytes to the new file path
-                    File.WriteAllBytes(EncryptedFilePath, encryptedBytes);
+                        //Write the encrypted bytes to the new file path
+                        File.WriteAllBytes(EncryptedFilePath, encrypted);
+                    }
                 break;
 
                 //Encrypt text
                 case Format.TextString:
                     //Encrypt
                     encrypted = KeyPairSetup.Encrypt(DataInput.Data);
-                    
-                    //Comvert the encrypted bytes to hex string
-                    EncryptedText = ByteConvert.BytesToHexString(encrypted);
+
+                    //Verify that the encryption is successfull
+                    if (encrypted != null)
+                    {
+                        //Comvert the encrypted bytes to hex string
+                        EncryptedText = ByteConvert.BytesToHexString(encrypted);
+                    }
                     break;
 
                 //Encrypt hex string
@@ -300,8 +308,12 @@ namespace CryptoCalc.Core
                     //Encrypt
                     encrypted = KeyPairSetup.Encrypt(plainBytes);
 
-                    //Convert encrypted bytes to hex string
-                    EncryptedText = ByteConvert.BytesToHexString(encrypted);
+                    //Verify that the encryption is successfull
+                    if (encrypted != null)
+                    {
+                        //Convert encrypted bytes to hex string
+                        EncryptedText = ByteConvert.BytesToHexString(encrypted);
+                    }
                     break;
             }
         }
