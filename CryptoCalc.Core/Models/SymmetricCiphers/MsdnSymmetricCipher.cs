@@ -15,7 +15,7 @@ namespace CryptoCalc.Core
         /// <summary>
         /// The symmetric cipher algorithim to use for en-/decryption 
         /// </summary>
-        private SymmetricAlgorithm cipher { get; set; }
+        private SymmetricAlgorithm cipher;
 
         #endregion
 
@@ -172,56 +172,6 @@ namespace CryptoCalc.Core
         #region Private Methods
 
         /// <summary>
-        /// Hashes a secretKey to the given key size
-        /// </summary>
-        /// <param name="secretKey"></param>
-        /// <param name="sizeInBit"></param>
-        /// <returns></returns>
-        private byte[] HashToSize(byte[] secretKey, int sizeInBit)
-        {
-            byte[] sizedHash = new byte[sizeInBit / 8];
-            List<byte> hash = new List<byte>();
-            int b = 0;
-            var bytes = MsdnHash.Compute(MsdnHashAlgorithim.SHA512, secretKey);
-            for (int i = 0; i < sizedHash.Length; i++)
-            {
-                if (!(b < bytes.Length))
-                {
-                    b = 0;
-                }
-                hash.Add(bytes[b]);
-                b++;
-            }
-            Array.Copy(hash.ToArray(), sizedHash, sizedHash.Length);
-            return sizedHash;
-        }
-
-        /// <summary>
-        /// Return a MSDN cipher algorithim
-        /// </summary>
-        /// <param name="algorithim"></param>
-        /// <returns></returns>
-        private SymmetricAlgorithm Getcipher(SymmetricMsdnCipher algorithim)
-        {
-            switch (algorithim)
-            {
-                case SymmetricMsdnCipher.Aes:
-                    return Aes.Create();
-                case SymmetricMsdnCipher.DES:
-                    return  DES.Create();
-                case SymmetricMsdnCipher.TripleDES:
-                    return TripleDES.Create();
-                case SymmetricMsdnCipher.RC2:
-                    return RC2.Create();
-                case SymmetricMsdnCipher.Rijndael:
-                    return Rijndael.Create();
-                default:
-                    Debugger.Break();
-                    return null;
-            }
-        }
-
-        /// <summary>
         /// Decrypt to plain string
         /// TODO try catch block user could enter wrong encrypted bytes
         /// </summary>
@@ -243,9 +193,19 @@ namespace CryptoCalc.Core
                 {
                     using (StreamReader srDecrypt = new StreamReader(csDecrypt))
                     {
-                        // Read the decrypted bytes from the decrypting stream
-                        // and place them in a string.
-                        plaintext = srDecrypt.ReadToEnd();
+                        try
+                        {
+                            // Read the decrypted bytes from the decrypting stream
+                            // and place them in a string.
+                            plaintext = srDecrypt.ReadToEnd();
+                        }
+                        catch(CryptographicException exception)
+                        {
+                            string message = "Decryption failed!\n" +
+                                "The secret key is corrupted.\n" +
+                                "Verify that the same key is used for encrypting and decrypting.";
+                            throw new CryptographicException(message, exception);
+                        }
                     }
                 }
             }
