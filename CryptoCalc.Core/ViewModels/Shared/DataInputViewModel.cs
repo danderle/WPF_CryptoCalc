@@ -107,10 +107,10 @@ namespace CryptoCalc.Core
         /// <summary>
         /// The command method to show a Folder dialog window and saves the selected file path
         /// </summary>
-        private async void OpenFolderDialogAsync()
+        private void OpenFolderDialogAsync()
         {
             //Opens a pop up window folder browser dialog
-            await Ioc.UI.ShowFolderDialog(new FolderBrowserDialogViewModel());
+            Dialog.OpenFolderBrowserAsync();
 
             //Saves the selected path
             Data = Ioc.Application.FilePathFromDialogSelection;

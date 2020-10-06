@@ -107,15 +107,10 @@ namespace CryptoCalc.Core
         /// <summary>
         /// Show the Help dialog window
         /// </summary>
-        private async void HelpAsync()
+        private void HelpAsync()
         {
-            //TODO Help dialog window
-            await Ioc.UI.ShowMessage(new MessageBoxDialogViewModel
-            {
-                Message = "Hello this is a pop up message",
-                Title = "First dialog message",
-                OkText = "Press ok to continue",
-            });
+            //Opens a help message box dialog
+            Dialog.OpenHelpMessageBoxAsync();
         }
 
         /// <summary>

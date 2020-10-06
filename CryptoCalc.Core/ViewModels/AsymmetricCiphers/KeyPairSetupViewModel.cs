@@ -300,10 +300,10 @@ namespace CryptoCalc.Core
         /// <summary>
         /// Gets the file path of the other person public key
         /// </summary>
-        private async void GetOtherPublicKeyFilePathAsync()
+        private void GetOtherPublicKeyFilePath()
         {
             //Opens a pop up window folder browser dialog
-            await Ioc.UI.ShowFolderDialog(new FolderBrowserDialogViewModel());
+            Dialog.OpenFolderBrowserAsync();
 
             //Saves the selected path
             OtherPartyPublicKeyFilePath = Ioc.Application.FilePathFromDialogSelection;
@@ -312,10 +312,10 @@ namespace CryptoCalc.Core
         /// <summary>
         /// Gets the file path of the private key
         /// </summary>
-        private async void GetPrivateKeyFilePathAsync()
+        private void GetPrivateKeyFilePath()
         {
             //Opens a pop up window folder browser dialog
-            await Ioc.UI.ShowFolderDialog(new FolderBrowserDialogViewModel());
+            Dialog.OpenFolderBrowserAsync();
 
             //Saves the selected path
             PrivateKeyFilePath = Ioc.Application.FilePathFromDialogSelection;
@@ -327,10 +327,10 @@ namespace CryptoCalc.Core
         /// <summary>
         /// Gets the file path of the public key
         /// </summary>
-        private async void GetPublicKeyFilePathAsync()
+        private void GetPublicKeyFilePath()
         {
             //Opens a pop up window folder browser dialog
-            await Ioc.UI.ShowFolderDialog(new FolderBrowserDialogViewModel());
+            Dialog.OpenFolderBrowserAsync();
 
             //Saves the selected path
             PublicKeyFilePath = Ioc.Application.FilePathFromDialogSelection;
@@ -508,8 +508,8 @@ namespace CryptoCalc.Core
             }
             catch (CryptographicException exception)
             {
-                //Show error prop up dialog to user
-                OpenErrorPopupAsync(exception, "Encryption Failure", WindowDialogType.Error);
+                //Show error message box dialog to user
+                Dialog.OpenErrorMessageBoxAsync(exception, "Encryption Failure", WindowDialogType.Error);
             }
             return encryption;
         }
@@ -529,7 +529,8 @@ namespace CryptoCalc.Core
             }
             catch (CryptographicException exception)
             {
-                OpenErrorPopupAsync(exception, "Encryption Failure", WindowDialogType.Error);
+                //Show error message box dialog to user
+                Dialog.OpenErrorMessageBoxAsync(exception, "Encryption Failure", WindowDialogType.Error);
             }
             return encryption;
         }
@@ -548,7 +549,8 @@ namespace CryptoCalc.Core
             }
             catch(CryptographicException exception)
             {
-                OpenErrorPopupAsync(exception, "Decryption Failure", WindowDialogType.Error);
+                //Show error message box dialog to user
+                Dialog.OpenErrorMessageBoxAsync(exception, "Decryption Failure", WindowDialogType.Error);
             }
             return plain;
         }
@@ -567,7 +569,8 @@ namespace CryptoCalc.Core
             }
             catch (CryptographicException exception)
             {
-                OpenErrorPopupAsync(exception, "Decryption Failure", WindowDialogType.Error);
+                //Show error message box dialog to user
+                Dialog.OpenErrorMessageBoxAsync(exception, "Decryption Failure", WindowDialogType.Error);
             }
             return decryptedText;
         }
@@ -582,23 +585,6 @@ namespace CryptoCalc.Core
         }
 
         #region Private Methods
-
-        /// <summary>
-        /// The command method to show an error dialog window and displays the exception message to the user
-        /// <param name="title">the title of the pop up dialog</param>
-        /// <param name="dialogType">The type of <see cref="WindowDialogType"/></param>
-        /// </summary>
-        private async void OpenErrorPopupAsync(Exception exception, string title, WindowDialogType dialogType)
-        {
-            //Opens a pop up window folder browser dialog
-            await Ioc.UI.ShowMessage(new MessageBoxDialogViewModel
-            {
-                Title = title,
-                Message = exception.Message,
-                OkText = "Continue",
-                DialogType = dialogType
-            });
-        }
 
         /// <summary>
         /// Initialize any lists
@@ -630,9 +616,9 @@ namespace CryptoCalc.Core
             CreateKeyPairCommand = new RelayCommand(CreateKeyPair);
             LoadKeyCommand = new RelayCommand(LoadKey);
             DeleteKeyCommand = new RelayCommand(DeleteKey);
-            GetPrivateKeyFilePathCommand = new RelayCommand(GetPrivateKeyFilePathAsync);
-            GetPublicKeyFilePathCommand = new RelayCommand(GetPublicKeyFilePathAsync);
-            GetOtherPublicKeyFilePathCommand = new RelayCommand(GetOtherPublicKeyFilePathAsync);
+            GetPrivateKeyFilePathCommand = new RelayCommand(GetPrivateKeyFilePath);
+            GetPublicKeyFilePathCommand = new RelayCommand(GetPublicKeyFilePath);
+            GetOtherPublicKeyFilePathCommand = new RelayCommand(GetOtherPublicKeyFilePath);
         }
 
         /// <summary>
