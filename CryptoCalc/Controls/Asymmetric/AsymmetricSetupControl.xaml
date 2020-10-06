@@ -46,6 +46,7 @@
                            Margin="0 8 0 0"/>
                 <ComboBox ItemsSource="{Binding KeyPairSetup.KeySizes}"
                           SelectedIndex="{Binding KeyPairSetup.KeySizeIndex}"
+                          local:SelectionChangedProperty.Value="{Binding KeyPairSetup.ChangedKeySizeCommand}"
                           x:Name="ComboBox2"/>
             </StackPanel>
 

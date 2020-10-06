@@ -82,6 +82,11 @@ namespace CryptoCalc.Core
         public int EcCurveIndex { get; set; }
 
         /// <summary>
+        /// The currently selected key size
+        /// </summary>
+        public int KeySize => KeySizes[KeySizeIndex];
+
+        /// <summary>
         /// The provider index used from the selected list
         /// </summary>
         public int ProviderIndex { get; set; }
@@ -127,18 +132,6 @@ namespace CryptoCalc.Core
         public CryptographyApi Api { get; set; }
 
         /// <summary>
-        /// A delegate event handler when a key is loaded
-        /// </summary>
-        /// <param name="obj">the object from which event is triggered</param>
-        /// <param name="args">The event arguments</param>
-        public delegate void KeysLoadedEventHandler(object obj, EventArgs args);
-
-        /// <summary>
-        /// The data changed event
-        /// </summary>
-        public event KeysLoadedEventHandler KeysLoaded;
-
-        /// <summary>
         /// The private key
         /// </summary>
         public byte[] PrivateKey { get; set; }
@@ -152,6 +145,30 @@ namespace CryptoCalc.Core
         /// The Other Party Public key
         /// </summary>
         public byte[] OtherPartyPublicKey { get; set; }
+
+        /// <summary>
+        /// A delegate event handler when a key is loaded
+        /// </summary>
+        /// <param name="obj">the object from which event is triggered</param>
+        /// <param name="args">The event arguments</param>
+        public delegate void KeysLoadedEventHandler(object obj, EventArgs args);
+
+        /// <summary>
+        /// The data changed event
+        /// </summary>
+        public event KeysLoadedEventHandler KeysLoaded;
+
+        /// <summary>
+        /// A delegate event handler function for key size changes
+        /// </summary>
+        /// <param name="obj">the object from which event is triggered</param>
+        /// <param name="args">The event arguments</param>
+        public delegate void KeySizeChangedEventHandler(object obj, EventArgs args);
+
+        /// <summary>
+        /// The key size changed event
+        /// </summary>
+        public event KeySizeChangedEventHandler KeySizeChanged;
 
         /// <summary>
         /// The list off all symmetric algorithims
@@ -178,14 +195,19 @@ namespace CryptoCalc.Core
         #region Commands
 
         /// <summary>
-        /// The command to when a cipher algorithim is selected
+        /// The command to execute when a cipher algorithim is changed
         /// </summary>
         public ICommand ChangedAlgorithimCommand { get; set; }
 
         /// <summary>
-        /// The command to change the provider
+        /// The command to execute when the provider has changed
         /// </summary>
         public ICommand ChangedProviderCommand { get; set; }
+
+        /// <summary>
+        /// The command to execute when the key size has changed
+        /// </summary>
+        public ICommand ChangedKeySizeCommand { get; set; }
 
         /// <summary>
         /// The command to create a key pair
@@ -208,6 +230,11 @@ namespace CryptoCalc.Core
         public ICommand GetPrivateKeyFilePathCommand { get; set; }
 
         /// <summary>
+        /// The command to get the private key from file browser
+        /// </summary>
+        public ICommand GetPublicKeyFilePathCommand { get; set; }
+
+        /// <summary>
         /// The command to get the other person public key from file browser
         /// </summary>
         public ICommand GetOtherPublicKeyFilePathCommand { get; set; }
@@ -224,14 +251,25 @@ namespace CryptoCalc.Core
             //Initialize the commands
             InitializeCommands();
 
-            Api = CryptographyApi.MSDN;
-            SelectedOperation = AsymmetricOperation.Encryption;
+            //Initialize propertiies
+            InitializeProperties(CryptographyApi.MSDN, AsymmetricOperation.Encryption);
 
             //Initialize lists must be after setting api and operation
             InitializeLists();
 
             ChangedAlgorithim();
+            
+        }
 
+        /// <summary>
+        /// Initializes any properties
+        /// </summary>
+        /// <param name="api">the crypto api to use</param>
+        /// <param name="operation">The operation to use</param>
+        private void InitializeProperties(CryptographyApi api, AsymmetricOperation operation)
+        {
+            Api = api;
+            SelectedOperation = operation;
             KeyDirectoryPath = pKeyPath;
         }
 
@@ -245,8 +283,7 @@ namespace CryptoCalc.Core
             //Initialize the commands
             InitializeCommands();
 
-            Api = api;
-            SelectedOperation = operation;
+            
             
             //Initialize lists must be after setting api and operation
             InitializeLists();
@@ -260,6 +297,9 @@ namespace CryptoCalc.Core
 
         #region Command Methods
 
+        /// <summary>
+        /// Gets the file path of the other person public key
+        /// </summary>
         private async void GetOtherPublicKeyFilePathAsync()
         {
             //Opens a pop up window folder browser dialog
@@ -269,6 +309,9 @@ namespace CryptoCalc.Core
             OtherPartyPublicKeyFilePath = Ioc.Application.FilePathFromDialogSelection;
         }
 
+        /// <summary>
+        /// Gets the file path of the private key
+        /// </summary>
         private async void GetPrivateKeyFilePathAsync()
         {
             //Opens a pop up window folder browser dialog
@@ -276,6 +319,24 @@ namespace CryptoCalc.Core
 
             //Saves the selected path
             PrivateKeyFilePath = Ioc.Application.FilePathFromDialogSelection;
+
+            //Key still needs to be loaded
+            PrivateKeyLoaded = false;
+        }
+
+        /// <summary>
+        /// Gets the file path of the public key
+        /// </summary>
+        private async void GetPublicKeyFilePathAsync()
+        {
+            //Opens a pop up window folder browser dialog
+            await Ioc.UI.ShowFolderDialog(new FolderBrowserDialogViewModel());
+
+            //Saves the selected path
+            PublicKeyFilePath = Ioc.Application.FilePathFromDialogSelection;
+            
+            //Key still needs to be loaded
+            PublicKeyLoaded = false;
         }
 
         /// <summary>
@@ -331,6 +392,18 @@ namespace CryptoCalc.Core
                 KeySizes = nonEcCipher.GetKeySizes();
                 KeySizeIndex = 0;
             }
+        }
+
+        /// <summary>
+        /// Command method to execute when the key size is changed
+        /// </summary>
+        private void ChangedKeySize()
+        {
+            OnKeySizedChanged();
+            PrivateKeyFilePath = string.Empty;
+            PublicKeyFilePath = string.Empty;
+            PrivateKeyLoaded = false;
+            PublicKeyLoaded = false;
         }
 
         /// <summary>
@@ -436,7 +509,7 @@ namespace CryptoCalc.Core
             catch (CryptographicException exception)
             {
                 //Show error prop up dialog to user
-                OpenErrorPopupAsync(exception);
+                OpenErrorPopupAsync(exception, "Encryption Failure", WindowDialogType.Error);
             }
             return encryption;
         }
@@ -456,7 +529,7 @@ namespace CryptoCalc.Core
             }
             catch (CryptographicException exception)
             {
-                OpenErrorPopupAsync(exception);
+                OpenErrorPopupAsync(exception, "Encryption Failure", WindowDialogType.Error);
             }
             return encryption;
         }
@@ -468,7 +541,16 @@ namespace CryptoCalc.Core
         /// <returns>Plain bytes</returns>
         public byte[] Decrypt(byte[] encrypted)
         {
-            return ((IAsymmetricEncryption)SelectedCipher).DecryptToBytes(PrivateKey, encrypted);
+            byte[] plain = null;
+            try
+            {
+                plain = ((IAsymmetricEncryption)SelectedCipher).DecryptToBytes(PrivateKey, encrypted);
+            }
+            catch(CryptographicException exception)
+            {
+                OpenErrorPopupAsync(exception, "Decryption Failure", WindowDialogType.Error);
+            }
+            return plain;
         }
 
         /// <summary>
@@ -478,7 +560,16 @@ namespace CryptoCalc.Core
         /// <returns>plain text</returns>
         public string DecryptToText(byte[] encrypted)
         {
-            return ((IAsymmetricEncryption)SelectedCipher).DecryptToText(PrivateKey, encrypted);
+            string decryptedText = string.Empty;
+            try
+            {
+                return ((IAsymmetricEncryption)SelectedCipher).DecryptToText(PrivateKey, encrypted);
+            }
+            catch (CryptographicException exception)
+            {
+                OpenErrorPopupAsync(exception, "Decryption Failure", WindowDialogType.Error);
+            }
+            return decryptedText;
         }
 
         /// <summary>
@@ -494,16 +585,18 @@ namespace CryptoCalc.Core
 
         /// <summary>
         /// The command method to show an error dialog window and displays the exception message to the user
+        /// <param name="title">the title of the pop up dialog</param>
+        /// <param name="dialogType">The type of <see cref="WindowDialogType"/></param>
         /// </summary>
-        private async void OpenErrorPopupAsync(Exception exception)
+        private async void OpenErrorPopupAsync(Exception exception, string title, WindowDialogType dialogType)
         {
             //Opens a pop up window folder browser dialog
             await Ioc.UI.ShowMessage(new MessageBoxDialogViewModel
             {
-                Title = "Encryption Failure",
+                Title = title,
                 Message = exception.Message,
                 OkText = "Continue",
-                DialogType = WindowDialogType.Error
+                DialogType = dialogType
             });
         }
 
@@ -532,21 +625,32 @@ namespace CryptoCalc.Core
         private void InitializeCommands()
         {
             ChangedAlgorithimCommand = new RelayCommand(ChangedAlgorithim);
-            CreateKeyPairCommand = new RelayCommand(CreateKeyPair);
             ChangedProviderCommand = new RelayCommand(ChangedProvider);
+            ChangedKeySizeCommand = new RelayCommand(ChangedKeySize);
+            CreateKeyPairCommand = new RelayCommand(CreateKeyPair);
             LoadKeyCommand = new RelayCommand(LoadKey);
             DeleteKeyCommand = new RelayCommand(DeleteKey);
             GetPrivateKeyFilePathCommand = new RelayCommand(GetPrivateKeyFilePathAsync);
+            GetPublicKeyFilePathCommand = new RelayCommand(GetPublicKeyFilePathAsync);
             GetOtherPublicKeyFilePathCommand = new RelayCommand(GetOtherPublicKeyFilePathAsync);
         }
 
         /// <summary>
-        /// Executes the Keys loaded event
+        /// Triggers the Keys loaded event
         /// </summary>
         private void OnKeyLoad()
         {
             KeysLoaded?.Invoke(this, EventArgs.Empty);
         }
+
+        /// <summary>
+        /// Triggers the key size changed event
+        /// </summary>
+        private void OnKeySizedChanged()
+        {
+            KeySizeChanged?.Invoke(this, EventArgs.Empty);
+        }
+
         #endregion
     }
 }
