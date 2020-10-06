@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.Security.Cryptography;
 using System.Windows.Input;
 
 namespace CryptoCalc.Core
@@ -12,17 +13,27 @@ namespace CryptoCalc.Core
     /// </summary>
     public class SymmetricViewModel : BaseViewModel
     {
-        #region Private Fields
-
-        private bool secretKeyLengthIsAcceptable => (SecretKey.Length % 2 == 0) && (SecretKey.Length / 2 * 8 == SelectedKeySize);
-        private bool secretKeyIsOnlyHex => ByteConvert.OnlyHexInString(SecretKey);
-
-        private bool ivLengthIsAcceptable => (IV.Length % 2 == 0) && (IV.Length / 2 * 8 == IvSize);
-        private bool ivIsOnlyHex => ByteConvert.OnlyHexInString(IV);
-
-        #endregion
-
         #region Public Properties
+
+        /// <summary>
+        /// Flag to let us know if the secret key length is valid
+        /// </summary>
+        public bool SecretKeyLengthIsAcceptable => (SecretKey.Length % 2 == 0) && (SecretKey.Length / 2 * 8 == SelectedKeySize);
+
+        /// <summary>
+        /// Flag to let us know if the secret key is a hex value
+        /// </summary>
+        public bool SecretKeyIsOnlyHex => ByteConvert.OnlyHexInString(SecretKey);
+
+        /// <summary>
+        /// Flag to let us know if the IV length is acceptable
+        /// </summary>
+        public bool IvLengthIsAcceptable => (IV.Length % 2 == 0) && (IV.Length / 2 * 8 == IvSize);
+
+        /// <summary>
+        /// Flag to let us know if the Iv is a hex value
+        /// </summary>
+        public bool IvIsOnlyHex => ByteConvert.OnlyHexInString(IV);
 
         /// <summary>
         /// Flag to let us know if the symmetric cipher has an IV
@@ -32,12 +43,12 @@ namespace CryptoCalc.Core
         /// <summary>
         /// Flag to let us know if the secret key is in an acceptable format
         /// </summary>
-        public bool SecretKeyAcceptable => secretKeyLengthIsAcceptable && secretKeyIsOnlyHex;
+        public bool SecretKeyAcceptable => SecretKeyLengthIsAcceptable && SecretKeyIsOnlyHex;
 
         /// <summary>
         /// Flag to let us know if the iv is in an acceptable format
         /// </summary>
-        public bool IvAcceptable => ivLengthIsAcceptable && ivIsOnlyHex;
+        public bool IvAcceptable => IvLengthIsAcceptable && IvIsOnlyHex;
 
         /// <summary>
         /// Flag for letting us know if the Data is correctly entered and ready for en-/decrypting
@@ -386,9 +397,17 @@ namespace CryptoCalc.Core
 
                     //Convert the text string to a byte array
                     encrypted = ByteConvert.HexStringToBytes(EncryptedText);
-                    
-                    //Decrypt the byte array to a text string
-                    DecryptedText = SelectedCipherApi.DecryptToText(SelectedAlgorithim, SelectedKeySize, secretKey, iv, encrypted);
+
+                    try
+                    {
+                        //Decrypt the byte array to a text string
+                        DecryptedText = SelectedCipherApi.DecryptToText(SelectedAlgorithim, SelectedKeySize, secretKey, iv, encrypted);
+                    }
+                    catch(CryptographicException exception)
+                    {
+                        //Open a error message box
+                        Dialog.OpenErrorMessageBoxAsync(exception, "Decryption Failure", WindowDialogType.Error);
+                    }
                     break;
                 case Format.HexString:
 
