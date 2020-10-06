@@ -33,7 +33,7 @@ namespace CryptoCalc.Core
         /// <summary>
         /// A flag to let us know if we are ready for decryption
         /// </summary>
-        public bool ReadyForDecryption => PrivateKeyLoaded && (EncryptedText.HasOnlyHex() || File.Exists(EncryptedFilePath));
+        public bool ReadyForDecryption => PrivateKeyLoaded && ( EncryptedTextIsHexValue || File.Exists(EncryptedFilePath));
 
         /// <summary>
         /// Flag to let us know if we can sign data
@@ -45,6 +45,11 @@ namespace CryptoCalc.Core
         /// </summary>
         public bool ReadyToVerify => PrivateKeyLoaded && OriginalSignature.HasOnlyHex() && DataFormatCorrect;
 
+        /// <summary>
+        /// Flag to let us know if the encrypted text is a true hex value
+        /// </summary>
+        public bool EncryptedTextIsHexValue => EncryptedText.HasOnlyHex() && EncryptedText.Length % 2 == 0;
+        
         /// <summary>
         /// The encrypted file path
         /// </summary>
@@ -227,11 +232,15 @@ namespace CryptoCalc.Core
                     //Decrypt
                     decrypted = KeyPairSetup.Decrypt(encrypted);
 
-                    //Create an encrypted file path
-                    DecryptedFilePath = DataInput.GetDecryptedFilePath(EncryptedFilePath);
+                    //true if decrypted not null
+                    if (decrypted != null)
+                    {
+                        //Create an encrypted file path
+                        DecryptedFilePath = DataInput.GetDecryptedFilePath(EncryptedFilePath);
 
-                    //Write decrypted bytes to file
-                    File.WriteAllBytes(DecryptedFilePath, decrypted);
+                        //Write decrypted bytes to file
+                        File.WriteAllBytes(DecryptedFilePath, decrypted);
+                    }
                     break;
 
                 //Decrypt a text
@@ -251,8 +260,12 @@ namespace CryptoCalc.Core
                     //Decrypt
                     decrypted = KeyPairSetup.Decrypt(encrypted);
 
-                    //Convert decrypted bytes to hex string
-                    DecryptedText = ByteConvert.BytesToHexString(decrypted);
+                    //true if decrypted not null
+                    if (decrypted != null)
+                    {
+                        //Convert decrypted bytes to hex string
+                        DecryptedText = ByteConvert.BytesToHexString(decrypted);
+                    }
                     break;
             }
         }
@@ -320,6 +333,34 @@ namespace CryptoCalc.Core
 
         #endregion
 
+        #region Event Methods
+
+        /// <summary>
+        /// Key size changed event method
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="args"></param>
+        private void KeyPairSetup_KeySizeChanged(object obj, System.EventArgs args)
+        {
+            EncryptedText = string.Empty;
+            EncryptedFilePath = string.Empty;
+            DecryptedText = string.Empty;
+            DecryptedFilePath = string.Empty;
+        }
+
+        /// <summary>
+        /// Keys loaded event, when a private/public key is loaded
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="args"></param>
+        private void KeyPairSetup_KeysLoaded(object obj, System.EventArgs args)
+        {
+            PrivateKeyLoaded = KeyPairSetup.PrivateKeyLoaded;
+            PublicKeyLoaded = KeyPairSetup.PublicKeyLoaded;
+        }
+
+        #endregion
+
         #region Private Methods
 
         /// <summary>
@@ -331,19 +372,11 @@ namespace CryptoCalc.Core
         {
             DataInput.DataChanged += DataInput_DataChanged;
             KeyPairSetup = new KeyPairSetupViewModel(api, operation);
-            KeyPairSetup.KeysLoaded += KeyPairSetup_KeysLoaded;
-        }
 
-        /// <summary>
-        /// Hook into the KeysLoaded event to let us know if a private/public key 
-        /// has been loaded
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <param name="args"></param>
-        private void KeyPairSetup_KeysLoaded(object obj, System.EventArgs args)
-        {
-            PrivateKeyLoaded = KeyPairSetup.PrivateKeyLoaded;
-            PublicKeyLoaded = KeyPairSetup.PublicKeyLoaded;
+            //Hook into the KeysLoaded event
+            KeyPairSetup.KeysLoaded += KeyPairSetup_KeysLoaded;
+            //Hook into the KeySizeChanged event
+            KeyPairSetup.KeySizeChanged += KeyPairSetup_KeySizeChanged;
         }
 
         /// <summary>
