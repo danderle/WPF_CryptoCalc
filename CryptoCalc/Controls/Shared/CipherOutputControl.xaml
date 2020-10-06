@@ -72,15 +72,22 @@
                     HorizontalAlignment="Center">
             
             <!--Encryption button-->
-            <Button Content="Encrypt"
+            <Button Content="{StaticResource FontAwesomeLock}"
+                    FontFamily="{StaticResource FontAwesomeSolid}"
+                    ToolTip="Encrypt"
+                    Width="80"
                     Style="{StaticResource DefaultButton}"
                     IsEnabled="{Binding ReadyForEncryption, Mode=OneWay}"
                     Command="{Binding EncryptCommand}"/>
+            
             <!--Decryption button-->
-            <Button Content="Decrypt" 
+            <Button ToolTip="Decrypt" 
+                    Content="{StaticResource FontAwesomeUnlock}"
+                    FontFamily="{StaticResource FontAwesomeSolid}"
                     Style="{StaticResource DefaultButton}"
                     IsEnabled="{Binding ReadyForDecryption, Mode=OneWay}"
                     Command="{Binding DecryptCommand}"
+                    Width="80"
                     Margin="30 8 8 8"/>
         </StackPanel>
     </Grid>
