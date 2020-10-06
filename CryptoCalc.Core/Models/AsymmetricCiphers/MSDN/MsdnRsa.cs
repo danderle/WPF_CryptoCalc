@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Security.Cryptography;
 
 namespace CryptoCalc.Core
@@ -70,7 +69,7 @@ namespace CryptoCalc.Core
         /// <returns>encrypted bytes</returns>
         public byte[] EncryptText(byte[] publicKey, string plainText)
         {
-            var plain = ByteConvert.StringToAsciiBytes(plainText);
+            var plain = ByteConvert.StringToUTF8Bytes(plainText);
             return EncryptBytes(publicKey, plain);
         }
 
@@ -100,21 +99,22 @@ namespace CryptoCalc.Core
                 if(exception.Message == "ASN1 corrupted data.")
                 {
                     string message = "Encryption failed!\n" +
-                        "The public key seems to be corrupted\n" +
-                        "Verify if the key is correct, try another key or create a new key";
+                        "The public key file seems to be corrupted.\n" +
+                        "Verify if the key is correct, try another key or create a new key.";
                     throw new CryptographicException(message, exception);
                 }
-                if(cipher.KeySize < plainBytes.Length * 8)
+                else if(exception.Message == "Ungültige Länge")
                 {
                     string message = "Encryption failed!\n" +
-                        "The plain bit length is greater than the selected key size. The key size must be greater than the plain bit size!\n" +
+                        "The key size is too small for the data size!\n" +
+                        "Increase the key size or decrease the data size to be encrypted.\n" +
                         $"Key bit size: {cipher.KeySize}\n" +
                         $"Plain bit size: {plainBytes.Length*8}";
                     throw new CryptographicException(message, exception);
                 }
                 else
                 {
-                    throw new CryptographicException("Contact developer for help", exception);
+                    throw new CryptographicException("Contact developer for help.", exception);
                 }
             }
             return encryption;
@@ -129,7 +129,7 @@ namespace CryptoCalc.Core
         public string DecryptToText(byte[] privateKey, byte[] encrypted)
         {
             var decrypted = DecryptToBytes(privateKey, encrypted);
-            return ByteConvert.BytesToAsciiString(decrypted);
+            return ByteConvert.BytesToUTF8String(decrypted);
         }
 
         /// <summary>
@@ -142,8 +142,46 @@ namespace CryptoCalc.Core
         public byte[] DecryptToBytes(byte[] privateKey, byte[] encrypted)
         {
             int byteRead;
-            cipher.ImportRSAPrivateKey(privateKey, out byteRead); 
-            return cipher.Decrypt(encrypted, false);
+            byte[] decrypted = null;
+            try
+            {
+                //Import the private key
+                cipher.ImportRSAPrivateKey(privateKey, out byteRead); 
+
+                //decrypt with default PKCS#1 padding
+                decrypted = cipher.Decrypt(encrypted, false);
+            }
+            catch(CryptographicException exception)
+            {
+                if (exception.Message == "ASN1 corrupted data." ||
+                    exception.Message == "Ein an das System angeschlossenes Gerät funktioniert nicht.")
+                {
+                    string message = "Decryption failed!\n" +
+                        "The private key file seems to be corrupted.\n" +
+                        "Verify if the key is correct, try another key or create a new key pair";
+                    throw new CryptographicException(message, exception);
+                }
+                else if(exception.Message == "Falscher Parameter.")
+                {
+                    string message = "Decryption failed!\n" +
+                        "Wrong parameters are detected.\n" +
+                        "Verify that the encryption is correctly data entered.";
+                    throw new CryptographicException(message, exception);
+                }
+                else if (cipher.KeySize != encrypted.Length * 8)
+                {
+                    string message = "Decryption failed!\n" +
+                        "The encrypted bit size must be equal to the selected key size!\n" +
+                        $"Key bit size: {cipher.KeySize}\n" +
+                        $"Encrypted bit size: {encrypted.Length * 8}";
+                    throw new CryptographicException(message, exception);
+                }
+                else
+                {
+                    throw new CryptographicException("Contact developer for help.", exception);
+                }
+            }
+            return decrypted;
         }
 
         /// <summary>
