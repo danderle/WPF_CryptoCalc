@@ -8,7 +8,7 @@ namespace CryptoCalc
     /// <summary>
     /// Converts a <see cref="Format"/> to a tool tip
     /// </summary>
-    public class DataFormatsToToolTip : BaseValueConverter<DataFormatsToToolTip>
+    public class DataFormatsToDecryptToolTip : BaseValueConverter<DataFormatsToDecryptToolTip>
     {
         public override object Convert(object value, Type targetType = null, object parameter = null, CultureInfo culture = null)
         {

@@ -23,7 +23,7 @@
                 <TextBlock Text="Encrypted Text" 
                            />
                 <TextBox Text="{Binding EncryptedText, UpdateSourceTrigger=PropertyChanged}"
-                         ToolTip="{Binding DataInput.DataFormatSelected, Converter={local:DataFormatsToToolTip}}"
+                         ToolTip="{Binding DataInput.DataFormatSelected, Converter={local:DataFormatsToDecryptToolTip}}"
                          local:WrappingTextBoxHeightProperty.Value="8"/>
 
                 <TextBlock Text="Decrypted Text" 
@@ -37,7 +37,7 @@
             <StackPanel Visibility="{Binding DataInput.DataFormatSelected, Converter={local:DataFormatsToVisibility}, ConverterParameter=HexString}">
                 <TextBlock Text="Encrypted Hex" />
                 <TextBox Text="{Binding EncryptedText, UpdateSourceTrigger=PropertyChanged}" 
-                         ToolTip="{Binding DataInput.DataFormatSelected, Converter={local:DataFormatsToToolTip}}"
+                         ToolTip="{Binding DataInput.DataFormatSelected, Converter={local:DataFormatsToDecryptToolTip}}"
                          local:WrappingTextBoxHeightProperty.Value="8"/>
 
                 <TextBlock Text="Decrypted Hex"
@@ -51,7 +51,7 @@
             <StackPanel Visibility="{Binding DataInput.DataFormatSelected, Converter={local:DataFormatsToVisibility}, ConverterParameter=File}">
                 <TextBlock Text="Encrypted File Path" />
                 <TextBox Text="{Binding EncryptedFilePath, UpdateSourceTrigger=PropertyChanged}"
-                         ToolTip="{Binding DataInput.DataFormatSelected, Converter={local:DataFormatsToToolTip}}"
+                         ToolTip="{Binding DataInput.DataFormatSelected, Converter={local:DataFormatsToDecryptToolTip}}"
                          local:DragDropProperty.Value="True"
                          local:WrappingTextBoxHeightProperty.Value="8"/>
 
