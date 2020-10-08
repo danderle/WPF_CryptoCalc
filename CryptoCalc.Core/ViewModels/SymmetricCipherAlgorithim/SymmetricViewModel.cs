@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Org.BouncyCastle.Crypto;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -93,16 +94,16 @@ namespace CryptoCalc.Core
                         }
                         break;
                     case Format.HexString:
-                        encrypted = EncryptedHex;
+                        encrypted = EncryptedText;
                         break;
                     case Format.TextString:
                         encrypted = EncryptedText;
                         break;
                 }
                 //true if the encrypted format matches the criteria
-                if(encrypted.Length != 0)
+                if(encrypted.Length != 0 && encrypted.Length % 2 == 0)
                 {
-                    bool ready = ByteConvert.OnlyHexInString(encrypted) && SecretKeyAcceptable;
+                    bool ready = encrypted.HasOnlyHex() && SecretKeyAcceptable;
                     if(ready && HasIv)
                     {
                          return IvAcceptable;
@@ -136,11 +137,6 @@ namespace CryptoCalc.Core
         public string EncryptedText { get; set; } = string.Empty;
 
         /// <summary>
-        /// The encrypted hex
-        /// </summary>
-        public string EncryptedHex { get; set; } = string.Empty;
-
-        /// <summary>
         /// The decrypted file path
         /// </summary>
         public string DecryptedFilePath { get; set; } = string.Empty;
@@ -149,11 +145,6 @@ namespace CryptoCalc.Core
         /// The decrypted text
         /// </summary>
         public string DecryptedText { get; set; } = string.Empty;
-
-        /// <summary>
-        /// The decrypted hex
-        /// </summary>
-        public string DecryptedHex { get; set; } = string.Empty;
 
         /// <summary>
         /// The iv size in bits
@@ -352,7 +343,7 @@ namespace CryptoCalc.Core
                     encrypted = SelectedCipherApi.EncryptBytes(SelectedAlgorithim, SelectedKeySize, secretKey, iv, plainBytes);
                     
                     //Converts the byte array to a hex string
-                    EncryptedHex = ByteConvert.BytesToHexString(encrypted);
+                    EncryptedText = ByteConvert.BytesToHexString(encrypted);
                     break;
                 //Encrypt a file
                 case Format.File:
@@ -389,51 +380,66 @@ namespace CryptoCalc.Core
             var secretKey = ByteConvert.HexStringToBytes(SecretKey);
             var iv = ByteConvert.HexStringToBytes(IV);
 
-            //Decrypt the data according to the selected file format
-            switch (DataInput.DataFormatSelected)
+            try
             {
-                //Decrypt to a regular string
-                case Format.TextString:
+                //Decrypt the data according to the selected file format
+                switch (DataInput.DataFormatSelected)
+                {
+                    //Decrypt to a regular string
+                    case Format.TextString:
 
-                    //Convert the text string to a byte array
-                    encrypted = ByteConvert.HexStringToBytes(EncryptedText);
+                        //Convert the text string to a byte array
+                        encrypted = ByteConvert.HexStringToBytes(EncryptedText);
 
-                    try
-                    {
                         //Decrypt the byte array to a text string
                         DecryptedText = SelectedCipherApi.DecryptToText(SelectedAlgorithim, SelectedKeySize, secretKey, iv, encrypted);
-                    }
-                    catch(CryptographicException exception)
-                    {
-                        //Open a error message box
-                        Dialog.OpenErrorMessageBoxAsync(exception, "Decryption Failure", WindowDialogType.Error);
-                    }
-                    break;
-                case Format.HexString:
 
-                    //Convert the hex string to a byte array
-                    encrypted = ByteConvert.HexStringToBytes(EncryptedHex);
-                    
-                    //Decrypt the byte array to a decrypted byte array
-                    decryptedBytes = SelectedCipherApi.DecryptToBytes(SelectedAlgorithim, SelectedKeySize, secretKey, iv, encrypted);
 
-                    //Convert the decrypted byte array to a hex string
-                    DecryptedHex = ByteConvert.BytesToHexString(decryptedBytes);
-                    break;
-                case Format.File:
+                        break;
+                    case Format.HexString:
 
-                    //Get the encrypted file as a byte array
-                    encrypted = ByteConvert.FileToBytes(EncryptedFilePath);
+                        //Convert the hex string to a byte array
+                        encrypted = ByteConvert.HexStringToBytes(EncryptedText);
 
-                    //Decrypt the byte array to a decrypted byte array
-                    decryptedBytes = SelectedCipherApi.DecryptToBytes(SelectedAlgorithim, SelectedKeySize, secretKey, iv, encrypted);
-                    
-                    //Create a new file name with the encrypted file path and the "Decrypted" text
-                    DecryptedFilePath = Path.Combine(Directory.GetParent(EncryptedFilePath).ToString(), Path.GetFileName(EncryptedFilePath).Replace("Encrypted","Decrypted"));
-                    
-                    //Write all byte to the decrypted file
-                    File.WriteAllBytes(DecryptedFilePath, decryptedBytes);
-                    break;
+                        //Decrypt the byte array to a decrypted byte array
+                        decryptedBytes = SelectedCipherApi.DecryptToBytes(SelectedAlgorithim, SelectedKeySize, secretKey, iv, encrypted);
+
+                        //Convert the decrypted byte array to a hex string
+                        DecryptedText = ByteConvert.BytesToHexString(decryptedBytes);
+                        break;
+                    case Format.File:
+
+                        //Get the encrypted file as a byte array
+                        encrypted = ByteConvert.FileToBytes(EncryptedFilePath);
+
+                        //Decrypt the byte array to a decrypted byte array
+                        decryptedBytes = SelectedCipherApi.DecryptToBytes(SelectedAlgorithim, SelectedKeySize, secretKey, iv, encrypted);
+
+                        //Create a new file name with the encrypted file path and the "Decrypted" text
+                        DecryptedFilePath = Path.Combine(Directory.GetParent(EncryptedFilePath).ToString(), Path.GetFileName(EncryptedFilePath).Replace("Encrypted", "Decrypted"));
+
+                        //Write all byte to the decrypted file
+                        File.WriteAllBytes(DecryptedFilePath, decryptedBytes);
+                        break;
+                }
+            }
+            //catches msdn exceptions
+            catch (CryptographicException msdnException)
+            {
+                //Open a error message box
+                Dialog.OpenErrorMessageBoxAsync(msdnException, "Decryption Failure", WindowDialogType.Error);
+            }
+            //catches bouncy castle exceptions
+            catch (CryptoException bouncyException)
+            {
+                //Open a error message box
+                Dialog.OpenErrorMessageBoxAsync(bouncyException, "Decryption Failure", WindowDialogType.Error);
+            }
+            //Catch any other errors
+            catch(Exception exception)
+            {
+                //Open a error message box
+                Dialog.OpenErrorMessageBoxAsync(exception, "Unknown Error, Contact Developer", WindowDialogType.Error);
             }
         }
 
@@ -455,8 +461,8 @@ namespace CryptoCalc.Core
                 switch(CurrentFormat)
                 {
                     case Format.File:
-                        EncryptedHex = string.Empty;
-                        DecryptedHex = string.Empty;
+                        EncryptedText = string.Empty;
+                        DecryptedText = string.Empty;
                         break;
                     case Format.HexString:
                         EncryptedText = string.Empty;
