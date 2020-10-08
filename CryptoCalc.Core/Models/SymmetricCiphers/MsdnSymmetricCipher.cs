@@ -201,10 +201,27 @@ namespace CryptoCalc.Core
                         }
                         catch(CryptographicException exception)
                         {
-                            string message = "Decryption failed!\n" +
-                                "The secret key is corrupted.\n" +
-                                "Verify that the same key is used for encrypting and decrypting.";
-                            throw new CryptographicException(message, exception);
+                            if(exception.Message == "The input data is not a complete block.")
+                            {
+                                string message = "Decryption failed!\n" +
+                                    "The encryption block length is not complete\n" +
+                                    "Verify that the encryption bit length is a multiple of the IV length\n" +
+                                    $"Key bit length: {cipher.IV.Length * 8}\n" +
+                                    $"Encryption bit length: {encrypted.Length * 8}";
+                                throw new CryptographicException(message, exception);
+                            }
+                            else if(exception.Message == "Padding is invalid and cannot be removed.")
+                            {
+                                string message = "Decryption failed!\n" +
+                                      "Either the secret key is corrupted or the encryption is faulty\n" +
+                                      "Verify that the same key is used for encrypting and decrypting.\n" +
+                                      "Verify that the calculated encryption is correct";
+                                throw new CryptographicException(message, exception);
+                            }
+                            else
+                            {
+                                throw new CryptographicException("Contact developer for help.", exception);
+                            }
                         }
                     }
                 }
