@@ -16,7 +16,7 @@ namespace CryptoCalc.Core
         // <summary>
         /// The buffered cipher to use for en- / decryption
         /// </summary>
-        private IBufferedCipher bufferedCipher { get; set; }
+        private IBufferedCipher bufferedCipher;
 
         #endregion
 
@@ -106,8 +106,36 @@ namespace CryptoCalc.Core
             {
                 bufferedCipher.Init(false, new KeyParameter(secretKey));
             }
-            var output = bufferedCipher.DoFinal(encrypted);
-            return ByteConvert.BytesToUTF8String(output);
+
+            byte[] decrypted = null;
+            try
+            {
+                decrypted = bufferedCipher.DoFinal(encrypted);
+            }
+            catch(CryptoException exception)
+            {
+                if(exception.Message == "pad block corrupted")
+                {
+                    string message = "Decryption failed!\n" +
+                                    "The secret key is corrupted.\n" +
+                                    "Verify that the same key is used for encrypting and decrypting.";
+                    throw new CryptoException(message, exception);
+                }
+                else if(exception.Message == "last block incomplete in decryption")
+                {
+                    string message = "Decryption failed!\n" +
+                                    "The encryption block length is not complete\n" +
+                                    "Verify that the encryption bit length is a multiple of the expected blocksize\n" +
+                                    $"Blocksize bit length: {bufferedCipher.GetBlockSize() * 8}\n" +
+                                    $"Encryption bit length: {encrypted.Length * 8}";
+                    throw new CryptoException(message, exception);
+                }
+                else
+                {
+                    throw new CryptoException("Contact developer for help.", exception);
+                }
+            }
+            return ByteConvert.BytesToUTF8String(decrypted);
         }
 
         /// <summary>
@@ -187,7 +215,7 @@ namespace CryptoCalc.Core
                     }
                     return keySizes;
                 case SymmetricBouncyCastleCipher.RC2:
-                    keySkipSize = 8;
+                    keySkipSize = 128;
                     keySize = keySkipSize;
                     maxKeySize = 1024;
                     while (keySize <= maxKeySize)
@@ -197,9 +225,9 @@ namespace CryptoCalc.Core
                     }
                     return keySizes;
                 case SymmetricBouncyCastleCipher.RC5:
-                    keySkipSize = 64;
+                    keySkipSize = 256;
                     keySize = keySkipSize;
-                    maxKeySize = 2040;
+                    maxKeySize = 2048;
                     while (keySize <= maxKeySize)
                     {
                         keySizes.Add(keySize);
@@ -207,9 +235,9 @@ namespace CryptoCalc.Core
                     }
                     return keySizes;
                 case SymmetricBouncyCastleCipher.RC6:
-                    keySkipSize = 128;
+                    keySkipSize = 256;
                     keySize = keySkipSize;
-                    maxKeySize = 2040;
+                    maxKeySize = 2048;
                     while (keySize <= maxKeySize)
                     {
                         keySizes.Add(keySize);
@@ -308,10 +336,6 @@ namespace CryptoCalc.Core
             }
             return keyAndIv;
         }
-
-        #endregion
-
-        #region Private Methods
 
         #endregion
     }
