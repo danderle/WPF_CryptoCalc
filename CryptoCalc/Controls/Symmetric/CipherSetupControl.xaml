@@ -58,7 +58,8 @@
                          Background="{Binding DataInput.DataIsCorrectlyFormatted, Converter={local:BoolToBackground}}"
                          local:DragDropProperty.Value="True"
                          VerticalContentAlignment="Center"
-                         local:WrappingTextBoxHeightProperty.Value="8"/>
+                         local:WrappingTextBoxHeightProperty.Value="8"
+                         ToolTip="{Binding DataInput.DataFormatSelected, Converter={local:DataFormatsToPlainDataToolTip}}"/>
                 
                 <!--File broswer dialog pop up button-->
                 <Button Command="{Binding DataInput.OpenFolderDialogCommand}"
