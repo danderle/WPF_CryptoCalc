@@ -66,6 +66,7 @@
                            Margin="0 8 0 0"/>
                 <ComboBox ItemsSource="{Binding KeyPairSetup.EcCurves}"
                           SelectedIndex="{Binding KeyPairSetup.EcCurveIndex}"
+                          local:SelectionChangedProperty.Value="{Binding KeyPairSetup.ChangedEcCurveCommand}"
                           x:Name="ComboBox4"/>
             </StackPanel>
         </StackPanel>
