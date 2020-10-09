@@ -100,7 +100,7 @@ namespace CryptoCalc.Core
         /// </summary>
         private void ChangedFormat()
         {
-            DataIsCorrectlyFormatted = CheckIfCorrectlyFormatted(DataFormatSelected, Data);
+            Data = string.Empty;
             OnDataChanged();
         }
 
