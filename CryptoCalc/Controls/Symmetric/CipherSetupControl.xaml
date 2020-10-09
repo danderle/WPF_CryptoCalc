@@ -37,7 +37,7 @@
                        Margin="0 8 0 0"/>
             <ComboBox ItemsSource="{Binding KeySizes}"
                       SelectedItem="{Binding SelectedKeySize}"
-                      />
+                      local:SelectionChangedProperty.Value="{Binding ChangedKeySizeCommand}"/>
         </StackPanel>
 
         <!--Cipher algorithim option list-->
