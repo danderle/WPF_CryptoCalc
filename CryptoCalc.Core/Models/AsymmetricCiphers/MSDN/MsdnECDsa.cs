@@ -51,8 +51,8 @@ namespace CryptoCalc.Core
         {
             return new ObservableCollection<string>
             {
-                EcCurveProvider.NIST.ToString(),
                 EcCurveProvider.TELETRUST.ToString(),
+                EcCurveProvider.NIST.ToString(),
             };
         }
 
