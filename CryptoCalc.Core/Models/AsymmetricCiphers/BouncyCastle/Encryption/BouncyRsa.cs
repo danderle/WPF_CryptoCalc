@@ -22,7 +22,7 @@ namespace CryptoCalc.Core
         /// <summary>
         /// The cipher object for this class
         /// </summary>
-        private IAsymmetricBlockCipher cipher = new RsaEngine();
+        private readonly IAsymmetricBlockCipher cipher = new RsaEngine();
         
         /// <summary>
         /// The generated key pair object for this class
@@ -129,9 +129,36 @@ namespace CryptoCalc.Core
         /// <returns></returns>
         public byte[] EncryptBytes(byte[] publicKey, byte[] plainBytes)
         {
+            //CreateKeyPair public key
             var pubKey = CreatePublicKeyParameterFromBytes(publicKey);
             cipher.Init(true, pubKey);
-            return cipher.ProcessBlock(plainBytes, 0, plainBytes.Length);
+
+            byte[] encrypted;
+            try
+            {
+                //encrypt plain bytes
+                encrypted = cipher.ProcessBlock(plainBytes, 0, plainBytes.Length);
+            }
+            catch (CryptoException exception)
+            {
+                if (exception.Message == "input too large for RSA cipher.")
+                {
+                    string message = "Encryption Failure!\n" +
+                        $"{exception.Message}\n" +
+                        "The plain data bit size cannot be greater than the selected key size.\n" +
+                        $"Key bit size: {cipher.GetInputBlockSize() * 8}\n" +
+                        $"Plain data bit size: {plainBytes.Length * 8}";
+                    throw new CryptoException(message, exception);
+                }
+                else
+                {
+                    string message = "Encryption Failure!\n" +
+                        $"{exception.Message}\n" +
+                        "Contact developer.";
+                    throw new CryptoException(message, exception);
+                }
+            }
+            return encrypted;
         }
 
         /// <summary>
@@ -154,9 +181,35 @@ namespace CryptoCalc.Core
         /// <returns>decrypted byte array</returns>
         public byte[] DecryptToBytes(byte[] privateKey, byte[] encrypted)
         {
+            //create private key
             var privKey = CreatePrivateKeyParameterFromBytes(privateKey);
             cipher.Init(false, privKey);
-            return cipher.ProcessBlock(encrypted, 0, encrypted.Length);
+            byte[] decrypted;
+            try 
+            {
+                //decrypt
+                decrypted = cipher.ProcessBlock(encrypted, 0, encrypted.Length);
+            }
+            catch(CryptoException exception)
+            {
+                if(exception.Message == "input too large for RSA cipher.")
+                {
+                    string message = "Decryption Failure!\n" +
+                        $"{exception.Message}\n" +
+                        "The encryption bit size cannot be greater than the selected key size.\n" +
+                        $"Key bit size: {cipher.GetInputBlockSize() * 8}\n" +
+                        $"Encryption bit size: {encrypted.Length * 8}";
+                    throw new CryptoException(message, exception);
+                }
+                else
+                {
+                    string message = "Encryption Failure!\n" +
+                        $"{exception.Message}\n" +
+                        "Contact developer.";
+                    throw new CryptoException(message, exception);
+                }
+            }
+            return decrypted;
         }
 
         /// <summary>
@@ -209,7 +262,21 @@ namespace CryptoCalc.Core
             Array.Copy(publicKey, 3, m, 0, publicKey.Length - 3);
             var exponent = new BigInteger(1, e);
             var modulus = new BigInteger(1, m);
-            return new RsaKeyParameters(false, modulus, exponent);
+
+            RsaKeyParameters rsaKeyParams;
+            try
+            {
+                rsaKeyParams = new RsaKeyParameters(false, modulus, exponent);
+            }
+            catch (ArgumentException exception)
+            {
+                string message = "Public Key Creation Failure!\n" +
+                    $"{exception.Message}.\n" +
+                    $"The public key file is corrupted, verify public key file or try another key.\n" +
+                    $"If all fails create a new key pair.";
+                throw new CryptoException(message, exception);
+            }
+            return rsaKeyParams;
         }
 
         /// <summary>
@@ -226,7 +293,21 @@ namespace CryptoCalc.Core
             Array.Copy(privateKey, e.Length, m, 0, m.Length);
             var modulus = new BigInteger(1, m);
             var exponent = new BigInteger(1, e);
-            return new RsaKeyParameters(true, modulus, exponent);
+
+            RsaKeyParameters rsaKeyParams;
+            try
+            {
+                rsaKeyParams = new RsaKeyParameters(true, modulus, exponent);
+            }
+            catch(ArgumentException exception)
+            {
+                string message = "Private Key Creation Failure!\n" +
+                    $"{exception.Message}.\n" +
+                    $"The private key file is corrupted, verify private key file or try another key.\n" +
+                    $"If all fails create a new key pair.";
+                    throw new CryptoException(message, exception);
+            }
+            return rsaKeyParams;
         }
 
         #endregion
