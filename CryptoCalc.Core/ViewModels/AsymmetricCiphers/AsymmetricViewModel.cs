@@ -336,19 +336,6 @@ namespace CryptoCalc.Core
         #region Event Methods
 
         /// <summary>
-        /// Key size changed event method
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <param name="args"></param>
-        private void KeyPairSetup_KeySizeChanged(object obj, System.EventArgs args)
-        {
-            EncryptedText = string.Empty;
-            EncryptedFilePath = string.Empty;
-            DecryptedText = string.Empty;
-            DecryptedFilePath = string.Empty;
-        }
-
-        /// <summary>
         /// Keys loaded event, when a private/public key is loaded
         /// </summary>
         /// <param name="obj"></param>
@@ -373,11 +360,11 @@ namespace CryptoCalc.Core
 
 
         /// <summary>
-        /// Algorithim changed event subscription method
+        /// Key pair changed event subscription method
         /// </summary>
         /// <param name="obj"></param>
         /// <param name="args"></param>
-        private void KeyPairSetup_AlgorithimChanged(object obj, System.EventArgs args)
+        private void KeyPairSetup_KeyPairChanged(object obj, System.EventArgs args)
         {
             ClearOutputValues();
         }
@@ -401,11 +388,8 @@ namespace CryptoCalc.Core
             //Hook into the KeysLoaded event
             KeyPairSetup.KeysLoaded += KeyPairSetup_KeysLoaded;
 
-            //Hook into the KeySizeChanged event
-            KeyPairSetup.KeySizeChanged += KeyPairSetup_KeySizeChanged;
-
-            //Hook into the AlgorithimChanged event
-            KeyPairSetup.AlgorithimChanged += KeyPairSetup_AlgorithimChanged;
+            //Hook into the KeyPairChanged event
+            KeyPairSetup.KeyPairChanged += KeyPairSetup_KeyPairChanged;
         }
 
         /// <summary>
@@ -429,6 +413,7 @@ namespace CryptoCalc.Core
                     break;
                 case AsymmetricOperation.Signature:
                     OriginalSignature = string.Empty;
+                    SignatureVerified = false;
                     break;
                 case AsymmetricOperation.KeyExchange:
                     DerivedKey = string.Empty;
