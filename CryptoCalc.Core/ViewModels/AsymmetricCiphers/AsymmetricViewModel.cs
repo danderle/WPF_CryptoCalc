@@ -359,6 +359,29 @@ namespace CryptoCalc.Core
             PublicKeyLoaded = KeyPairSetup.PublicKeyLoaded;
         }
 
+        /// <summary>
+        /// Function which is hooked into the DataChangedEvent, lets us know if the Data 
+        /// is correctly formatted and ready for processing
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="args"></param>
+        private void DataInput_DataChanged(object obj, System.EventArgs args)
+        {
+            DataFormatCorrect = DataInput.DataIsCorrectlyFormatted;
+            ClearEnDecryptedValues();
+        }
+
+
+        /// <summary>
+        /// Algorithim changed event subscription method
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="args"></param>
+        private void KeyPairSetup_AlgorithimChanged(object obj, System.EventArgs args)
+        {
+            ClearOutputValues();
+        }
+
         #endregion
 
         #region Private Methods
@@ -370,26 +393,19 @@ namespace CryptoCalc.Core
         /// <param name="operation"></param>
         private void InitializeProperties(CryptographyApi api, AsymmetricOperation operation)
         {
-            DataInput.DataChanged += DataInput_DataChanged;
             KeyPairSetup = new KeyPairSetupViewModel(api, operation);
+            
+            //Hook into the DataChanged event
+            DataInput.DataChanged += DataInput_DataChanged;
 
             //Hook into the KeysLoaded event
             KeyPairSetup.KeysLoaded += KeyPairSetup_KeysLoaded;
+
             //Hook into the KeySizeChanged event
             KeyPairSetup.KeySizeChanged += KeyPairSetup_KeySizeChanged;
-        }
 
-        /// <summary>
-        /// Function which is hooked into the DataChangedEvent, lets us know if the Data 
-        /// is correctly formatted and ready for processing
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <param name="args"></param>
-        private void DataInput_DataChanged(object obj, System.EventArgs args)
-        {
-            DataFormatCorrect = DataInput.DataIsCorrectlyFormatted;
-            EncryptedFilePath = string.Empty;
-            EncryptedText = string.Empty;
+            //Hook into the AlgorithimChanged event
+            KeyPairSetup.AlgorithimChanged += KeyPairSetup_AlgorithimChanged;
         }
 
         /// <summary>
@@ -402,6 +418,42 @@ namespace CryptoCalc.Core
             SignCommand = new RelayCommand(Sign);
             VerifyCommand = new RelayCommand(Verify);
             DeriveKeyCommand = new RelayCommand(DeriveKey);
+        }
+
+        private void ClearOutputValues()
+        {
+            switch(KeyPairSetup.SelectedOperation)
+            {
+                case AsymmetricOperation.Encryption:
+                    ClearEnDecryptedValues();
+                    break;
+                case AsymmetricOperation.Signature:
+                    OriginalSignature = string.Empty;
+                    break;
+                case AsymmetricOperation.KeyExchange:
+                    DerivedKey = string.Empty;
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Clears any previous encrypted/decrypted values
+        /// </summary>
+        private void ClearEnDecryptedValues()
+        {
+            //determine which format is selected to only clear neseccary values
+            switch (DataInput.DataFormatSelected)
+            {
+                case Format.TextString:
+                case Format.HexString:
+                    EncryptedText = string.Empty;
+                    DecryptedText = string.Empty;
+                    break;
+                case Format.File:
+                    EncryptedFilePath = string.Empty;
+                    DecryptedFilePath = string.Empty;
+                    break;
+            }
         }
 
         #endregion
