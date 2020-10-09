@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Org.BouncyCastle.Crypto;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -171,6 +172,18 @@ namespace CryptoCalc.Core
         public event KeySizeChangedEventHandler KeySizeChanged;
 
         /// <summary>
+        /// A delegate event handler function for algortithim changes
+        /// </summary>
+        /// <param name="obj">the object from which event is triggered</param>
+        /// <param name="args">The event arguments</param>
+        public delegate void AlgorithimChangedEventHandler(object obj, EventArgs args);
+
+        /// <summary>
+        /// The algorithim changed event
+        /// </summary>
+        public event AlgorithimChangedEventHandler AlgorithimChanged;
+
+        /// <summary>
         /// The list off all symmetric algorithims
         /// </summary>
         public List<string> Algorithims { get; set; } = new List<string>();
@@ -256,21 +269,6 @@ namespace CryptoCalc.Core
 
             //Initialize lists must be after setting api and operation
             InitializeLists();
-
-            ChangedAlgorithim();
-            
-        }
-
-        /// <summary>
-        /// Initializes any properties
-        /// </summary>
-        /// <param name="api">the crypto api to use</param>
-        /// <param name="operation">The operation to use</param>
-        private void InitializeProperties(CryptographyApi api, AsymmetricOperation operation)
-        {
-            Api = api;
-            SelectedOperation = operation;
-            KeyDirectoryPath = pKeyPath;
         }
 
         /// <summary>
@@ -283,14 +281,11 @@ namespace CryptoCalc.Core
             //Initialize the commands
             InitializeCommands();
 
-            
-            
+            //Initialize properties
+            InitializeProperties(api, operation);
+
             //Initialize lists must be after setting api and operation
             InitializeLists();
-
-            ChangedAlgorithim();
-
-            KeyDirectoryPath = pKeyPath;
         }
 
         #endregion
@@ -392,6 +387,12 @@ namespace CryptoCalc.Core
                 KeySizes = nonEcCipher.GetKeySizes();
                 KeySizeIndex = 0;
             }
+
+            PrivateKeyFilePath = string.Empty;
+            PublicKeyFilePath = string.Empty;
+            OtherPartyPublicKeyFilePath = string.Empty;
+
+            OnAlgorithimChanged();
         }
 
         /// <summary>
@@ -473,7 +474,7 @@ namespace CryptoCalc.Core
         }
 
         /// <summary>
-        /// the command method to delete a key pair
+        /// The command method to delete a key pair
         /// </summary>
         private void DeleteKey()
         {
@@ -506,10 +507,15 @@ namespace CryptoCalc.Core
             {
                 encryption = ((IAsymmetricEncryption)SelectedCipher).EncryptBytes(PublicKey, plainBytes);
             }
-            catch (CryptographicException exception)
+            catch (CryptographicException msdnException)
             {
                 //Show error message box dialog to user
-                Dialog.OpenErrorMessageBoxAsync(exception, "Encryption Failure", WindowDialogType.Error);
+                Dialog.OpenErrorMessageBoxAsync(msdnException, "Encryption Failure", WindowDialogType.Error);
+            }
+            catch (CryptoException bouncyException)
+            {
+                //Show error message box dialog to user
+                Dialog.OpenErrorMessageBoxAsync(bouncyException, "Encryption Failure", WindowDialogType.Error);
             }
             return encryption;
         }
@@ -527,10 +533,15 @@ namespace CryptoCalc.Core
                 //Encrypt the plain text
                 encryption = ((IAsymmetricEncryption)SelectedCipher).EncryptText(PublicKey, plainText);
             }
-            catch (CryptographicException exception)
+            catch (CryptographicException msdnException)
             {
                 //Show error message box dialog to user
-                Dialog.OpenErrorMessageBoxAsync(exception, "Encryption Failure", WindowDialogType.Error);
+                Dialog.OpenErrorMessageBoxAsync(msdnException, "Encryption Failure", WindowDialogType.Error);
+            }
+            catch(CryptoException bouncyException)
+            {
+                //Show error message box dialog to user
+                Dialog.OpenErrorMessageBoxAsync(bouncyException, "Encryption Failure", WindowDialogType.Error);
             }
             return encryption;
         }
@@ -547,10 +558,15 @@ namespace CryptoCalc.Core
             {
                 plain = ((IAsymmetricEncryption)SelectedCipher).DecryptToBytes(PrivateKey, encrypted);
             }
-            catch(CryptographicException exception)
+            catch(CryptographicException msdnException)
             {
                 //Show error message box dialog to user
-                Dialog.OpenErrorMessageBoxAsync(exception, "Decryption Failure", WindowDialogType.Error);
+                Dialog.OpenErrorMessageBoxAsync(msdnException, "Decryption Failure", WindowDialogType.Error);
+            }
+            catch (CryptoException bouncyException)
+            {
+                //Show error message box dialog to user
+                Dialog.OpenErrorMessageBoxAsync(bouncyException, "Decryption Failure", WindowDialogType.Error);
             }
             return plain;
         }
@@ -567,10 +583,15 @@ namespace CryptoCalc.Core
             {
                 return ((IAsymmetricEncryption)SelectedCipher).DecryptToText(PrivateKey, encrypted);
             }
-            catch (CryptographicException exception)
+            catch (CryptographicException msdnException)
             {
                 //Show error message box dialog to user
-                Dialog.OpenErrorMessageBoxAsync(exception, "Decryption Failure", WindowDialogType.Error);
+                Dialog.OpenErrorMessageBoxAsync(msdnException, "Decryption Failure", WindowDialogType.Error);
+            }
+            catch (CryptoException bouncyException)
+            {
+                //Show error message box dialog to user
+                Dialog.OpenErrorMessageBoxAsync(bouncyException, "Decryption Failure", WindowDialogType.Error);
             }
             return decryptedText;
         }
@@ -603,6 +624,8 @@ namespace CryptoCalc.Core
                     Debugger.Break();
                     break;
             }
+
+            ChangedAlgorithim();
         }
 
         /// <summary>
@@ -622,6 +645,18 @@ namespace CryptoCalc.Core
         }
 
         /// <summary>
+        /// Initializes any properties
+        /// </summary>
+        /// <param name="api">the crypto api to use</param>
+        /// <param name="operation">The operation to use</param>
+        private void InitializeProperties(CryptographyApi api, AsymmetricOperation operation)
+        {
+            Api = api;
+            SelectedOperation = operation;
+            KeyDirectoryPath = pKeyPath;
+        }
+
+        /// <summary>
         /// Triggers the Keys loaded event
         /// </summary>
         private void OnKeyLoad()
@@ -635,6 +670,14 @@ namespace CryptoCalc.Core
         private void OnKeySizedChanged()
         {
             KeySizeChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// Triggers the algorithim changed event
+        /// </summary>
+        private void OnAlgorithimChanged()
+        {
+            AlgorithimChanged?.Invoke(this, EventArgs.Empty);
         }
 
         #endregion
