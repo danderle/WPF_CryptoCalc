@@ -165,7 +165,7 @@ namespace CryptoCalc.Core
                 {
                     string message = "Decryption failed!\n" +
                         "Wrong parameters are detected.\n" +
-                        "Verify that the encryption is correctly data entered.";
+                        "Verify that the encryption is correctly entered or that the right key was used for encryption";
                     throw new CryptographicException(message, exception);
                 }
                 else if (cipher.KeySize != encrypted.Length * 8)
