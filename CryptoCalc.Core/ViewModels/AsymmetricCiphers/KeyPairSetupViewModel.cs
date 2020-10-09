@@ -339,9 +339,12 @@ namespace CryptoCalc.Core
         /// </summary>
         private void ChangedProvider()
         {
-            var provider = (EcCurveProvider)Enum.Parse(typeof(EcCurveProvider), Providers[ProviderIndex]);
-            EcCurves = ((IECAlgorithims)SelectedCipher).GetEcCurves(provider);
-            EcCurveIndex = 0;
+            if(SelectedCipher is IECAlgorithims ecAlgorithim)
+            {
+                var provider = (EcCurveProvider)Enum.Parse(typeof(EcCurveProvider), Providers[ProviderIndex]);
+                EcCurves = ecAlgorithim.GetEcCurves(provider);
+                EcCurveIndex = 0;
+            }
         }
 
         /// <summary>
