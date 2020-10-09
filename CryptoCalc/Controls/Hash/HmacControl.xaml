@@ -23,8 +23,7 @@
         <CheckBox Content="HMAC"
                     Margin="8"
                     Name="hmacCheck"
-                    IsChecked="{Binding HmacChecked}"
-                    Command="{Binding HmacOptionCommand}"/>
+                    IsChecked="{Binding HmacChecked}"/>
 
         <!--Column 1-->
         <StackPanel Grid.Column="1"
