@@ -167,11 +167,6 @@ namespace CryptoCalc.Core
         public Format CurrentFormat { get; set; }
 
         /// <summary>
-        /// The Cryptography api to use
-        /// </summary>
-        public CryptographyApi Api { get; set; }
-
-        /// <summary>
         /// The currently selected cipher api
         /// </summary>
         public ISymmetricCipher SelectedCipherApi { get; set; }
@@ -190,7 +185,6 @@ namespace CryptoCalc.Core
         /// The View model for the data input control 
         /// </summary>
         public DataInputViewModel DataInput { get; set; } = new DataInputViewModel();
-       
 
         #endregion
 
@@ -200,6 +194,11 @@ namespace CryptoCalc.Core
         /// The command to when a cipher algorithim is selected
         /// </summary>
         public ICommand ChangedAlgorithimCommand { get; set; }
+        
+        /// <summary>
+        /// The command when the key size has changed
+        /// </summary>
+        public ICommand ChangedKeySizeCommand { get; set; }
 
         /// <summary>
         /// The command to encrypt
@@ -227,6 +226,9 @@ namespace CryptoCalc.Core
         {
             //Initialize the commands
             InitializeCommands();
+
+            //Initialize properties
+            InitializeProperties(CryptographyApi.MSDN);
         }
         
         /// <summary>
@@ -236,39 +238,10 @@ namespace CryptoCalc.Core
         {
             //Initialize the commands
             InitializeCommands();
-            Api = api;
 
-            //according to the selected cipher api create a cipher object
-            //TODO create a factory
-            switch(Api)
-            {
-                case CryptographyApi.MSDN:
-                    SelectedCipherApi = new MsdnSymmetricCipher();
-                    break;
-                case CryptographyApi.BouncyCastle:
-                    SelectedCipherApi = new BouncySymmetricCipher();
-                    break;
-                default:
-                    Debugger.Break();
-                    break;
-            }
-
-            //Gets all the available algorithims from cipher api
-            Algorithims = SelectedCipherApi.GetAlgorthims();
-
-            //Gets all the available key sizes for the currently selected algorithim
-            KeySizes = SelectedCipherApi.GetKeySizes(SelectedAlgorithim);
-
-            //As default select the first item in the list
-            SelectedKeySize = KeySizes[0];
-
-            //Gets the iv size of the currently selected algorithim
-            IvSize = SelectedCipherApi.GetIvSize(SelectedAlgorithim);
-
-            ///Subscribe to the DataChanged event from the <see cref="DataInputViewModel"/>
-            DataInput.DataChanged += DataChanged;
+            //Initialize properties
+            InitializeProperties(api);
         }
-
 
         #endregion
 
@@ -306,6 +279,19 @@ namespace CryptoCalc.Core
 
             //Gets the available iv size of the selected algorithim
             IvSize = SelectedCipherApi.GetIvSize(SelectedAlgorithim);
+
+            ClearKeyValue();
+
+            ClearEnDecryptedValues();
+        }
+
+        /// <summary>
+        /// The command method to execute after a key size change
+        /// </summary>
+        private void ChangedKeySize()
+        {
+            ClearKeyValue();
+            ClearEnDecryptedValues();
         }
 
         /// <summary>
@@ -455,24 +441,20 @@ namespace CryptoCalc.Core
         private void DataChanged(object obj, EventArgs args)
         {
             DataCorrect = DataInput.DataIsCorrectlyFormatted;
-            if(CurrentFormat != DataInput.DataFormatSelected)
+            switch (CurrentFormat)
             {
-                CurrentFormat = DataInput.DataFormatSelected;
-                switch(CurrentFormat)
-                {
-                    case Format.File:
-                        EncryptedText = string.Empty;
-                        DecryptedText = string.Empty;
-                        break;
-                    case Format.HexString:
-                        EncryptedText = string.Empty;
-                        DecryptedText = string.Empty;
-                        break;
-                    case Format.TextString:
-                        EncryptedFilePath = string.Empty;
-                        DecryptedFilePath = string.Empty;
-                        break;
-                }
+                case Format.File:
+                    EncryptedFilePath = string.Empty;
+                    DecryptedFilePath = string.Empty;
+                    break;
+                case Format.HexString:
+                    EncryptedText = string.Empty;
+                    DecryptedText = string.Empty;
+                    break;
+                case Format.TextString:
+                    EncryptedText = string.Empty;
+                    DecryptedText = string.Empty;
+                    break;
             }
         }
 
@@ -486,9 +468,76 @@ namespace CryptoCalc.Core
         private void InitializeCommands()
         {
             ChangedAlgorithimCommand = new RelayCommand(ChangedAlgorithim);
+            ChangedKeySizeCommand = new RelayCommand(ChangedKeySize);
             EncryptCommand = new RelayCommand(Encrypt);
             DecryptCommand = new RelayCommand(Decrypt);
             GenerateKeyCommand = new RelayCommand(GenerateKey);
+        }
+
+        /// <summary>
+        /// Initializes properties
+        /// </summary>
+        /// <param name="api">The type of crypto api selected</param>
+        private void InitializeProperties(CryptographyApi api)
+        {
+            //according to the selected cipher api create a cipher object
+            //TODO create a factory
+            switch (api)
+            {
+                case CryptographyApi.MSDN:
+                    SelectedCipherApi = new MsdnSymmetricCipher();
+                    break;
+                case CryptographyApi.BouncyCastle:
+                    SelectedCipherApi = new BouncySymmetricCipher();
+                    break;
+                default:
+                    Debugger.Break();
+                    break;
+            }
+
+            //Gets all the available algorithims from cipher api
+            Algorithims = SelectedCipherApi.GetAlgorthims();
+
+            //Gets all the available key sizes for the currently selected algorithim
+            KeySizes = SelectedCipherApi.GetKeySizes(SelectedAlgorithim);
+
+            //As default select the first item in the list
+            SelectedKeySize = KeySizes[0];
+
+            //Gets the iv size of the currently selected algorithim
+            IvSize = SelectedCipherApi.GetIvSize(SelectedAlgorithim);
+
+            ///Subscribe to the DataChanged event from the <see cref="DataInputViewModel"/>
+            DataInput.DataChanged += DataChanged;
+        }
+
+        /// <summary>
+        /// Clears any previous encrypted/decrypted values
+        /// </summary>
+        private void ClearEnDecryptedValues()
+        {
+            //determine which format is selected to only clear neseccary values
+            switch (DataInput.DataFormatSelected)
+            {
+                case Format.TextString:
+                case Format.HexString:
+                    EncryptedText = string.Empty;
+                    DecryptedText = string.Empty;
+                    break;
+                case Format.File:
+                    EncryptedFilePath = string.Empty;
+                    DecryptedFilePath = string.Empty;
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Clears any previous key values
+        /// </summary>
+        private void ClearKeyValue()
+        {
+            SecretKey = string.Empty;
+            IV = string.Empty;
         }
 
         #endregion
