@@ -11,7 +11,7 @@ namespace CryptoCalc.Core
     {
         #region Private Fields
 
-        private CryptographyApi crpytoApi;
+        private readonly CryptographyApi crpytoApi;
 
         #endregion
 
@@ -182,6 +182,12 @@ namespace CryptoCalc.Core
         private void DataChanged(object obj, EventArgs args)
         {
             DataCorrect = DataInput.DataIsCorrectlyFormatted;
+
+            //clear hash values on data change
+            foreach(var item in HashList.Items)
+            {
+                item.HashValue = string.Empty;
+            }
         }
 
         #endregion
