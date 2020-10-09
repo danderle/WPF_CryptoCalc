@@ -160,28 +160,16 @@ namespace CryptoCalc.Core
         public event KeysLoadedEventHandler KeysLoaded;
 
         /// <summary>
-        /// A delegate event handler function for key size changes
+        /// A delegate event handler function for any key pair changes, like algorihtim, key size or provider changes
         /// </summary>
         /// <param name="obj">the object from which event is triggered</param>
         /// <param name="args">The event arguments</param>
-        public delegate void KeySizeChangedEventHandler(object obj, EventArgs args);
+        public delegate void KeyPairChangedEventHandler(object obj, EventArgs args);
 
         /// <summary>
         /// The key size changed event
         /// </summary>
-        public event KeySizeChangedEventHandler KeySizeChanged;
-
-        /// <summary>
-        /// A delegate event handler function for algortithim changes
-        /// </summary>
-        /// <param name="obj">the object from which event is triggered</param>
-        /// <param name="args">The event arguments</param>
-        public delegate void AlgorithimChangedEventHandler(object obj, EventArgs args);
-
-        /// <summary>
-        /// The algorithim changed event
-        /// </summary>
-        public event AlgorithimChangedEventHandler AlgorithimChanged;
+        public event KeyPairChangedEventHandler KeyPairChanged;
 
         /// <summary>
         /// The list off all symmetric algorithims
@@ -221,6 +209,11 @@ namespace CryptoCalc.Core
         /// The command to execute when the key size has changed
         /// </summary>
         public ICommand ChangedKeySizeCommand { get; set; }
+
+        /// <summary>
+        /// The command to execute when the ec curve has changed
+        /// </summary>
+        public ICommand ChangedEcCurveCommand { get; set; }
 
         /// <summary>
         /// The command to create a key pair
@@ -395,7 +388,7 @@ namespace CryptoCalc.Core
             PublicKeyFilePath = string.Empty;
             OtherPartyPublicKeyFilePath = string.Empty;
 
-            OnAlgorithimChanged();
+            OnKeyPairChanged();
         }
 
         /// <summary>
@@ -403,11 +396,17 @@ namespace CryptoCalc.Core
         /// </summary>
         private void ChangedKeySize()
         {
-            OnKeySizedChanged();
-            PrivateKeyFilePath = string.Empty;
-            PublicKeyFilePath = string.Empty;
-            PrivateKeyLoaded = false;
-            PublicKeyLoaded = false;
+            UnloadKeyPair();
+            OnKeyPairChanged();
+        }
+
+        /// <summary>
+        /// Command method to execute when the ec curve has changed
+        /// </summary>
+        private void ChangedEcCurve()
+        {
+            UnloadKeyPair();
+            OnKeyPairChanged();
         }
 
         /// <summary>
@@ -639,6 +638,7 @@ namespace CryptoCalc.Core
             ChangedAlgorithimCommand = new RelayCommand(ChangedAlgorithim);
             ChangedProviderCommand = new RelayCommand(ChangedProvider);
             ChangedKeySizeCommand = new RelayCommand(ChangedKeySize);
+            ChangedEcCurveCommand = new RelayCommand(ChangedEcCurve);
             CreateKeyPairCommand = new RelayCommand(CreateKeyPair);
             LoadKeyCommand = new RelayCommand(LoadKey);
             DeleteKeyCommand = new RelayCommand(DeleteKey);
@@ -660,6 +660,17 @@ namespace CryptoCalc.Core
         }
 
         /// <summary>
+        /// Clears the file paths and sets key pair loaded flags to false
+        /// </summary>
+        private void UnloadKeyPair()
+        {
+            PrivateKeyFilePath = string.Empty;
+            PublicKeyFilePath = string.Empty;
+            PrivateKeyLoaded = false;
+            PublicKeyLoaded = false;
+        }
+
+        /// <summary>
         /// Triggers the Keys loaded event
         /// </summary>
         private void OnKeyLoad()
@@ -668,19 +679,11 @@ namespace CryptoCalc.Core
         }
 
         /// <summary>
-        /// Triggers the key size changed event
+        /// Triggers the key pair changed event
         /// </summary>
-        private void OnKeySizedChanged()
+        private void OnKeyPairChanged()
         {
-            KeySizeChanged?.Invoke(this, EventArgs.Empty);
-        }
-
-        /// <summary>
-        /// Triggers the algorithim changed event
-        /// </summary>
-        private void OnAlgorithimChanged()
-        {
-            AlgorithimChanged?.Invoke(this, EventArgs.Empty);
+            KeyPairChanged?.Invoke(this, EventArgs.Empty);
         }
 
         #endregion
