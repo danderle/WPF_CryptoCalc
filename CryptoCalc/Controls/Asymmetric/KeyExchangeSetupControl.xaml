@@ -148,13 +148,11 @@
 
                         <!--File browser pop pup button-->
                         <Button Command="{Binding OpenFolderDialogCommand}" 
-                            Visibility="{Binding DataFormatSelected, Converter={local:DataFormatsToVisibility}, ConverterParameter=File}"
                             Style="{StaticResource FileBrowserButton}"
                             Margin="8 33 0 0"/>
 
                         <!--File browser pop pup button-->
                         <Button Command="{Binding OpenFolderDialogCommand}" 
-                            Visibility="{Binding DataFormatSelected, Converter={local:DataFormatsToVisibility}, ConverterParameter=File}"
                             Style="{StaticResource FileBrowserButton}"
                             Margin="8 33 0 0"/>
                     </StackPanel>
