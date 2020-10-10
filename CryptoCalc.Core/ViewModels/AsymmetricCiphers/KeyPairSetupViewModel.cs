@@ -497,6 +497,10 @@ namespace CryptoCalc.Core
 
         #endregion
 
+        #region Public Methods
+
+        #region En-/Decryption
+
         /// <summary>
         /// Encrypt plain bytes
         /// </summary>
@@ -540,7 +544,7 @@ namespace CryptoCalc.Core
                 //Show error message box dialog to user
                 Dialog.OpenErrorMessageBoxAsync(msdnException, "Encryption Failure", WindowDialogType.Error);
             }
-            catch(CryptoException bouncyException)
+            catch (CryptoException bouncyException)
             {
                 //Show error message box dialog to user
                 Dialog.OpenErrorMessageBoxAsync(bouncyException, "Encryption Failure", WindowDialogType.Error);
@@ -560,7 +564,7 @@ namespace CryptoCalc.Core
             {
                 plain = ((IAsymmetricEncryption)SelectedCipher).DecryptToBytes(PrivateKey, encrypted);
             }
-            catch(CryptographicException msdnException)
+            catch (CryptographicException msdnException)
             {
                 //Show error message box dialog to user
                 Dialog.OpenErrorMessageBoxAsync(msdnException, "Decryption Failure", WindowDialogType.Error);
@@ -598,6 +602,50 @@ namespace CryptoCalc.Core
             return decryptedText;
         }
 
+
+        #endregion
+
+        #region Digital Signatures
+
+        public byte[] Sign(byte[] privateKey, byte[] data)
+        {
+            byte[] signature = null;
+            try
+            {
+                signature = ((IAsymmetricSignature)SelectedCipher).Sign(privateKey, data);
+            }
+            catch(CryptographicException msdnException)
+            {
+                //Show error message box dialog to user
+                Dialog.OpenErrorMessageBoxAsync(msdnException, "Signature Failure", WindowDialogType.Error);
+            }
+            return signature;
+        }
+
+        /// <summary>
+        /// Verifies a signature for a given data set
+        /// </summary>
+        /// <param name="signature">The signature to verify</param>
+        /// <param name="publicKey">The public key to use for verification</param>
+        /// <param name="data">The data which was signed</param>
+        /// <returns></returns>
+        public bool Verify(byte[] signature, byte[] publicKey, byte[] data)
+        {
+            bool verified = false;
+            try
+            {
+                verified = ((IAsymmetricSignature)SelectedCipher).Verify(signature, publicKey, data);
+            }
+            catch (CryptographicException msdnException)
+            {
+                //Show error message box dialog to user
+                Dialog.OpenErrorMessageBoxAsync(msdnException, "Signature Verification Failure", WindowDialogType.Error);
+            }
+            return verified;
+        }
+
+        #endregion
+
         /// <summary>
         /// Derives a shared key from a private key and another persons public key
         /// </summary>
@@ -606,6 +654,8 @@ namespace CryptoCalc.Core
         {
             return ((IAsymmetricKeyExchange)SelectedCipher).DeriveKey(PrivateKey, KeySizes[KeySizeIndex], OtherPartyPublicKey);
         }
+
+        #endregion
 
         #region Private Methods
 
@@ -668,6 +718,7 @@ namespace CryptoCalc.Core
             PublicKeyFilePath = string.Empty;
             PrivateKeyLoaded = false;
             PublicKeyLoaded = false;
+            OnKeyLoad();
         }
 
         /// <summary>
