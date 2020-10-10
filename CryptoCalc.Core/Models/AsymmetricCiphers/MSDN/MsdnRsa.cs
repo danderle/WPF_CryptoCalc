@@ -114,7 +114,10 @@ namespace CryptoCalc.Core
                 }
                 else
                 {
-                    throw new CryptographicException("Contact developer for help.", exception);
+                    string message = "Encryption failed!\n" +
+                        $"{exception.Message}\n" +
+                        "Contact developer.";
+                    throw new CryptographicException(message, exception);
                 }
             }
             return encryption;
@@ -178,7 +181,10 @@ namespace CryptoCalc.Core
                 }
                 else
                 {
-                    throw new CryptographicException("Contact developer for help.", exception);
+                    string message = "Decryption failed!\n" +
+                        $"{exception.Message}\n" +
+                        "Contact developer.";
+                    throw new CryptographicException(message, exception);
                 }
             }
             return decrypted;
