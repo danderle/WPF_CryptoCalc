@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Security.Cryptography;
 using System.Windows.Input;
 
 namespace CryptoCalc.Core
@@ -38,12 +39,12 @@ namespace CryptoCalc.Core
         /// <summary>
         /// Flag to let us know if we can sign data
         /// </summary>
-        public bool ReadyToSign => ReadyForEncryption;
+        public bool ReadyToSign => DataFormatCorrect && PrivateKeyLoaded;
 
         /// <summary>
         /// Flag to let us know if we can verify a signature
         /// </summary>
-        public bool ReadyToVerify => PrivateKeyLoaded && OriginalSignature.HasOnlyHex() && DataFormatCorrect;
+        public bool ReadyToVerify => PublicKeyLoaded && OriginalSignature.HasOnlyHex() && DataFormatCorrect;
 
         /// <summary>
         /// Flag to let us know if the encrypted text is a true hex value
@@ -187,10 +188,10 @@ namespace CryptoCalc.Core
                     data = File.ReadAllBytes(DataInput.Data);
                     break;
                 case Format.TextString:
-                    data = ByteConvert.StringToAsciiBytes(DataInput.Data);
+                    data = ByteConvert.StringToUTF8Bytes(DataInput.Data);
                     break;
             }
-            SignatureVerified = ((IAsymmetricSignature)KeyPairSetup.SelectedCipher).Verify(signature, pubKey, data);
+            SignatureVerified = KeyPairSetup.Verify(signature, pubKey, data);
         }
 
         /// <summary>
@@ -206,10 +207,10 @@ namespace CryptoCalc.Core
                     data = File.ReadAllBytes(DataInput.Data);
                     break;
                 case Format.TextString:
-                    data = ByteConvert.StringToAsciiBytes(DataInput.Data);
+                    data = ByteConvert.StringToUTF8Bytes(DataInput.Data);
                     break;
             }
-            var signature = ((IAsymmetricSignature)KeyPairSetup.SelectedCipher).Sign(privKey, data);
+            var signature = KeyPairSetup.Sign(privKey, data);
             OriginalSignature = ByteConvert.BytesToHexString(signature);
         }
 
