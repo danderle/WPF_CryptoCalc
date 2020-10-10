@@ -121,8 +121,8 @@ namespace CryptoCalc.Core
                 case AsymmetricOperation.Encryption:
                     return new List<string>
                     {
-                        AsymmetricBouncyCiphers.RSA.ToString(),
                         AsymmetricBouncyCiphers.SM2.ToString(),
+                        AsymmetricBouncyCiphers.RSA.ToString(),
                     };
 
                 case AsymmetricOperation.Signature:

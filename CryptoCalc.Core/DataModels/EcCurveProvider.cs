@@ -5,11 +5,11 @@
     /// </summary>
     public enum EcCurveProvider
     {
-        SEC = 0,
+        TELETRUST = 0,
+        GOST3410 ,
+        SEC,
         NIST,
-        TELETRUST,
         ANSSI,
-        GOST3410,
         GM,
         ED25519,
         ED448
