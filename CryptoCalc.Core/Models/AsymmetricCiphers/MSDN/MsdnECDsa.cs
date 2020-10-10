@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Security.Cryptography;
 
@@ -20,12 +21,6 @@ namespace CryptoCalc.Core
         /// The cipher algorithim object for this class
         /// </summary>
         private ECDsa cipher { get; set; } = ECDsa.Create();
-
-        #endregion
-
-        #region Public Properties
-
-        
 
         #endregion
 
@@ -125,8 +120,41 @@ namespace CryptoCalc.Core
         public byte[] Sign(byte[] privKey, byte[] data)
         {
             int bytesRead;
-            cipher.ImportPkcs8PrivateKey(privKey, out bytesRead);
+            try
+            {
+                //import private key bytes
+                cipher.ImportPkcs8PrivateKey(privKey, out bytesRead);
+            }
+            catch (CryptographicException exception)
+            {
+                string message = "Signature Failed!\n" +
+                    $"{exception.Message}\n" +
+                    "The contents of source do not represent an ASN.1-BER-encoded PKCS#8 private key structure.\n" +
+                    "-or- The contents of source indicate the key is for an algorithm other than the algorithm represented by this instance.\n" +
+                    "-or- The contents of source represent the key in a format that is not supported.\n" +
+                    "-or- The algorithm-specific key import failed.\n";
+                throw new CryptographicException(message, exception);
+            }
+            catch (PlatformNotSupportedException exception)
+            {
+                string message = "Signature Failed!\n" +
+                    $"{exception.Message}\n" +
+                    "The public key is corrupted.\n" +
+                    "Verify the public key.";
+                throw new CryptographicException(message, exception);
+            }
+            catch (Exception exception)
+            {
+                string message = "Signature Failed!\n" +
+                        $"{exception.Message}\n" +
+                        "Contact developer.";
+                throw new CryptographicException(message, exception);
+            }
+
+            //hash data
             var hash = MsdnHash.Compute(MsdnHashAlgorithim.SHA512, data);
+
+            //sign hash
             return cipher.SignHash(hash);
         }
 
@@ -140,8 +168,41 @@ namespace CryptoCalc.Core
         public bool Verify(byte[] originalSignature, byte[] pubKey, byte[] data)
         {
             int bytesRead;
-            cipher.ImportSubjectPublicKeyInfo(pubKey, out bytesRead);
+            try
+            {
+                //Import public key bytes
+                cipher.ImportSubjectPublicKeyInfo(pubKey, out bytesRead);
+            }
+            catch(CryptographicException exception)
+            {
+                string message = "Signature Verification Failed!\n" +
+                    $"{exception.Message}\n" +
+                    "The contents of source do not represent an ASN.1-DER-encoded X.509 public key structure.\n" +
+                    "-or- The contents of source indicate the key is for an algorithm other than the algorithm represented by this instance.\n" +
+                    "-or- The contents of source represent the key in a format that is not supported.\n" +
+                    "-or- The algorithm-specific key import failed.\n";
+                throw new CryptographicException(message, exception);
+            }
+            catch(PlatformNotSupportedException exception)
+            {
+                string message = "Signature Verification Failed!\n" +
+                    $"{exception.Message}\n" +
+                    "The public key is corrupted.\n" +
+                    "Verify the public key.";
+                throw new CryptographicException(message, exception);
+            }
+            catch(Exception exception)
+            {
+                string message = "Signature Verification Failed!\n" +
+                        $"{exception.Message}\n" +
+                        "Contact developer.";
+                throw new CryptographicException(message, exception);
+            }
+
+            //hash data
             var hash = MsdnHash.Compute(MsdnHashAlgorithim.SHA512, data);
+
+            //verify signature
             return cipher.VerifyHash(hash, originalSignature);
         }
 
