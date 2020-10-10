@@ -11,6 +11,7 @@ using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Math;
+using Org.BouncyCastle.Math.EC;
 using Org.BouncyCastle.Security;
 using System;
 using System.Collections;
@@ -33,6 +34,8 @@ namespace CryptoCalc.Core
         /// The generated key pair object for this class
         /// </summary>
         private AsymmetricCipherKeyPair keyPair;
+
+        private int keyLength = 0;
 
         #endregion
 
@@ -103,12 +106,16 @@ namespace CryptoCalc.Core
                 default:
                     return new ObservableCollection<string>();
             }
-            var list = new ObservableCollection<string>();
+            var list = new List<string>();
             while (curves.MoveNext())
             {
                 list.Add((string)curves.Current);
             }
-            return list;
+
+            //sort the list alphabetically
+            var sortedList = new ObservableCollection<string>(list.OrderBy(x => x));
+            return sortedList;
+
         }
 
         /// <summary>
@@ -130,6 +137,7 @@ namespace CryptoCalc.Core
                 yLength = ((ECPublicKeyParameters)keyPair.Public).Q.AffineYCoord.ToBigInteger().ToByteArrayUnsigned().Length;
             }
             while (xLength != yLength);
+            keyLength = xLength * 8;
         }
 
         /// <summary>
@@ -209,7 +217,23 @@ namespace CryptoCalc.Core
         {
             var privKey = CreatePrivateKeyParameterFromBytes(privateKey);
             cipher.Init(false, privKey);
-            return cipher.ProcessBlock(encrypted, 0, encrypted.Length);
+
+            byte[] decrypted = null;
+            try
+            {
+                decrypted = cipher.ProcessBlock(encrypted, 0, encrypted.Length);
+            }
+            catch(InvalidCipherTextException exception)
+            {
+                string message = "Decryption failed!\n" +
+                        $"{exception.Message}.\n" +
+                        "The encryption is not valid, this could be caused by a wrong length or corrupted encryption\n" +
+                        "-or- The private key is corrupted.\n" +
+                        "Verify that the correct key has been used, and the encryption was correctly copied.\n" +
+                        "Encrypt and decrypt again";
+                throw new CryptoException(message, exception);
+            }
+            return decrypted;
         }
 
         #endregion
@@ -237,7 +261,20 @@ namespace CryptoCalc.Core
             Array.Copy(publicKey, der.Length, q, 0, q.Length);
 
             //Get the der object identifierer
-            var derOid = DerObjectIdentifier.GetInstance(Asn1Object.FromByteArray(der));
+            DerObjectIdentifier derOid;
+            try
+            {
+                derOid = DerObjectIdentifier.GetInstance(Asn1Object.FromByteArray(der));
+            }
+            catch (ArgumentException exception)
+            {
+                string message = "Encryption failed!\n" +
+                        $"{exception.Message}.\n" +
+                        "The public key creation failed\n" +
+                        "The key is not in the expected ASN1 structure.\n" +
+                        "Make sure the correct public key file is used.";
+                throw new CryptoException(message, exception);
+            }
 
             //Find the curve for the object identifier
             var x9 = ECNamedCurveTable.GetByOid(derOid);
@@ -245,7 +282,19 @@ namespace CryptoCalc.Core
             //Get the X and Y coordinates and then create the ECPoint
             var X = new BigInteger(1, x);
             var Y = new BigInteger(1, y);
-            var ecPoint = x9.Curve.DecodePoint(q);
+            ECPoint ecPoint;
+            try
+            {
+                ecPoint = x9.Curve.DecodePoint(q);
+            }
+            catch(ArgumentException exception)
+            {
+                string message = "Encryption failed!\n" +
+                        $"{exception.Message}.\n" +
+                        "The public key creation failed\n" +
+                        "This could be caused by a corrupted key file.";
+                throw new CryptoException(message, exception);
+            }
 
             return new ECPublicKeyParameters("EC", ecPoint, derOid);
         }
@@ -264,7 +313,20 @@ namespace CryptoCalc.Core
             Array.Copy(privateKey, der, der.Length);
             Array.Copy(privateKey, der.Length, d, 0, d.Length);
 
-            var derObject = DerObjectIdentifier.GetInstance(Asn1Object.FromByteArray(der));
+            DerObjectIdentifier derObject;
+            try
+            {
+                derObject = DerObjectIdentifier.GetInstance(Asn1Object.FromByteArray(der));
+            }
+            catch(ArgumentException exception)
+            {
+                string message = "Decryption failed!\n" +
+                        $"{exception.Message}.\n" +
+                        "The private key creation failed\n" +
+                        "Make sure the correct private key file is used.\n" +
+                        "The key is not in the expected ASN1 structure.";
+                throw new CryptoException(message, exception);
+            }
             var D = new BigInteger(1, d);
             return new ECPrivateKeyParameters("EC", D, derObject);
         }
