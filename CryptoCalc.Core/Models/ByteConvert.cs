@@ -71,10 +71,10 @@ namespace CryptoCalc.Core
         /// Converts bytes to a hex string
         /// </summary>
         /// <param name="bytes"></param>
-        /// <returns></returns>
+        /// <returns>empty string if null otherwise the hex string</returns>
         public static string BytesToHexString(byte[] bytes)
         {
-            return BitConverter.ToString(bytes).Replace("-", string.Empty);
+            return bytes == null ? string.Empty : BitConverter.ToString(bytes).Replace("-", string.Empty);
         }
 
         /// <summary>
