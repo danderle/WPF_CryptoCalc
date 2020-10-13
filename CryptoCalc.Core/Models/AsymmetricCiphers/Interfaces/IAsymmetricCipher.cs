@@ -128,9 +128,9 @@ namespace CryptoCalc.Core
                 case AsymmetricOperation.Signature:
                     return new List<string> 
                     { 
+                        AsymmetricBouncyCiphers.ECDsa.ToString(),
                         AsymmetricBouncyCiphers.RSA.ToString(), 
                         AsymmetricBouncyCiphers.DSA.ToString(), 
-                        AsymmetricBouncyCiphers.ECDsa.ToString(),
                         AsymmetricBouncyCiphers.ECGost3410.ToString(),
                         AsymmetricBouncyCiphers.Gost3410_94.ToString(),
                         AsymmetricBouncyCiphers.ECNR.ToString(),
