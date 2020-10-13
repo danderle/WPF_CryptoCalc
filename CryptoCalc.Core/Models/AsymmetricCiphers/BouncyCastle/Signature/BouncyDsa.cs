@@ -117,7 +117,20 @@ namespace CryptoCalc.Core
             var privKey = CreatePrivateKeyParameterFromBytes(privateKey);
             signer.Init(true, privKey);
             signer.BlockUpdate(data, 0, data.Length);
-            return signer.GenerateSignature();
+            byte[] signature;
+            try
+            {
+                signature = signer.GenerateSignature();
+            }
+            catch(Exception exception)
+            {
+                string message = "Signature Failure!\n" +
+                    $"{exception.Message}.\n" +
+                    $"The private key file is corrupted, verify private key file or try another key.\n" +
+                    $"If all fails create a new key pair.";
+                throw new CryptoException(message, exception);
+            }
+            return signature;
         }
 
         /// <summary>
@@ -130,7 +143,20 @@ namespace CryptoCalc.Core
         public bool Verify(byte[] originalSignature, byte[] publicKey, byte[] data)
         {
             var signer = new DsaDigestSigner(new DsaSigner(), new Sha1Digest());
-            var pubKey = CreatePublicKeyParameterFromBytes(publicKey);
+
+            DsaPublicKeyParameters pubKey = null;
+            try
+            {
+                pubKey = CreatePublicKeyParameterFromBytes(publicKey);
+            }
+            catch(Exception exception)
+            {
+                string message = "Public Key Creation Failure!\n" +
+                    $"{exception.Message}.\n" +
+                    $"The public key file is corrupted, verify public key file or try another key.\n" +
+                    $"If all fails create a new key pair.";
+                throw new CryptoException(message, exception);
+            }
             signer.Init(false, pubKey);
             signer.BlockUpdate(data, 0, data.Length);
             return signer.VerifySignature(originalSignature);
