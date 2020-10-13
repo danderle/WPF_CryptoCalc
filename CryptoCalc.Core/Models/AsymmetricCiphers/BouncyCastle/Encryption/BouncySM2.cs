@@ -115,7 +115,6 @@ namespace CryptoCalc.Core
             //sort the list alphabetically
             var sortedList = new ObservableCollection<string>(list.OrderBy(x => x));
             return sortedList;
-
         }
 
         /// <summary>
