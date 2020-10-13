@@ -619,6 +619,11 @@ namespace CryptoCalc.Core
                 //Show error message box dialog to user
                 Dialog.OpenErrorMessageBoxAsync(msdnException, "Signature Failure", WindowDialogType.Error);
             }
+            catch (CryptoException bouncyException)
+            {
+                //Show error message box dialog to user
+                Dialog.OpenErrorMessageBoxAsync(bouncyException, "Signature Failure", WindowDialogType.Error);
+            }
             return signature;
         }
 
@@ -640,6 +645,11 @@ namespace CryptoCalc.Core
             {
                 //Show error message box dialog to user
                 Dialog.OpenErrorMessageBoxAsync(msdnException, "Signature Verification Failure", WindowDialogType.Error);
+            }
+            catch (CryptoException bouncyException)
+            {
+                //Show error message box dialog to user
+                Dialog.OpenErrorMessageBoxAsync(bouncyException, "Signature Verification Failure", WindowDialogType.Error);
             }
             return verified;
         }
