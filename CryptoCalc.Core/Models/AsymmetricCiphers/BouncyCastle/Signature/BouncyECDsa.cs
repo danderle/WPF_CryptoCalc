@@ -16,7 +16,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 
 namespace CryptoCalc.Core
@@ -155,7 +154,6 @@ namespace CryptoCalc.Core
             return publicKey.ToArray();
         }
 
-
         /// <summary>
         /// Signs the passed in data with a private key
         /// </summary>
@@ -166,7 +164,7 @@ namespace CryptoCalc.Core
         {
             var signer = new ECDsaSigner();
 
-            ECPrivateKeyParameters privKey = null;
+            ECPrivateKeyParameters privKey;
             try
             {
                 privKey = CreatePrivateKeyParameterFromBytes(privateKey);
