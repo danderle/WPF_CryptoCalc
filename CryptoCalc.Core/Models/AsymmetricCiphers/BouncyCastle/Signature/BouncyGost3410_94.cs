@@ -10,6 +10,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace CryptoCalc.Core
 {
@@ -87,6 +88,10 @@ namespace CryptoCalc.Core
             {
                 list.Add((string)curves.Current);
             }
+
+            //Sort list alphabeticaly
+            list = new ObservableCollection<string>(list.OrderBy(x => x).ToList());
+
             return list;
         }
 
@@ -133,7 +138,6 @@ namespace CryptoCalc.Core
             return publicKey.ToArray();
         }
 
-
         /// <summary>
         /// Signs the passed in data with a private key
         /// </summary>
@@ -143,8 +147,22 @@ namespace CryptoCalc.Core
         public byte[] Sign(byte[] privateKey, byte[] data)
         {
             var signer = new Gost3410Signer();
-            var privKey = CreatePrivateKeyParameterFromBytes(privateKey);
-            signer.Init(true, privKey);
+            
+            Gost3410PrivateKeyParameters privKey;
+            try
+            {
+                privKey = CreatePrivateKeyParameterFromBytes(privateKey);
+                signer.Init(true, privKey);
+            }
+            catch (Exception exception)
+            {
+                string message = "Private Key Creation Failure!\n" +
+                    $"{exception.Message}.\n" +
+                    $"The private key file is corrupted, verify private key file or try another key.\n" +
+                    $"If all fails create a new key pair.";
+                throw new CryptoException(message, exception);
+            }
+
             var bigIntSig = signer.GenerateSignature(data);
             var signature = new List<byte>();
             signature.AddRange(bigIntSig[0].ToByteArrayUnsigned());
@@ -162,7 +180,25 @@ namespace CryptoCalc.Core
         public bool Verify(byte[] originalSignature, byte[] publicKey, byte[] data)
         {
             var signer = new Gost3410Signer();
-            var pubKey = CreatePublicKeyParameterFromBytes(publicKey);
+
+            Gost3410PublicKeyParameters pubKey;
+            try
+            {
+                pubKey = CreatePublicKeyParameterFromBytes(publicKey);
+            }
+            catch (CryptoException exception)
+            {
+                throw new CryptoException(exception.Message, exception);
+            }
+            catch (Exception exception)
+            {
+                string message = "Public Key Creation Failure!\n" +
+                    $"{exception.Message}.\n" +
+                    $"The public key file is corrupted, verify public key file or try another key.\n" +
+                    $"If all fails create a new key pair.";
+                throw new CryptoException(message, exception);
+            }
+
             signer.Init(false, pubKey);
             var r = new byte[originalSignature.Length / 2];
             var s = new byte[originalSignature.Length / 2];
@@ -172,7 +208,6 @@ namespace CryptoCalc.Core
             var S = new BigInteger(1, s);
             return signer.VerifySignature(data, R, S);
         }
-
 
         #endregion
 

@@ -93,13 +93,18 @@ namespace CryptoCalc.Core
                 case EcCurveProvider.GM:
                     curves = GMNamedCurves.Names.GetEnumerator();
                     break;
+                default:
+                    return new ObservableCollection<string>();
             }
             var list = new ObservableCollection<string>();
             while(curves.MoveNext())
             {
                 list.Add((string)curves.Current);
             }
-            return list;
+
+            //sort the list alphabetically
+            var sortedList = new ObservableCollection<string>(list.OrderBy(x => x));
+            return sortedList;
         }
 
         /// <summary>
@@ -162,8 +167,22 @@ namespace CryptoCalc.Core
         public byte[] Sign(byte[] privateKey, byte[] data)
         {
             var signer = new ECGost3410Signer();
-            var privKey = CreatePrivateKeyParameterFromBytes(privateKey);
-            signer.Init(true, privKey);
+
+            ECPrivateKeyParameters privKey;
+            try
+            {
+                privKey = CreatePrivateKeyParameterFromBytes(privateKey);
+                signer.Init(true, privKey);
+            }
+            catch (Exception exception)
+            {
+                string message = "Private Key Creation Failure!\n" +
+                    $"{exception.Message}.\n" +
+                    $"The private key file is corrupted, verify private key file or try another key.\n" +
+                    $"If all fails create a new key pair.";
+                throw new CryptoException(message, exception);
+            }
+
             var bigIntSig = signer.GenerateSignature(data);
             var signature = new List<byte>();
             signature.AddRange(bigIntSig[0].ToByteArrayUnsigned());
@@ -181,7 +200,25 @@ namespace CryptoCalc.Core
         public bool Verify(byte[] originalSignature, byte[] publicKey, byte[] data)
         {
             var signer = new ECGost3410Signer();
-            var pubKey = CreatePublicKeyParameterFromBytes(publicKey);
+
+            ECPublicKeyParameters pubKey;
+            try
+            {
+                pubKey = CreatePublicKeyParameterFromBytes(publicKey);
+            }
+            catch (CryptoException exception)
+            {
+                throw new CryptoException(exception.Message, exception);
+            }
+            catch (Exception exception)
+            {
+                string message = "Public Key Creation Failure!\n" +
+                    $"{exception.Message}.\n" +
+                    $"The public key file is corrupted, verify public key file or try another key.\n" +
+                    $"If all fails create a new key pair.";
+                throw new CryptoException(message, exception);
+            }
+
             signer.Init(false, pubKey);
             var r = new byte[originalSignature.Length / 2];
             var s = new byte[originalSignature.Length / 2];
@@ -191,7 +228,6 @@ namespace CryptoCalc.Core
             var S = new BigInteger(1, s);
             return signer.VerifySignature(data, R, S);
         }
-
 
         #endregion
 
@@ -222,6 +258,15 @@ namespace CryptoCalc.Core
 
             //Find the curve for the object identifier
             var x9 = ECNamedCurveTable.GetByOid(derOid);
+
+            //make sure a curve is found
+            if (x9 == null)
+            {
+                string message = "Public Key Creation Failure!\n" +
+                    $"The public key file is corrupted, the object identifier is not valid.\n" +
+                    $"Verify public key file or try another key, if all fails create a new key pair.";
+                throw new CryptoException(message);
+            }
 
             //Get the X and Y coordinates and then create the ECPoint
             var ecPoint = x9.Curve.DecodePoint(q);
