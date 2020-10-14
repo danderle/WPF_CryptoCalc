@@ -96,7 +96,9 @@ namespace CryptoCalc.Core
             {
                 list.Add((string)curves.Current);
             }
-            return list;
+
+            var sortedList = new ObservableCollection<string>(list.OrderBy(x => x).ToList());
+            return sortedList;
         }
 
         /// <summary>
