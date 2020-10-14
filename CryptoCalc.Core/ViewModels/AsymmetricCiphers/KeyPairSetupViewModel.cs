@@ -334,7 +334,13 @@ namespace CryptoCalc.Core
         {
             if(SelectedCipher is IECAlgorithims ecAlgorithim)
             {
+                //Verify that the ProviderIndex is atleast 0
+                ProviderIndex = ProviderIndex >= 0 ? ProviderIndex : 0;
+
+                //Get the curve provider from the list
                 var provider = (EcCurveProvider)Enum.Parse(typeof(EcCurveProvider), Providers[ProviderIndex]);
+
+                //Get the curves and set the inital index to 0
                 EcCurves = ecAlgorithim.GetEcCurves(provider);
                 EcCurveIndex = 0;
             }
