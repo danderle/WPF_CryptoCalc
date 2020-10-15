@@ -121,7 +121,21 @@ namespace CryptoCalc.Core
         public byte[] Sign(byte[] privateKey, byte[] data)
         {
             var signer = new Ed448Signer(ByteConvert.StringToAsciiBytes("context"));
-            var privKey = CreatePrivateKeyParameterFromBytes(privateKey);
+
+            Ed448PrivateKeyParameters privKey = null;
+            try
+            {
+                privKey = CreatePrivateKeyParameterFromBytes(privateKey);
+            }
+            catch (ArgumentException exception)
+            {
+                string message = "Private Key Creation Failure!\n" +
+                    $"{exception.Message}.\n" +
+                    $"The private key file is corrupted, verify private key file or try another key.\n" +
+                    $"If all fails create a new key pair.";
+                throw new CryptoException(message, exception);
+            }
+
             signer.Init(true, privKey);
             signer.BlockUpdate(data, 0, data.Length);
             var signature = signer.GenerateSignature();
@@ -138,7 +152,21 @@ namespace CryptoCalc.Core
         public bool Verify(byte[] originalSignature, byte[] publicKey, byte[] data)
         {
             var signer = new Ed448Signer(ByteConvert.StringToAsciiBytes("context"));
-            var pubKey = CreatePublicKeyParameterFromBytes(publicKey);
+
+            Ed448PublicKeyParameters pubKey = null;
+            try
+            {
+                pubKey = CreatePublicKeyParameterFromBytes(publicKey);
+            }
+            catch (ArgumentException exception)
+            {
+                string message = "Public Key Creation Failure!\n" +
+                    $"{exception.Message}.\n" +
+                    $"The public key file is corrupted, verify public key file or try another key.\n" +
+                    $"If all fails create a new key pair.";
+                throw new CryptoException(message, exception);
+            }
+
             signer.Init(false, pubKey);
             signer.BlockUpdate(data, 0, data.Length);
             return signer.VerifySignature(originalSignature);
