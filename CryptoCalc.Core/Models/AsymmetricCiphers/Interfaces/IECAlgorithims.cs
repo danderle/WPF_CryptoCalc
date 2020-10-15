@@ -1,4 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Security.Cryptography;
 
 namespace CryptoCalc.Core
 {
@@ -29,5 +31,32 @@ namespace CryptoCalc.Core
         /// </summary>
         /// <param name="curveName">the curve to use for key creation</param>
         public void CreateKeyPair(string curveName);
+
+         /// <summary>
+        /// Creates a a dictionary for all the available msdn ec curves
+        /// </summary>
+        public static Dictionary<string, ECCurve> GetAllAvailableMsdnEcCurves()
+        {
+            Dictionary<string, ECCurve> ecCurves = new Dictionary<string, ECCurve>();
+
+            ecCurves.Add(nameof(ECCurve.NamedCurves.brainpoolP160r1), ECCurve.NamedCurves.brainpoolP160r1);
+            ecCurves.Add(nameof(ECCurve.NamedCurves.brainpoolP160t1), ECCurve.NamedCurves.brainpoolP160t1);
+            ecCurves.Add(nameof(ECCurve.NamedCurves.brainpoolP192r1), ECCurve.NamedCurves.brainpoolP192r1);
+            ecCurves.Add(nameof(ECCurve.NamedCurves.brainpoolP192t1), ECCurve.NamedCurves.brainpoolP192t1);
+            ecCurves.Add(nameof(ECCurve.NamedCurves.brainpoolP224r1), ECCurve.NamedCurves.brainpoolP224r1);
+            ecCurves.Add(nameof(ECCurve.NamedCurves.brainpoolP224t1), ECCurve.NamedCurves.brainpoolP224t1);
+            ecCurves.Add(nameof(ECCurve.NamedCurves.brainpoolP256r1), ECCurve.NamedCurves.brainpoolP256r1);
+            ecCurves.Add(nameof(ECCurve.NamedCurves.brainpoolP256t1), ECCurve.NamedCurves.brainpoolP256t1);
+            ecCurves.Add(nameof(ECCurve.NamedCurves.brainpoolP320r1), ECCurve.NamedCurves.brainpoolP320r1);
+            ecCurves.Add(nameof(ECCurve.NamedCurves.brainpoolP320t1), ECCurve.NamedCurves.brainpoolP320t1);
+            ecCurves.Add(nameof(ECCurve.NamedCurves.brainpoolP384r1), ECCurve.NamedCurves.brainpoolP384r1);
+            ecCurves.Add(nameof(ECCurve.NamedCurves.brainpoolP384t1), ECCurve.NamedCurves.brainpoolP384t1);
+            ecCurves.Add(nameof(ECCurve.NamedCurves.brainpoolP512r1), ECCurve.NamedCurves.brainpoolP512r1);
+            ecCurves.Add(nameof(ECCurve.NamedCurves.brainpoolP512t1), ECCurve.NamedCurves.brainpoolP512t1);
+            ecCurves.Add(nameof(ECCurve.NamedCurves.nistP256), ECCurve.NamedCurves.nistP256);
+            ecCurves.Add(nameof(ECCurve.NamedCurves.nistP384), ECCurve.NamedCurves.nistP384);
+            ecCurves.Add(nameof(ECCurve.NamedCurves.nistP521), ECCurve.NamedCurves.nistP521);
+            return ecCurves;
+        }
     }
 }
