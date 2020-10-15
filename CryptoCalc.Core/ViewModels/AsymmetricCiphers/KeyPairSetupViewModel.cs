@@ -475,7 +475,7 @@ namespace CryptoCalc.Core
             }
             if (OtherPartyPublicKeyFilePathExists)
             {
-                OtherPartyPublicKey = File.ReadAllBytes(PublicKeyFilePath);
+                OtherPartyPublicKey = File.ReadAllBytes(OtherPartyPublicKeyFilePath);
                 OtherPublicKeyLoaded = true;
             }
             OnKeyLoad();
@@ -727,14 +727,34 @@ namespace CryptoCalc.Core
 
         #endregion
 
+        #region Key Exchange
+
         /// <summary>
         /// Derives a shared key from a private key and another persons public key
         /// </summary>
         /// <returns></returns>
         public byte[] DeriveKey()
         {
-            return ((IAsymmetricKeyExchange)SelectedCipher).DeriveKey(PrivateKey, KeySizes[KeySizeIndex], OtherPartyPublicKey);
+            byte[] derivedKey = null;
+            try
+            {
+                derivedKey = ((IAsymmetricKeyExchange)SelectedCipher).DeriveKey(PrivateKey, OtherPartyPublicKey);
+            }
+            catch(CryptographicException msdnException)
+            {
+                //Show error message box dialog to user
+                Dialog.OpenErrorMessageBoxAsync(msdnException, "Key Deriviation Failure", WindowDialogType.Error);
+            }
+            catch (CryptoException bouncyException)
+            {
+                //Show error message box dialog to user
+                Dialog.OpenErrorMessageBoxAsync(bouncyException, "Key Deriviation Failure", WindowDialogType.Error);
+            }
+
+            return derivedKey;
         }
+
+        #endregion
 
         #endregion
 
