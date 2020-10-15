@@ -529,6 +529,16 @@ namespace CryptoCalc.Core
                 //Show error message box dialog to user
                 Dialog.OpenErrorMessageBoxAsync(bouncyException, "Encryption Failure", WindowDialogType.Error);
             }
+            catch (Exception exception)
+            {
+                string message = "Encryption Failed\n" +
+                       $"{exception.Message}\n" +
+                       "Unhandled error occured, contact developer.";
+                exception = new Exception(message, exception);
+
+                //Show error message box dialog to user
+                Dialog.OpenErrorMessageBoxAsync(exception, "Encryption Failure", WindowDialogType.Error);
+            }
             return encryption;
         }
 
@@ -555,6 +565,16 @@ namespace CryptoCalc.Core
                 //Show error message box dialog to user
                 Dialog.OpenErrorMessageBoxAsync(bouncyException, "Encryption Failure", WindowDialogType.Error);
             }
+            catch (Exception exception)
+            {
+                string message = "Encryption Failed\n" +
+                       $"{exception.Message}\n" +
+                       "Unhandled error occured, contact developer.";
+                exception = new Exception(message, exception);
+
+                //Show error message box dialog to user
+                Dialog.OpenErrorMessageBoxAsync(exception, "Encryption Failure", WindowDialogType.Error);
+            }
             return encryption;
         }
 
@@ -579,6 +599,16 @@ namespace CryptoCalc.Core
             {
                 //Show error message box dialog to user
                 Dialog.OpenErrorMessageBoxAsync(bouncyException, "Decryption Failure", WindowDialogType.Error);
+            }
+            catch (Exception exception)
+            {
+                string message = "Decryption Failed\n" +
+                       $"{exception.Message}\n" +
+                       "Unhandled error occured, contact developer.";
+                exception = new Exception(message, exception);
+
+                //Show error message box dialog to user
+                Dialog.OpenErrorMessageBoxAsync(exception, "Decryption Failure", WindowDialogType.Error);
             }
             return plain;
         }
@@ -605,14 +635,29 @@ namespace CryptoCalc.Core
                 //Show error message box dialog to user
                 Dialog.OpenErrorMessageBoxAsync(bouncyException, "Decryption Failure", WindowDialogType.Error);
             }
+            catch (Exception exception)
+            {
+                string message = "Decryption Failed\n" +
+                       $"{exception.Message}\n" +
+                       "Unhandled error occured, contact developer.";
+                exception = new Exception(message, exception);
+
+                //Show error message box dialog to user
+                Dialog.OpenErrorMessageBoxAsync(exception, "Decryption Failure", WindowDialogType.Error);
+            }
             return decryptedText;
         }
-
 
         #endregion
 
         #region Digital Signatures
 
+        /// <summary>
+        /// Signs a data set
+        /// </summary>
+        /// <param name="privateKey"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
         public byte[] Sign(byte[] privateKey, byte[] data)
         {
             byte[] signature = null;
@@ -629,6 +674,16 @@ namespace CryptoCalc.Core
             {
                 //Show error message box dialog to user
                 Dialog.OpenErrorMessageBoxAsync(bouncyException, "Signature Failure", WindowDialogType.Error);
+            }
+            catch(Exception exception)
+            {
+                string message = "Signature Failed\n" +
+                       $"{exception.Message}\n" +
+                       "Unhandled error occured, contact developer.";
+                exception = new Exception(message, exception);
+
+                //Show error message box dialog to user
+                Dialog.OpenErrorMessageBoxAsync(exception, "Signature Failure", WindowDialogType.Error);
             }
             return signature;
         }
@@ -656,6 +711,16 @@ namespace CryptoCalc.Core
             {
                 //Show error message box dialog to user
                 Dialog.OpenErrorMessageBoxAsync(bouncyException, "Signature Verification Failure", WindowDialogType.Error);
+            }
+            catch (Exception exception)
+            {
+                string message = "Signature Verification Failure\n" +
+                       $"{exception.Message}\n" +
+                       "Unhandled error occured, contact developer.";
+                exception = new Exception(message, exception);
+
+                //Show error message box dialog to user
+                Dialog.OpenErrorMessageBoxAsync(exception, "Signature Verification Failure", WindowDialogType.Error);
             }
             return verified;
         }
