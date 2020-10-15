@@ -173,7 +173,6 @@ namespace CryptoCalc.Core
 
         /// <summary>
         /// Decrypt to plain string
-        /// TODO try catch block user could enter wrong encrypted bytes
         /// </summary>
         /// <param name="encrypted">the encrypted bytes</param>
         /// <returns>the plain string</returns>

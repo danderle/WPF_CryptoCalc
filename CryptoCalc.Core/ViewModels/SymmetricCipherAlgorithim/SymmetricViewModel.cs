@@ -354,7 +354,6 @@ namespace CryptoCalc.Core
 
         /// <summary>
         /// The command method to decrypt the given data
-        /// TODO wrap decrypt in try catch with pop up window if error occurs during decryption
         /// </summary>
         private void Decrypt()
         {

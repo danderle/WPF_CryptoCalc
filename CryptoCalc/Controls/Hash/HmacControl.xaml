@@ -18,7 +18,6 @@
         </Grid.ColumnDefinitions>
 
         <!--Column 0-->
-        <!--TODO Line up textBox with Data input Make visible when HMAC checked-->
         <!--The HMAC option-->
         <CheckBox Content="HMAC"
                     Margin="8"
