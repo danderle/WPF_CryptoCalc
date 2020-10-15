@@ -7,6 +7,9 @@ using System.Collections.Generic;
 
 namespace CryptoCalc.Core
 {
+    /// <summary>
+    /// EC Diffie Hellman key exchange class
+    /// </summary>
     public class MsdnECDH : IAsymmetricKeyExchange, IECAlgorithims
     {
         #region Private Fields
@@ -14,12 +17,12 @@ namespace CryptoCalc.Core
         /// <summary>
         /// Holds all the available ec curves
         /// </summary>
-        Dictionary<string, ECCurve> ecCurves = new Dictionary<string, ECCurve>();
+        private Dictionary<string, ECCurve> ecCurves = new Dictionary<string, ECCurve>();
 
         /// <summary>
         /// The cipher object for this class
         /// </summary>
-        public ECDiffieHellman cipher { get; set; } = ECDiffieHellman.Create();
+        private ECDiffieHellman cipher { get; set; } = ECDiffieHellman.Create();
 
         #endregion
 
@@ -30,7 +33,7 @@ namespace CryptoCalc.Core
         /// </summary>
         public MsdnECDH()
         {
-            GetAllAvailableEcCurves();
+            ecCurves = IECAlgorithims.GetAllAvailableMsdnEcCurves();
         }
 
         #endregion
@@ -70,6 +73,13 @@ namespace CryptoCalc.Core
             cipher = ECDiffieHellman.Create(curve);
         }
 
+        /// <summary>
+        /// Derives a shared key using the our private and anothers public keys
+        /// </summary>
+        /// <param name="myPrivateKey"></param>
+        /// <param name="cipherKeySize"></param>
+        /// <param name="otherPartyPublicKey"></param>
+        /// <returns></returns>
         public byte[] DeriveKey(byte[] myPrivateKey, int cipherKeySize, byte[] otherPartyPublicKey)
         {
             var myDiffie = ECDiffieHellman.Create();
@@ -83,7 +93,14 @@ namespace CryptoCalc.Core
             return myDiffie.DeriveKeyMaterial(otherCipher.PublicKey);
         }
 
-        public byte[] EncryptText(byte[] publicKey, string plainText)
+        /// <summary>
+        /// Encrypt a plain text m,essage using the public key and deriving a shared key
+        /// ONLY A TEST FUNCTION
+        /// </summary>
+        /// <param name="publicKey"></param>
+        /// <param name="plainText"></param>
+        /// <returns></returns>
+        private byte[] EncryptText(byte[] publicKey, string plainText)
         {
             var cipher2 = ECDiffieHellman.Create();
             cipher2.KeySize = cipher.KeySize;
@@ -146,34 +163,6 @@ namespace CryptoCalc.Core
         public byte[] GetPublicKey()
         {
             return cipher.ExportSubjectPublicKeyInfo();
-        }
-
-        #endregion
-
-        #region Private Methods
-
-        /// <summary>
-        /// Creates a a dictionary for all the available ec curves
-        /// </summary>
-        private void GetAllAvailableEcCurves()
-        {
-            ecCurves.Add(nameof(ECCurve.NamedCurves.brainpoolP160r1), ECCurve.NamedCurves.brainpoolP160r1);
-            ecCurves.Add(nameof(ECCurve.NamedCurves.brainpoolP160t1), ECCurve.NamedCurves.brainpoolP160t1);
-            ecCurves.Add(nameof(ECCurve.NamedCurves.brainpoolP192r1), ECCurve.NamedCurves.brainpoolP192r1);
-            ecCurves.Add(nameof(ECCurve.NamedCurves.brainpoolP192t1), ECCurve.NamedCurves.brainpoolP192t1);
-            ecCurves.Add(nameof(ECCurve.NamedCurves.brainpoolP224r1), ECCurve.NamedCurves.brainpoolP224r1);
-            ecCurves.Add(nameof(ECCurve.NamedCurves.brainpoolP224t1), ECCurve.NamedCurves.brainpoolP224t1);
-            ecCurves.Add(nameof(ECCurve.NamedCurves.brainpoolP256r1), ECCurve.NamedCurves.brainpoolP256r1);
-            ecCurves.Add(nameof(ECCurve.NamedCurves.brainpoolP256t1), ECCurve.NamedCurves.brainpoolP256t1);
-            ecCurves.Add(nameof(ECCurve.NamedCurves.brainpoolP320r1), ECCurve.NamedCurves.brainpoolP320r1);
-            ecCurves.Add(nameof(ECCurve.NamedCurves.brainpoolP320t1), ECCurve.NamedCurves.brainpoolP320t1);
-            ecCurves.Add(nameof(ECCurve.NamedCurves.brainpoolP384r1), ECCurve.NamedCurves.brainpoolP384r1);
-            ecCurves.Add(nameof(ECCurve.NamedCurves.brainpoolP384t1), ECCurve.NamedCurves.brainpoolP384t1);
-            ecCurves.Add(nameof(ECCurve.NamedCurves.brainpoolP512r1), ECCurve.NamedCurves.brainpoolP512r1);
-            ecCurves.Add(nameof(ECCurve.NamedCurves.brainpoolP512t1), ECCurve.NamedCurves.brainpoolP512t1);
-            ecCurves.Add(nameof(ECCurve.NamedCurves.nistP256), ECCurve.NamedCurves.nistP256);
-            ecCurves.Add(nameof(ECCurve.NamedCurves.nistP384), ECCurve.NamedCurves.nistP384);
-            ecCurves.Add(nameof(ECCurve.NamedCurves.nistP521), ECCurve.NamedCurves.nistP521);
         }
 
         #endregion
