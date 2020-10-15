@@ -59,7 +59,27 @@ namespace CryptoCalc.Core
         /// <returns>the list of all ec curves</returns>
         public ObservableCollection<string> GetEcCurves(EcCurveProvider provider)
         {
-            return new ObservableCollection<string>(ecCurves.Keys);
+            var list = new ObservableCollection<string>();
+            string keyName = string.Empty;
+            switch (provider)
+            {
+                case EcCurveProvider.NIST:
+                    keyName = "nist";
+                    break;
+                case EcCurveProvider.TELETRUST:
+                    keyName = "brain";
+                    break;
+            }
+
+            //extract the keys containing the key name
+            foreach (var key in ecCurves.Keys)
+            {
+                if (key.Contains(keyName))
+                {
+                    list.Add(key);
+                }
+            }
+            return list;
         }
 
         /// <summary>
@@ -76,18 +96,29 @@ namespace CryptoCalc.Core
         /// Derives a shared key using the our private and anothers public keys
         /// </summary>
         /// <param name="myPrivateKey"></param>
-        /// <param name="cipherKeySize"></param>
         /// <param name="otherPartyPublicKey"></param>
         /// <returns></returns>
-        public byte[] DeriveKey(byte[] myPrivateKey, int cipherKeySize, byte[] otherPartyPublicKey)
+        public byte[] DeriveKey(byte[] myPrivateKey, byte[] otherPartyPublicKey)
         {
             var myDiffie = ECDiffieHellman.Create();
-            myDiffie.KeySize = cipherKeySize;
             myDiffie.ImportPkcs8PrivateKey(myPrivateKey, out _);
-            var otherCipher = ECDiffieHellman.Create();
-            otherCipher.KeySize = cipherKeySize;
+            var curve = myDiffie.ExportParameters(false).Curve;
+            var otherCipher = ECDiffieHellman.Create(curve);
             otherCipher.ImportSubjectPublicKeyInfo(otherPartyPublicKey, out _);
-            return myDiffie.DeriveKeyMaterial(otherCipher.PublicKey);
+            byte[] derivedKey = null;
+            try
+            {
+                derivedKey = myDiffie.DeriveKeyMaterial(otherCipher.PublicKey);
+            }
+            catch(ArgumentException exception)
+            {
+                string message = "Key Deriviation Failed!\n" +
+                    $"{exception.Message}\n" +
+                    "The used key sizes are different.\n" +
+                    "-or- The keys were created with different EC curves.";
+                throw new CryptographicException(message, exception);
+            }
+            return derivedKey;
         }
 
         /// <summary>
