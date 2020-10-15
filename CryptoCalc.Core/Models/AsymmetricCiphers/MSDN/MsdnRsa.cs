@@ -73,8 +73,6 @@ namespace CryptoCalc.Core
             return EncryptBytes(publicKey, plain);
         }
 
-        ///TODO RSA plain bytes should not be larger than the selected key size
-        ///create try catch
         /// <summary>
         /// Encrypts a plain array of bytes using a public key
         /// </summary>
@@ -137,7 +135,6 @@ namespace CryptoCalc.Core
 
         /// <summary>
         /// Decrypts the encrypted byte array to a plain byte array
-        /// TODO programm crashes if trying to decrypt a wrong encrypted message
         /// </summary>
         /// <param name="privateKey">the private key used for decryption</param>
         /// <param name="encrypted">the encrypted bytes</param>
