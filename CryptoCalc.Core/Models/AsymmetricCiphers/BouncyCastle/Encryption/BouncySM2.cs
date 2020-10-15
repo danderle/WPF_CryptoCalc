@@ -21,6 +21,9 @@ using System.Linq;
 
 namespace CryptoCalc.Core
 {
+    /// <summary>
+    /// Class en-/decrypting using SM2 asymmetric keys
+    /// </summary>
     public class BouncySM2 : IAsymmetricEncryption, IECAlgorithims
     {
         #region Private Fields
@@ -34,8 +37,6 @@ namespace CryptoCalc.Core
         /// The generated key pair object for this class
         /// </summary>
         private AsymmetricCipherKeyPair keyPair;
-
-        private int keyLength = 0;
 
         #endregion
 
@@ -136,7 +137,6 @@ namespace CryptoCalc.Core
                 yLength = ((ECPublicKeyParameters)keyPair.Public).Q.AffineYCoord.ToBigInteger().ToByteArrayUnsigned().Length;
             }
             while (xLength != yLength);
-            keyLength = xLength * 8;
         }
 
         /// <summary>
@@ -329,7 +329,6 @@ namespace CryptoCalc.Core
             var D = new BigInteger(1, d);
             return new ECPrivateKeyParameters("EC", D, derObject);
         }
-
        
         #endregion
     }

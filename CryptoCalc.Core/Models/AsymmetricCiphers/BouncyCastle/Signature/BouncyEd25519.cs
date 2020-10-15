@@ -10,7 +10,7 @@ using System.Collections.ObjectModel;
 namespace CryptoCalc.Core
 {
     /// <summary>
-    /// 
+    /// class for signing and verifing data using ED25519 asymmetric keys
     /// </summary>
     public class BouncyEd25519 : IAsymmetricSignature, IECAlgorithims
     {

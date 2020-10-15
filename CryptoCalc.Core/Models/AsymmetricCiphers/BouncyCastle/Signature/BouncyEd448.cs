@@ -18,7 +18,7 @@ using System.Linq;
 namespace CryptoCalc.Core
 {
     /// <summary>
-    /// 
+    /// class for signing and verifing data using ED448 asymmetric keys
     /// </summary>
     public class BouncyEd448 : IAsymmetricSignature, IECAlgorithims
     {

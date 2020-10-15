@@ -20,6 +20,9 @@ using System.Linq;
 
 namespace CryptoCalc.Core
 {
+    /// <summary>
+    /// Classs for signing and verifing data using the ECDSA asymmetric keys
+    /// </summary>
     public class BouncyECDsa : IAsymmetricSignature, IECAlgorithims
     {
         #region Private Fields
@@ -224,7 +227,6 @@ namespace CryptoCalc.Core
             var S = new BigInteger(1, s);
             return signer.VerifySignature(data, R, S);
         }
-
 
         #endregion
 
