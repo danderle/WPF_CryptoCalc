@@ -22,7 +22,7 @@ namespace CryptoCalc.Core
         /// <summary>
         /// The cipher object for this class
         /// </summary>
-        private ECDiffieHellman cipher { get; set; } = ECDiffieHellman.Create();
+        private ECDiffieHellman cipher = ECDiffieHellman.Create();
 
         #endregion
 
@@ -68,8 +68,7 @@ namespace CryptoCalc.Core
         /// <param name="curveName">the curve to use for key creation</param>
         public void CreateKeyPair(string curveName)
         {
-            ECCurve curve;
-            ecCurves.TryGetValue(curveName, out curve);
+            ecCurves.TryGetValue(curveName, out ECCurve curve);
             cipher = ECDiffieHellman.Create(curve);
         }
 
@@ -83,13 +82,11 @@ namespace CryptoCalc.Core
         public byte[] DeriveKey(byte[] myPrivateKey, int cipherKeySize, byte[] otherPartyPublicKey)
         {
             var myDiffie = ECDiffieHellman.Create();
-            int bytesRead;
             myDiffie.KeySize = cipherKeySize;
-            
-            myDiffie.ImportPkcs8PrivateKey(myPrivateKey, out bytesRead);
+            myDiffie.ImportPkcs8PrivateKey(myPrivateKey, out _);
             var otherCipher = ECDiffieHellman.Create();
             otherCipher.KeySize = cipherKeySize;
-            otherCipher.ImportSubjectPublicKeyInfo(otherPartyPublicKey, out bytesRead);
+            otherCipher.ImportSubjectPublicKeyInfo(otherPartyPublicKey, out _);
             return myDiffie.DeriveKeyMaterial(otherCipher.PublicKey);
         }
 
@@ -107,8 +104,7 @@ namespace CryptoCalc.Core
             var pubKey2 = cipher2.ExportSubjectPublicKeyInfo();
             var cipher3 = ECDiffieHellman.Create();
             cipher3.KeySize = cipher.KeySize;
-            int bytesRead;
-            cipher3.ImportSubjectPublicKeyInfo(publicKey, out bytesRead);
+            cipher3.ImportSubjectPublicKeyInfo(publicKey, out _);
             var cipher2Key = cipher2.DeriveKeyMaterial(cipher3.PublicKey);
             byte[] encryptedMessage;
             byte[] iv;
@@ -116,33 +112,28 @@ namespace CryptoCalc.Core
             {
                 aes.Key = cipher2Key;
                 iv = aes.IV;
-                // Encrypt the message
-                using (MemoryStream ciphertext = new MemoryStream())
-                using (CryptoStream cs = new CryptoStream(ciphertext, aes.CreateEncryptor(), CryptoStreamMode.Write))
-                {
-            byte[] plaintextMessage = Encoding.UTF8.GetBytes(plainText);
 
-                    cs.Write(plaintextMessage, 0, plaintextMessage.Length);
-                    cs.Close();
-                    encryptedMessage = ciphertext.ToArray();
-                }
+                // Encrypt the message
+                using MemoryStream ciphertext = new MemoryStream();
+                using CryptoStream cs = new CryptoStream(ciphertext, aes.CreateEncryptor(), CryptoStreamMode.Write);
+                var plaintextMessage = Encoding.UTF8.GetBytes(plainText);
+                cs.Write(plaintextMessage, 0, plaintextMessage.Length);
+                cs.Close();
+                encryptedMessage = ciphertext.ToArray();
             }
             using (Aes aes = new AesCryptoServiceProvider())
             {
-                cipher3.ImportSubjectPublicKeyInfo(pubKey2, out bytesRead);
+                cipher3.ImportSubjectPublicKeyInfo(pubKey2, out _);
                 aes.Key = cipher.DeriveKeyMaterial(cipher3.PublicKey);
                 aes.IV = iv;
+
                 // Decrypt the message
-                using (MemoryStream plaintext = new MemoryStream())
-                {
-                    using (CryptoStream cs = new CryptoStream(plaintext, aes.CreateDecryptor(), CryptoStreamMode.Write))
-                    {
-                        cs.Write(encryptedMessage, 0, encryptedMessage.Length);
-                        cs.Close();
-                        string message = Encoding.UTF8.GetString(plaintext.ToArray());
-                        Console.WriteLine(message);
-                    }
-                }
+                using MemoryStream plaintext = new MemoryStream();
+                using CryptoStream cs = new CryptoStream(plaintext, aes.CreateDecryptor(), CryptoStreamMode.Write);
+                cs.Write(encryptedMessage, 0, encryptedMessage.Length);
+                cs.Close();
+                string message = Encoding.UTF8.GetString(plaintext.ToArray());
+                Console.WriteLine(message);
             }
             return iv;
         }
