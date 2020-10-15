@@ -9,7 +9,7 @@
              d:DesignWidth="450">
 
     <Grid Background="{StaticResource WhiteBrush}"
-          d:DataContext="{x:Static core:AsymmetricEncryptionDesignModel.Instance}">
+          d:DataContext="{x:Static core:AsymmetricKeyExchangeDesignModel.Instance}">
 
         <Grid.ColumnDefinitions>
             <!--Option to select what type of format to hash-->
@@ -20,42 +20,44 @@
 
         <!--Column 0-->
         <StackPanel Margin="8"
-                    local:ComboBoxWidthMatcherProperty.Value="True">
+                    local:ComboBoxWidthMatcherProperty.Value="True"
+                    DataContext="{Binding KeyPairSetup}">
 
             <!--Algorithim combobox-->
             <TextBlock Text="Algorithim"/>
-            <ComboBox ItemsSource="{Binding KeyPairSetup.Algorithims}"
-                      SelectedIndex ="{Binding KeyPairSetup.SelectedAlgorithimIndex}"
+            <ComboBox ItemsSource="{Binding Algorithims}"
+                      SelectedIndex ="{Binding SelectedAlgorithimIndex}"
                       x:Name="ComboBox1"
-                      local:SelectionChangedProperty.Value="{Binding KeyPairSetup.ChangedAlgorithimCommand}"/>
+                      local:SelectionChangedProperty.Value="{Binding ChangedAlgorithimCommand}"/>
 
             <!--Stackpanel visibile if key size selection is used-->
-            <StackPanel Visibility="{Binding KeyPairSetup.UsesKeySize, Converter={local:BoolToVisibility}}">
+            <StackPanel Visibility="{Binding UsesKeySize, Converter={local:BoolToVisibility}}">
 
                 <!--Key size combobox-->
                 <TextBlock Text="Key Size"
                            Margin="0 8 0 0"/>
-                <ComboBox ItemsSource="{Binding KeyPairSetup.KeySizes}"
-                          SelectedIndex="{Binding KeyPairSetup.KeySizeIndex}"
+                <ComboBox ItemsSource="{Binding KeySizes}"
+                          SelectedIndex="{Binding KeySizeIndex}"
                           x:Name="ComboBox2"/>
             </StackPanel>
 
             <!--Stackpanel visible if Ec curves are used-->
-            <StackPanel Visibility="{Binding KeyPairSetup.UsesEcCurves, Converter={local:BoolToVisibility}}">
+            <StackPanel Visibility="{Binding UsesEcCurves, Converter={local:BoolToVisibility}}">
 
                 <!--Ec curve provider combobox-->
                 <TextBlock Text="Curve Provider"
                            Margin="0 8 0 0"/>
-                <ComboBox ItemsSource="{Binding KeyPairSetup.Providers}"
-                          SelectedIndex ="{Binding KeyPairSetup.ProviderIndex}"
-                          local:SelectionChangedProperty.Value="{Binding ChangedAlgorithimCommand}"
+                <ComboBox ItemsSource="{Binding Providers}"
+                          SelectedIndex ="{Binding ProviderIndex}"
+                          local:SelectionChangedProperty.Value="{Binding ChangedProviderCommand}"
                           x:Name="ComboBox3"/>
 
                 <!--Ec curve types combobox-->
                 <TextBlock Text="EC Curve"
                            Margin="0 8 0 0"/>
-                <ComboBox ItemsSource="{Binding KeyPairSetup.EcCurves}"
-                          SelectedIndex="{Binding KeyPairSetup.EcCurveIndex}"
+                <ComboBox ItemsSource="{Binding EcCurves}"
+                          SelectedIndex="{Binding EcCurveIndex}"
+                          local:SelectionChangedProperty.Value="{Binding ChangedEcCurveCommand}"
                           x:Name="ComboBox4"/>
             </StackPanel>
         </StackPanel>
