@@ -11,10 +11,9 @@
         /// Derives a shared secret key from a private key and another persons public key
         /// </summary>
         /// <param name="myPrivateKey">the private key which is used</param>
-        /// <param name="cipherKeySize">the size of the private key</param>
         /// <param name="otherPartyPublicKey">the public key of the other person</param>
         /// <returns></returns>
-        public byte[] DeriveKey(byte[] myPrivateKey, int cipherKeySize, byte[] otherPartyPublicKey);
+        public byte[] DeriveKey(byte[] myPrivateKey, byte[] otherPartyPublicKey);
 
         #endregion
     }
