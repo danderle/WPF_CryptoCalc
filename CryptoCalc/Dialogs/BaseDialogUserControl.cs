@@ -38,12 +38,12 @@ namespace CryptoCalc
         /// <summary>
         /// The maximum width of this dialog window
         /// </summary>
-        public int WindowMaximumWidth { get; set; } = 500;
+        public int WindowMaximumWidth { get; set; } = 600;
 
         /// <summary>
         /// The maximum height of this dialog window
         /// </summary>
-        public int WindowMaximumHeight { get; set; } = 800;
+        public int WindowMaximumHeight { get; set; } = 900;
 
         /// <summary>
         /// The height of the title bar
