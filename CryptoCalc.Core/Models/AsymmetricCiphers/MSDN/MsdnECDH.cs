@@ -54,7 +54,7 @@ namespace CryptoCalc.Core
         }
 
         /// <summary>
-        /// Ges a list ofr all available ec curves
+        /// Gets a list of all available ec curves
         /// </summary>
         /// <returns>the list of all ec curves</returns>
         public ObservableCollection<string> GetEcCurves(EcCurveProvider provider)
