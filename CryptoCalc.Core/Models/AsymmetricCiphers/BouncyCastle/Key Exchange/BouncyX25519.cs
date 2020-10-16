@@ -2,10 +2,12 @@
 using Org.BouncyCastle.Crypto.Agreement;
 using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.Security;
+using Org.BouncyCastle.X509;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 
 namespace CryptoCalc.Core
 {
@@ -16,8 +18,7 @@ namespace CryptoCalc.Core
         /// <summary>
         /// The generated key pair object for this class
         /// </summary>
-        private AsymmetricCipherKeyPair keyPairA;
-        private AsymmetricCipherKeyPair keyPairB;
+        private AsymmetricCipherKeyPair keyPair;
 
         #endregion
 
@@ -42,13 +43,7 @@ namespace CryptoCalc.Core
         public ObservableCollection<int> GetKeySizes()
         {
             var keySizes = new ObservableCollection<int>();
-            int maxStrength = 255;
-            int multiple = 255;
-            int strength = 255;
-            for (; strength <= maxStrength; strength += multiple)
-            {
-                keySizes.Add(strength);
-            }
+            keySizes.Add(255);
             return keySizes;
         }
 
@@ -62,8 +57,7 @@ namespace CryptoCalc.Core
             var parameters = new X25519KeyGenerationParameters(new SecureRandom());
             var keyGenerator = new X25519KeyPairGenerator();
             keyGenerator.Init(parameters);
-            keyPairA = keyGenerator.GenerateKeyPair();
-            keyPairB = keyGenerator.GenerateKeyPair();
+            keyPair = keyGenerator.GenerateKeyPair();
         }
 
         /// <summary>
@@ -72,11 +66,9 @@ namespace CryptoCalc.Core
         /// <returns>private key in bytes</returns>
         public byte[] GetPrivateKey()
         {
-            var keyBytes = ((X25519PrivateKeyParameters)keyPairA.Private).GetEncoded();
-            var privateKey = new List<byte>();
-            privateKey.AddRange(keyBytes);
-
-            return privateKey.ToArray();
+            //get the private key info
+            var privateKeyInfo = PrivateKeyInfoFactory.CreatePrivateKeyInfo(keyPair.Private);
+            return privateKeyInfo.GetEncoded();
         }
 
         /// <summary>
@@ -85,10 +77,9 @@ namespace CryptoCalc.Core
         /// <returns>the public key in bytes</returns>
         public byte[] GetPublicKey()
         {
-            var keyBytes = ((X25519PublicKeyParameters)keyPairA.Public).GetEncoded();
-            var publicKey = new List<byte>();
-            publicKey.AddRange(keyBytes);
-            return publicKey.ToArray();
+            //extract the public key info
+            var publicKeyInfo = SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(keyPair.Public);
+            return publicKeyInfo.GetDerEncoded();
         }
 
         /// <summary>
@@ -107,6 +98,7 @@ namespace CryptoCalc.Core
             byte[] k1 = new byte[a1.AgreementSize];
 
             var publicKey = CreatePublicKeyParameterFromBytes(otherPartyPublicKey);
+
             a1.CalculateAgreement(publicKey, k1, 0);
 
             return k1;
@@ -121,9 +113,41 @@ namespace CryptoCalc.Core
         /// </summary>
         /// <param name="publicKey">the byte array conatining the exponent and the modulus</param>
         /// <returns>The public key parameter object</returns>
-        private X25519PublicKeyParameters CreatePublicKeyParameterFromBytes(byte[] publicKey)
+        private X25519PublicKeyParameters CreatePublicKeyParameterFromBytes(byte[] publicKeyInfo)
         {
-            return new X25519PublicKeyParameters(publicKey, 0);
+            AsymmetricKeyParameter publicKey = null;
+            try
+            {
+                publicKey = PublicKeyFactory.CreateKey(publicKeyInfo);
+            }
+            catch (SecurityUtilityException exception)
+            {
+                string message = "Public Key Import Failed!\n" +
+                    $"{exception.Message}.\n" +
+                    "The contents of source do not represent an ASN.1 - DER - encoded X.509 SubjectPublicKeyInfo structure.\n" +
+                    "- or - The contents of the source do not represent a usable object identifier\n" +
+                    "Verify that the public key is not corrupted.";
+                throw new CryptoException(message, exception);
+            }
+            catch (IOException exception)
+            {
+                string message = "Public Key Import Failed!\n" +
+                    $"{exception.Message}.\n" +
+                    "The contents of source do not represent an ASN.1 - DER - encoded X.509 SubjectPublicKeyInfo structure.\n" +
+                    "Verify that the public key is not corrupted.";
+                throw new CryptoException(message, exception);
+            }
+            catch (ArgumentException exception)
+            {
+                string message = "Public Key Import Failed!\n" +
+                    $"{exception.Message}\n" +
+                    "The contents of source indicate the key is for an algorithm other than the algorithm represented by this instance.\n" +
+                    "- or - The contents of source represent the key in a format that is not supported.\n" +
+                    "- or - The algorithm - specific key import failed.\n" +
+                    "Verify that the public key is not corrupted.";
+                throw new CryptoException(message, exception);
+            }
+            return (X25519PublicKeyParameters)publicKey;
         }
 
         /// <summary>
@@ -131,9 +155,38 @@ namespace CryptoCalc.Core
         /// </summary>
         /// <param name="privateKey">the byte array conatining the exponent and the modulus</param>
         /// <returns>The private key parameter object</returns>
-        private X25519PrivateKeyParameters CreatePrivateKeyParameterFromBytes(byte[] privateKey)
+        private X25519PrivateKeyParameters CreatePrivateKeyParameterFromBytes(byte[] privateKeyInfo)
         {
-            return new X25519PrivateKeyParameters(privateKey, 0);
+            AsymmetricKeyParameter privateKey = null;
+            try
+            {
+                privateKey = PrivateKeyFactory.CreateKey(privateKeyInfo);
+            }
+            catch (SecurityUtilityException exception)
+            {
+                string message = "Private Key Import Failed!\n" +
+                    $"{exception.Message}.\n" +
+                    "The contents of the source do not represent a usable object identifier\n" +
+                    "Verify that the public key is not corrupted";
+                throw new CryptoException(message, exception);
+            }
+            catch (IOException exception)
+            {
+                string message = "Private Key Import Failed!\n" +
+                    $"{exception.Message}.\n" +
+                    "The contents of source do not represent an ASN1 - BER - encoded PKCS#8 structure.\n" +
+                    "Verify that the public key is not corrupted";
+                throw new CryptoException(message, exception);
+            }
+            catch (ArgumentException exception)
+            {
+                string message = "Private Key Import Failed!\n" +
+                    $"{exception.Message}\n" +
+                    "The contents of source do not represent an ASN.1 - BER - encoded PKCS#8 structure.\n" +
+                    "Verify that the private key is not corrupted";
+                throw new CryptoException(message, exception);
+            }
+            return (X25519PrivateKeyParameters)privateKey;
         }
 
         
