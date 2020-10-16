@@ -3,10 +3,13 @@ using Org.BouncyCastle.Crypto.Agreement;
 using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Math;
+using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.Security;
+using Org.BouncyCastle.X509;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 
 namespace CryptoCalc.Core
 {
@@ -77,20 +80,9 @@ namespace CryptoCalc.Core
         /// <returns>private key in bytes</returns>
         public byte[] GetPrivateKey()
         {
-            var x = ((DHPrivateKeyParameters)keyPair.Private).X.ToByteArrayUnsigned();
-            var p = ((DHPrivateKeyParameters)keyPair.Private).Parameters.P.ToByteArrayUnsigned();
-            var g = ((DHPrivateKeyParameters)keyPair.Private).Parameters.G.ToByteArrayUnsigned();
-            var q = ((DHPrivateKeyParameters)keyPair.Private).Parameters.Q.ToByteArrayUnsigned();
-            var m = ((DHPrivateKeyParameters)keyPair.Private).Parameters.M;
-            var l = ((DHPrivateKeyParameters)keyPair.Private).Parameters.L;
-            var privateKey = new List<byte>();
-            privateKey.AddRange(x);
-            privateKey.AddRange(p);
-            privateKey.AddRange(g);
-            privateKey.AddRange(q);
-            privateKey.Add(Convert.ToByte(m));
-            privateKey.Add(Convert.ToByte(l));
-            return privateKey.ToArray();
+            //get the private key info
+            var privateKeyInfo = PrivateKeyInfoFactory.CreatePrivateKeyInfo(keyPair.Private);
+            return privateKeyInfo.GetEncoded();
         }
 
         /// <summary>
@@ -99,20 +91,9 @@ namespace CryptoCalc.Core
         /// <returns>the public key in bytes</returns>
         public byte[] GetPublicKey()
         {
-            var y = ((DHPublicKeyParameters)keyPair.Public).Y.ToByteArrayUnsigned();
-            var p = ((DHPublicKeyParameters)keyPair.Public).Parameters.P.ToByteArrayUnsigned();
-            var g = ((DHPublicKeyParameters)keyPair.Public).Parameters.G.ToByteArrayUnsigned();
-            var q = ((DHPublicKeyParameters)keyPair.Public).Parameters.Q.ToByteArrayUnsigned();
-            var m = ((DHPublicKeyParameters)keyPair.Public).Parameters.M;
-            var l = ((DHPublicKeyParameters)keyPair.Public).Parameters.L;
-            var publicKey = new List<byte>();
-            publicKey.AddRange(y);
-            publicKey.AddRange(p);
-            publicKey.AddRange(g);
-            publicKey.AddRange(q);
-            publicKey.Add(Convert.ToByte(m));
-            publicKey.Add(Convert.ToByte(l));
-            return publicKey.ToArray();
+            //extract the public key info
+            var publicKeyInfo = SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(keyPair.Public);
+            return publicKeyInfo.GetDerEncoded();
         }
 
         /// <summary>
@@ -143,61 +124,85 @@ namespace CryptoCalc.Core
         #region Private Methods
 
         /// <summary>
-        /// Creates a public key <see cref="DHPublicKeyParameters"/> from a byte array containing the exponent and modulus
+        /// Creates a public key <see cref="DHPublicKeyParameters"/> from a der encoded public key info
         /// </summary>
         /// <param name="publicKey">the byte array conatining the exponent and the modulus</param>
         /// <returns>The public key parameter object</returns>
-        private DHPublicKeyParameters CreatePublicKeyParameterFromBytes(byte[] publicKey)
+        private DHPublicKeyParameters CreatePublicKeyParameterFromBytes(byte[] publicKeyInfo)
         {
-            int restLength = publicKey.Length - 2;
-            int arraySize = restLength / 4;
-            var y = new byte[arraySize];
-            var p = new byte[arraySize];
-            var g = new byte[arraySize];
-            var q = new byte[arraySize];
+            AsymmetricKeyParameter publicKey = null;
+            try
+            {
+                publicKey = PublicKeyFactory.CreateKey(publicKeyInfo);
+            }
+            catch (SecurityUtilityException exception)
+            {
+                string message = "Public Key Import Failed!\n" +
+                    $"{exception.Message}.\n" +
+                    "The contents of source do not represent an ASN.1 - DER - encoded X.509 SubjectPublicKeyInfo structure.\n" +
+                    "- or - The contents of the source do not represent a usable object identifier\n" +
+                    "Verify that the public key is not corrupted.";
+                throw new CryptoException(message, exception);
+            }
+            catch (IOException exception)
+            {
+                string message = "Public Key Import Failed!\n" +
+                    $"{exception.Message}.\n" +
+                    "The contents of source do not represent an ASN.1 - DER - encoded X.509 SubjectPublicKeyInfo structure.\n" +
+                    "Verify that the public key is not corrupted.";
+                throw new CryptoException(message, exception);
+            }
+            catch (ArgumentException exception)
+            {
+                string message = "Public Key Import Failed!\n" +
+                    $"{exception.Message}\n" +
+                    "The contents of source indicate the key is for an algorithm other than the algorithm represented by this instance.\n" +
+                    "- or - The contents of source represent the key in a format that is not supported.\n" +
+                    "- or - The algorithm - specific key import failed.\n" +
+                    "Verify that the public key is not corrupted.";
+                throw new CryptoException(message, exception);
+            }
 
-            Array.Copy(publicKey, y, y.Length);
-            Array.Copy(publicKey, y.Length, p, 0, p.Length);
-            Array.Copy(publicKey, y.Length + p.Length, g, 0, g.Length);
-            Array.Copy(publicKey, y.Length + p.Length + g.Length, q, 0, q.Length);
-            var M = Convert.ToInt32(publicKey[publicKey.Length - 2]);
-            var L = Convert.ToInt32(publicKey[publicKey.Length - 1]);
-
-            var Y = new BigInteger(1, y);
-            var P = new BigInteger(1, p);
-            var G = new BigInteger(1, g);
-            var Q = new BigInteger(1, q);
-            var dhParams = new DHParameters(P, G, Q, M, L);
-            return new DHPublicKeyParameters(Y, dhParams);
+            return (DHPublicKeyParameters)publicKey;
         }
 
         /// <summary>
-        /// Creates a private key <see cref="DHPrivateKeyParameters"/> from a byte array containing the exponent and modulus
+        /// Creates a private key <see cref="DHPrivateKeyParameters"/> from the ber encoded private key info
         /// </summary>
         /// <param name="publicKey">the byte array conatining the exponent and the modulus</param>
         /// <returns>The private key parameter object</returns>
-        private DHPrivateKeyParameters CreatePrivateKeyParameterFromBytes(byte[] privateKey)
+        private DHPrivateKeyParameters CreatePrivateKeyParameterFromBytes(byte[] privateKeyInfo)
         {
-            int restLength = privateKey.Length - 2;
-            int arraySize = restLength / 4;
-            var x = new byte[arraySize];
-            var p = new byte[arraySize];
-            var g = new byte[arraySize];
-            var q = new byte[arraySize];
-
-            Array.Copy(privateKey, x, x.Length);
-            Array.Copy(privateKey, x.Length, p, 0, p.Length);
-            Array.Copy(privateKey, x.Length + p.Length, g, 0, g.Length);
-            Array.Copy(privateKey, x.Length + p.Length + g.Length, q, 0, q.Length);
-            var M = Convert.ToInt32(privateKey[privateKey.Length - 2]);
-            var L = Convert.ToInt32(privateKey[privateKey.Length - 1]);
-
-            var X = new BigInteger(1, x);
-            var P = new BigInteger(1, p);
-            var G = new BigInteger(1, g);
-            var Q = new BigInteger(1, q);
-            var dhParams = new DHParameters(P, G, Q, M, L);
-            return new DHPrivateKeyParameters(X, dhParams);
+            AsymmetricKeyParameter privateKey = null;
+            try
+            {
+                privateKey = PrivateKeyFactory.CreateKey(privateKeyInfo);
+            }
+            catch (SecurityUtilityException exception)
+            {
+                string message = "Private Key Import Failed!\n" +
+                    $"{exception.Message}.\n" +
+                    "The contents of the source do not represent a usable object identifier\n" +
+                    "Verify that the public key is not corrupted";
+                throw new CryptoException(message, exception);
+            }
+            catch (IOException exception)
+            {
+                string message = "Private Key Import Failed!\n" +
+                    $"{exception.Message}.\n" +
+                    "The contents of source do not represent an ASN1 - BER - encoded PKCS#8 structure.\n" +
+                    "Verify that the public key is not corrupted";
+                throw new CryptoException(message, exception);
+            }
+            catch (ArgumentException exception)
+            {
+                string message = "Private Key Import Failed!\n" +
+                    $"{exception.Message}\n" +
+                    "The contents of source do not represent an ASN.1 - BER - encoded PKCS#8 structure.\n" +
+                    "Verify that the private key is not corrupted";
+                throw new CryptoException(message, exception);
+            }
+            return (DHPrivateKeyParameters)privateKey;
         }
         
         #endregion
