@@ -101,10 +101,52 @@ namespace CryptoCalc.Core
         public byte[] DeriveKey(byte[] myPrivateKey, byte[] otherPartyPublicKey)
         {
             var myDiffie = ECDiffieHellman.Create();
-            myDiffie.ImportPkcs8PrivateKey(myPrivateKey, out _);
-            var curve = myDiffie.ExportParameters(false).Curve;
-            var otherCipher = ECDiffieHellman.Create(curve);
-            otherCipher.ImportSubjectPublicKeyInfo(otherPartyPublicKey, out _);
+            ECCurve curve;
+            try
+            {
+                myDiffie.ImportPkcs8PrivateKey(myPrivateKey, out _);
+                curve = myDiffie.ExportParameters(false).Curve;
+                
+            }
+            catch(CryptographicException exception)
+            {
+                string message = "Private Key Import Failed!\n" +
+                    $"{exception.Message}\n" +
+                    "The contents of source do not represent an ASN.1 - BER - encoded PKCS#8 PrivateKeyInfo structure.\n" +
+                    "-or- The contents of source indicate the key is for an other algorithm.\n" +
+                    "-or- The contents of source represent the key in a format that is not supported.\n" +
+                    "-or- The algorithm-specific key import failed.\n" +
+                    "Verify that both keys for";
+                throw new CryptographicException(message, exception); 
+            }
+
+            ECDiffieHellman otherCipher = null;
+            try
+            {
+                otherCipher = ECDiffieHellman.Create(curve);
+                otherCipher.ImportSubjectPublicKeyInfo(otherPartyPublicKey, out _);
+            }
+            catch (PlatformNotSupportedException exception)
+            {
+                string message = "Public Keys Import Failed!\n" +
+                    $"{exception.Message}\n" +
+                    "The contents of source do not represent an ASN.1 - DER - encoded X.509 SubjectPublicKeyInfo structure.\n" +
+                    "- or - The contents of source indicate the key is for an algorithm other than the algorithm represented by this instance.\n" +
+                    "- or - The contents of source represent the key in a format that is not supported.\n" +
+                    "- or - The algorithm - specific key import failed.";
+                  throw new CryptographicException(message, exception);
+            }
+            catch (CryptographicException exception)
+            {
+                string message = "Public Keys Import Failed!\n" +
+                    $"{exception.Message}\n" +
+                    "The contents of source do not represent an ASN.1 - DER - encoded X.509 SubjectPublicKeyInfo structure.\n" +
+                    "- or - The contents of source indicate the key is for an algorithm other than the algorithm represented by this instance.\n" +
+                    "- or - The contents of source represent the key in a format that is not supported.\n" +
+                    "- or - The algorithm - specific key import failed.";
+                throw new CryptographicException(message, exception);
+            }
+
             byte[] derivedKey = null;
             try
             {
