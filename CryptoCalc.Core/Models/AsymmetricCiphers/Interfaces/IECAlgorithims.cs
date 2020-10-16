@@ -1,5 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using Org.BouncyCastle.Asn1.Anssi;
+using Org.BouncyCastle.Asn1.CryptoPro;
+using Org.BouncyCastle.Asn1.GM;
+using Org.BouncyCastle.Asn1.Nist;
+using Org.BouncyCastle.Asn1.Sec;
+using Org.BouncyCastle.Asn1.TeleTrust;
+using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Security.Cryptography;
 
 namespace CryptoCalc.Core
@@ -58,6 +66,45 @@ namespace CryptoCalc.Core
                 { nameof(ECCurve.NamedCurves.nistP521), ECCurve.NamedCurves.nistP521 }
             };
             return ecCurves;
+        }
+
+        /// <summary>
+        /// Gets a list of available ec curves
+        /// </summary>
+        /// <returns>the list of all ec curves</returns>
+        public static ObservableCollection<string> GetBouncyEcCurves(EcCurveProvider provider)
+        {
+            IEnumerator curves = null;
+            switch (provider)
+            {
+                case EcCurveProvider.SEC:
+                    curves = SecNamedCurves.Names.GetEnumerator();
+                    break;
+                case EcCurveProvider.NIST:
+                    curves = NistNamedCurves.Names.GetEnumerator();
+                    break;
+                case EcCurveProvider.TELETRUST:
+                    curves = TeleTrusTNamedCurves.Names.GetEnumerator();
+                    break;
+                case EcCurveProvider.ANSSI:
+                    curves = AnssiNamedCurves.Names.GetEnumerator();
+                    break;
+                case EcCurveProvider.GOST3410:
+                    curves = ECGost3410NamedCurves.Names.GetEnumerator();
+                    break;
+                case EcCurveProvider.GM:
+                    curves = GMNamedCurves.Names.GetEnumerator();
+                    break;
+            }
+            var list = new ObservableCollection<string>();
+            while (curves.MoveNext())
+            {
+                list.Add((string)curves.Current);
+            }
+
+            //sort list
+            list = new ObservableCollection<string>(list.OrderBy(x => x));
+            return list;
         }
     }
 }

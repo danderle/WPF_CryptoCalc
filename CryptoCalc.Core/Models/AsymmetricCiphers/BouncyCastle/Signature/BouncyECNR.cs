@@ -69,36 +69,7 @@ namespace CryptoCalc.Core
         /// <returns>the list of all ec curves</returns>
         public ObservableCollection<string> GetEcCurves(EcCurveProvider provider)
         {
-            IEnumerator curves = null;
-            switch(provider)
-            {
-                case EcCurveProvider.SEC:
-                    curves = SecNamedCurves.Names.GetEnumerator();
-                    break;
-                case EcCurveProvider.NIST:
-                    curves = NistNamedCurves.Names.GetEnumerator();
-                    break;
-                case EcCurveProvider.TELETRUST:
-                    curves = TeleTrusTNamedCurves.Names.GetEnumerator(); 
-                    break;
-                case EcCurveProvider.ANSSI:
-                    curves = AnssiNamedCurves.Names.GetEnumerator();
-                    break;
-                case EcCurveProvider.GOST3410:
-                    curves = ECGost3410NamedCurves.Names.GetEnumerator();
-                    break;
-                case EcCurveProvider.GM:
-                    curves = GMNamedCurves.Names.GetEnumerator();
-                    break;
-            }
-            var list = new ObservableCollection<string>();
-            while(curves.MoveNext())
-            {
-                list.Add((string)curves.Current);
-            }
-
-            var sortedList = new ObservableCollection<string>(list.OrderBy(x => x).ToList());
-            return sortedList;
+            return IECAlgorithims.GetBouncyEcCurves(provider);
         }
 
         /// <summary>
