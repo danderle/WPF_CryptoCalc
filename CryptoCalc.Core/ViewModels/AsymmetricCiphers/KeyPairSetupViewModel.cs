@@ -16,7 +16,8 @@ namespace CryptoCalc.Core
     {
         #region Private fields
 
-        public string pKeyPath = @"C:\Users\beach\Desktop\Encryption tests";
+        public string pKeyPath = @"C:\Users\beach\Desktop\Encryption tests"; 
+        public string otherPublicKeyPath = @"C:\Users\beach\Desktop\Encryption tests\OtherPublicKey.bin";
 
         #endregion
 
@@ -444,7 +445,8 @@ namespace CryptoCalc.Core
             //Create the file paths
             PrivateKeyFilePath = $"{KeyDirectoryPath}\\PrivateKey.bin";
             PublicKeyFilePath = $"{KeyDirectoryPath}\\PublicKey.bin";
-
+            OtherPartyPublicKeyFilePath = otherPublicKeyPath;
+            
             //Write keys to the files
             File.WriteAllBytes(PrivateKeyFilePath, SelectedCipher.GetPrivateKey());
             File.WriteAllBytes(PublicKeyFilePath, SelectedCipher.GetPublicKey());
@@ -749,6 +751,16 @@ namespace CryptoCalc.Core
             {
                 //Show error message box dialog to user
                 Dialog.OpenErrorMessageBoxAsync(bouncyException, "Key Deriviation Failure", WindowDialogType.Error);
+            }
+            catch (Exception exception)
+            {
+                string message = "Key Deriviation Failure\n" +
+                       $"{exception.Message}\n" +
+                       "Unhandled error occured, contact developer.";
+                exception = new Exception(message, exception);
+
+                //Show error message box dialog to user
+                Dialog.OpenErrorMessageBoxAsync(exception, "Key Deriviation Failure", WindowDialogType.Error);
             }
 
             return derivedKey;
