@@ -11,15 +11,21 @@ using Org.BouncyCastle.Crypto.Agreement;
 using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Math;
+using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.Security;
+using Org.BouncyCastle.X509;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 
 namespace CryptoCalc.Core
 {
+    /// <summary>
+    /// Class for EC Diffie Hellmann key exchange
+    /// </summary>
     public class BouncyECDH : IAsymmetricKeyExchange, IECAlgorithims
     {
         #region Private Fields
@@ -88,6 +94,9 @@ namespace CryptoCalc.Core
             {
                 list.Add((string)curves.Current);
             }
+
+            //sort list
+            list = new ObservableCollection<string>(list.OrderBy(x => x));
             return list;
         }
 
@@ -114,36 +123,29 @@ namespace CryptoCalc.Core
         }
 
         /// <summary>
-        /// Returns the private key
+        /// Returns the private key der encoded
         /// </summary>
         /// <returns>private key in bytes</returns>
         public byte[] GetPrivateKey()
         {
-            var der = ((ECPrivateKeyParameters)keyPair.Private).PublicKeyParamSet.ToAsn1Object().GetEncoded();
-            var d = ((ECPrivateKeyParameters)keyPair.Private).D.ToByteArrayUnsigned();
-            var privateKey = new List<byte>();
-            privateKey.AddRange(der);
-            privateKey.AddRange(d);
-
-            return privateKey.ToArray();
+            //get the private key info
+            var privateKeyInfo = PrivateKeyInfoFactory.CreatePrivateKeyInfo(keyPair.Private);
+            return privateKeyInfo.GetDerEncoded();
         }
 
         /// <summary>
-        /// Returns the public key
+        /// Returns the public key info der encoded
         /// </summary>
         /// <returns>the public key in bytes</returns>
         public byte[] GetPublicKey()
         {
-            var der = ((ECPublicKeyParameters)keyPair.Public).PublicKeyParamSet.ToAsn1Object().GetEncoded();
-            var q = ((ECPublicKeyParameters)keyPair.Public).Q.GetEncoded();
-            var publicKey = new List<byte>();
-            publicKey.AddRange(der);
-            publicKey.AddRange(q);
-            return publicKey.ToArray();
+            //extract the public key info
+            var publicKeyInfo = SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(keyPair.Public);
+            return publicKeyInfo.GetDerEncoded();
         }
 
         /// <summary>
-        /// Drevies a shared secret key from a private key and another persons public key
+        /// Derives a shared secret key from a private key and another persons public key
         /// </summary>
         /// <param name="myPrivateKey">the private key which is used</param>
         /// <param name="otherPartyPublicKey">the public key of the other person</param>
@@ -157,7 +159,18 @@ namespace CryptoCalc.Core
 
             var pubKey = CreatePublicKeyParameterFromBytes(otherPartyPublicKey);
 
-            BigInteger k = a1.CalculateAgreement(pubKey);
+            BigInteger k = null;
+            try
+            {
+                k = a1.CalculateAgreement(pubKey);
+            }
+            catch(InvalidOperationException exception)
+            {
+                string message = "Key Deriviation Failed!\n" +
+                    $"{exception.Message}.\n" +
+                    "Different EC curves were used to create the public keys.";
+                throw new CryptoException(message, exception);
+            }
 
             return k.ToByteArrayUnsigned();
         }
@@ -167,49 +180,83 @@ namespace CryptoCalc.Core
         #region Private Methods
 
         /// <summary>
-        /// Creates a public key <see cref="ECPublicKeyParameters"/> from a byte array containing the exponent and modulus
+        /// Creates a public key <see cref="ECPublicKeyParameters"/> from the der encoded public key info
         /// </summary>
         /// <param name="publicKey">the byte array conatining the exponent and the modulus</param>
         /// <returns>The public key parameter object</returns>
-        private ECPublicKeyParameters CreatePublicKeyParameterFromBytes(byte[] publicKey)
+        private ECPublicKeyParameters CreatePublicKeyParameterFromBytes(byte[] publicKeyInfo)
         {
-            //Get length of the DER ecnoded bytes plus 1 for the tag and length of the tlv
-            var der = new byte[publicKey[1] + 2];
-            int restLength = publicKey.Length - der.Length;
-
-            //The x an y split the rest length
-            var q = new byte[restLength];
-            Array.Copy(publicKey, der, der.Length);
-            Array.Copy(publicKey, der.Length, q, 0, q.Length);
-
-            //Get the der object identifierer
-            var derOid = DerObjectIdentifier.GetInstance(Asn1Object.FromByteArray(der));
-
-            //Find the curve for the object identifier
-            var x9 = ECNamedCurveTable.GetByOid(derOid);
-
-            //Get the X and Y coordinates and then create the ECPoint
-            var ecPoint = x9.Curve.DecodePoint(q);
-            return new ECPublicKeyParameters("EC", ecPoint, derOid);
+            AsymmetricKeyParameter publicKey = null;
+            try
+            {
+                publicKey = PublicKeyFactory.CreateKey(publicKeyInfo);
+            }
+            catch(SecurityUtilityException exception)
+            {
+                string message = "Public Key Import Failed!\n" +
+                    $"{exception.Message}.\n" +
+                    "The contents of the source do not represent a usable object identifier\n" +
+                    "Verify that the public key is not corrupted";
+                throw new CryptoException(message, exception);
+            }
+            catch(IOException exception)
+            {
+                string message = "Public Key Import Failed!\n" +
+                    $"{exception.Message}.\n" +
+                    "The contents of source do not represent an ASN1 - DER - encoded structure.\n" +
+                    "Verify that the public key is not corrupted";
+                throw new CryptoException(message, exception);
+            }
+            catch (ArgumentException exception)
+            {
+                string message = "Public Key Import Failed!\n" +
+                    $"{exception.Message}\n" +
+                    "The contents of source indicate the key is for an algorithm other than the algorithm represented by this instance.\n" +
+                    "- or - The contents of source represent the key in a format that is not supported.\n" +
+                    "- or - The algorithm - specific key import failed." +
+                    "Verify that the public key is not corrupted";
+                throw new CryptoException(message, exception);
+            }
+            return (ECPublicKeyParameters)publicKey;
         }
 
         /// <summary>
-        /// Creates a private key <see cref="ECPrivateKeyParameters"/> from a byte array containing the exponent and modulus
+        /// Creates a private key <see cref="ECPrivateKeyParameters"/> from the der encoded private key info
         /// </summary>
         /// <param name="privateKey">the byte array conatining the exponent and the modulus</param>
         /// <returns>The private key parameter object</returns>
-        private ECPrivateKeyParameters CreatePrivateKeyParameterFromBytes(byte[] privateKey)
+        private ECPrivateKeyParameters CreatePrivateKeyParameterFromBytes(byte[] privateKeyInfo)
         {
-            //Get length of the DER ecnoded bytes plus 2 for the tag and length of the tlv
-            var der = new byte[privateKey[1] + 2];
-            int restLength = privateKey.Length - der.Length;
-            var d = new byte[restLength];
-            Array.Copy(privateKey, der, der.Length);
-            Array.Copy(privateKey, der.Length, d, 0, d.Length);
-
-            var derObject = DerObjectIdentifier.GetInstance(Asn1Object.FromByteArray(der));
-            var D = new BigInteger(1, d);
-            return new ECPrivateKeyParameters("EC", D, derObject);
+            AsymmetricKeyParameter privateKey = null;
+            try
+            {
+                privateKey = PrivateKeyFactory.CreateKey(privateKeyInfo);
+            }
+            catch (SecurityUtilityException exception)
+            {
+                string message = "Private Key Import Failed!\n" +
+                    $"{exception.Message}.\n" +
+                    "The contents of the source do not represent a usable object identifier\n" +
+                    "Verify that the public key is not corrupted";
+                throw new CryptoException(message, exception);
+            }
+            catch (IOException exception)
+            {
+                string message = "Private Key Import Failed!\n" +
+                    $"{exception.Message}.\n" +
+                    "The contents of source do not represent an ASN1 - DER - encoded structure.\n" +
+                    "Verify that the public key is not corrupted";
+                throw new CryptoException(message, exception);
+            }
+            catch (ArgumentException exception)
+            {
+                string message = "Private Key Import Failed!\n" +
+                    $"{exception.Message}\n" +
+                    "The contents of source do not represent an ASN.1 - DER - encoded structure.\n" +
+                    "Verify that the private key is not corrupted";
+                throw new CryptoException(message, exception);
+            }
+            return (ECPrivateKeyParameters)privateKey;
         }
 
         #endregion
