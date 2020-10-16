@@ -1,11 +1,4 @@
-﻿using Org.BouncyCastle.Asn1;
-using Org.BouncyCastle.Asn1.Anssi;
-using Org.BouncyCastle.Asn1.CryptoPro;
-using Org.BouncyCastle.Asn1.GM;
-using Org.BouncyCastle.Asn1.Nist;
-using Org.BouncyCastle.Asn1.Sec;
-using Org.BouncyCastle.Asn1.TeleTrust;
-using Org.BouncyCastle.Asn1.X9;
+﻿using Org.BouncyCastle.Asn1.X9;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Agreement;
 using Org.BouncyCastle.Crypto.Generators;
@@ -15,8 +8,6 @@ using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.X509;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -99,7 +90,7 @@ namespace CryptoCalc.Core
         {
             //get the private key info
             var privateKeyInfo = PrivateKeyInfoFactory.CreatePrivateKeyInfo(keyPair.Private);
-            return privateKeyInfo.GetDerEncoded();
+            return privateKeyInfo.GetEncoded();
         }
 
         /// <summary>
@@ -164,7 +155,8 @@ namespace CryptoCalc.Core
             {
                 string message = "Public Key Import Failed!\n" +
                     $"{exception.Message}.\n" +
-                    "The contents of the source do not represent a usable object identifier\n" +
+                    "The contents of source do not represent an ASN.1 - DER - encoded X.509 SubjectPublicKeyInfo structure.\n" +
+                    "- or - The contents of the source do not represent a usable object identifier\n" +
                     "Verify that the public key is not corrupted";
                 throw new CryptoException(message, exception);
             }
@@ -172,7 +164,7 @@ namespace CryptoCalc.Core
             {
                 string message = "Public Key Import Failed!\n" +
                     $"{exception.Message}.\n" +
-                    "The contents of source do not represent an ASN1 - DER - encoded structure.\n" +
+                    "The contents of source do not represent an ASN.1 - DER - encoded X.509 SubjectPublicKeyInfo structure.\n" +
                     "Verify that the public key is not corrupted";
                 throw new CryptoException(message, exception);
             }
@@ -190,7 +182,7 @@ namespace CryptoCalc.Core
         }
 
         /// <summary>
-        /// Creates a private key <see cref="ECPrivateKeyParameters"/> from the der encoded private key info
+        /// Creates a private key <see cref="ECPrivateKeyParameters"/> from the ber encoded private key info
         /// </summary>
         /// <param name="privateKey">the byte array conatining the exponent and the modulus</param>
         /// <returns>The private key parameter object</returns>
@@ -213,7 +205,7 @@ namespace CryptoCalc.Core
             {
                 string message = "Private Key Import Failed!\n" +
                     $"{exception.Message}.\n" +
-                    "The contents of source do not represent an ASN1 - DER - encoded structure.\n" +
+                    "The contents of source do not represent an ASN1 - BER - encoded PKCS#8 structure.\n" +
                     "Verify that the public key is not corrupted";
                 throw new CryptoException(message, exception);
             }
@@ -221,7 +213,7 @@ namespace CryptoCalc.Core
             {
                 string message = "Private Key Import Failed!\n" +
                     $"{exception.Message}\n" +
-                    "The contents of source do not represent an ASN.1 - DER - encoded structure.\n" +
+                    "The contents of source do not represent an ASN.1 - BER - encoded PKCS#8 structure.\n" +
                     "Verify that the private key is not corrupted";
                 throw new CryptoException(message, exception);
             }
