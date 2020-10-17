@@ -1,7 +1,9 @@
-﻿using Org.BouncyCastle.Crypto.Agreement;
+﻿using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Crypto.Agreement;
 using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Security;
+using System;
 using System.Collections.ObjectModel;
 
 namespace CryptoCalc.Core
@@ -75,14 +77,40 @@ namespace CryptoCalc.Core
         /// <returns></returns>
         public byte[] DeriveKey(byte[] myPrivateKey, byte[] otherPartyPublicKey)
         {
+            X25519PrivateKeyParameters privateKey;
+            try
+            {
+                privateKey = (X25519PrivateKeyParameters)CreateAsymmetricKeyParameterFromPrivateKeyInfo(myPrivateKey);
+            }
+            catch(InvalidCastException exception)
+            {
+                string message = "Private Key Import Failed!\n" +
+                    $"{exception.Message}.\n" +
+                    "The contents of the source do not represent a valid X25519 key parameter\n" +
+                    "Verify that the key is not corrupted.\n" +
+                    "- or - Verify that the correct key is selected.";
+                throw new CryptoException(message, exception);
+            }
+
             var a1 = new X25519Agreement();
-            
-            var privateKey = (X25519PrivateKeyParameters)CreateAsymmetricKeyParameterFromPrivateKeyInfo(myPrivateKey);
             a1.Init(privateKey);
             
             byte[] k1 = new byte[a1.AgreementSize];
 
-            var publicKey = (X25519PublicKeyParameters)CreateAsymmetricKeyParameterFromPublicKeyInfo(otherPartyPublicKey);
+            X25519PublicKeyParameters publicKey = null;
+            try
+            {
+                publicKey = (X25519PublicKeyParameters)CreateAsymmetricKeyParameterFromPublicKeyInfo(otherPartyPublicKey);
+            }
+            catch (InvalidCastException exception)
+            {
+                string message = "Public Key Import Failed!\n" +
+                    $"{exception.Message}.\n" +
+                    "The contents of the source do not represent a valid X25519 public key parameter\n" +
+                    "Verify that the public key is not corrupted.\n" +
+                    "- or - Verify that the correct key is selected.";
+                throw new CryptoException(message, exception);
+            }
 
             a1.CalculateAgreement(publicKey, k1, 0);
 

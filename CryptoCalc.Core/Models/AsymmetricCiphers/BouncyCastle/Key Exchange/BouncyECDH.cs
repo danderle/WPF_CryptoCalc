@@ -96,12 +96,37 @@ namespace CryptoCalc.Core
         /// <returns></returns>
         public byte[] DeriveKey(byte[] myPrivateKey, byte[] otherPartyPublicKey)
         {
+            ECPrivateKeyParameters privKey = null;
+            try
+            {
+                privKey = (ECPrivateKeyParameters)CreateAsymmetricKeyParameterFromPrivateKeyInfo(myPrivateKey);
+            }
+            catch (InvalidCastException exception)
+            {
+                string message = "Private Key Import Failed!\n" +
+                    $"{exception.Message}.\n" +
+                    "The contents of the source do not represent a valid EC key parameter\n" +
+                    "Verify that the key is not corrupted.\n" +
+                    "- or - Verify that the correct key is selected.";
+                throw new CryptoException(message, exception);
+            }
             var a1 = new ECDHBasicAgreement();
+            a1.Init(privKey);
 
-            var priv = (ECPrivateKeyParameters)CreateAsymmetricKeyParameterFromPrivateKeyInfo(myPrivateKey);
-            a1.Init(priv);
-
-            var pubKey = (ECPublicKeyParameters)CreateAsymmetricKeyParameterFromPublicKeyInfo(otherPartyPublicKey);
+            ECPublicKeyParameters pubKey = null;
+            try
+            {
+                pubKey = (ECPublicKeyParameters)CreateAsymmetricKeyParameterFromPublicKeyInfo(otherPartyPublicKey);
+            }
+            catch (InvalidCastException exception)
+            {
+                string message = "Public Key Import Failed!\n" +
+                    $"{exception.Message}.\n" +
+                    "The contents of the source do not represent a valid EC key parameter\n" +
+                    "Verify that the key is not corrupted.\n" +
+                    "- or - Verify that the correct key is selected.";
+                throw new CryptoException(message, exception);
+            }
 
             BigInteger k = null;
             try

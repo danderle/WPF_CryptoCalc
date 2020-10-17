@@ -1,8 +1,10 @@
-﻿using Org.BouncyCastle.Crypto.Agreement;
+﻿using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Crypto.Agreement;
 using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Security;
+using System;
 using System.Collections.ObjectModel;
 
 namespace CryptoCalc.Core
@@ -83,14 +85,40 @@ namespace CryptoCalc.Core
         /// <returns></returns>
         public byte[] DeriveKey(byte[] myPrivateKey, byte[] otherPartyPublicKey)
         {
-            var a1 = new DHAgreement();
+            DHPrivateKeyParameters privKey = null;
+            try
+            {
+                privKey = (DHPrivateKeyParameters)CreateAsymmetricKeyParameterFromPrivateKeyInfo(myPrivateKey);
+            }
+            catch (InvalidCastException exception)
+            {
+                string message = "Private Key Import Failed!\n" +
+                    $"{exception.Message}.\n" +
+                    "The contents of the source do not represent a valid DH key parameter\n" +
+                    "Verify that the key is not corrupted.\n" +
+                    "- or - Verify that the correct key is selected.";
+                throw new CryptoException(message, exception);
+            }
 
-            var priv = (DHPrivateKeyParameters)CreateAsymmetricKeyParameterFromPrivateKeyInfo(myPrivateKey);
-            a1.Init(priv);
+            var a1 = new DHAgreement();
+            a1.Init(privKey);
 
             BigInteger m1 = a1.CalculateMessage();
 
-            var pubKey = (DHPublicKeyParameters)CreateAsymmetricKeyParameterFromPublicKeyInfo(otherPartyPublicKey);
+            DHPublicKeyParameters pubKey = null;
+            try
+            {
+                pubKey = (DHPublicKeyParameters)CreateAsymmetricKeyParameterFromPublicKeyInfo(otherPartyPublicKey);
+            }
+            catch (InvalidCastException exception)
+            {
+                string message = "Public Key Import Failed!\n" +
+                    $"{exception.Message}.\n" +
+                    "The contents of the source do not represent a valid DH key parameter\n" +
+                    "Verify that the key is not corrupted.\n" +
+                    "- or - Verify that the correct key is selected.";
+                throw new CryptoException(message, exception);
+            }
 
             //Both party keys must share the same DHParameters to be able to calculate the agreement
             BigInteger k1 = a1.CalculateAgreement(pubKey, m1);

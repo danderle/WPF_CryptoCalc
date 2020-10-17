@@ -1,7 +1,9 @@
-﻿using Org.BouncyCastle.Crypto.Generators;
+﻿using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Crypto.Signers;
 using Org.BouncyCastle.Security;
+using System;
 using System.Collections.ObjectModel;
 
 namespace CryptoCalc.Core
@@ -80,8 +82,21 @@ namespace CryptoCalc.Core
         /// <returns>the signature as a byte array</returns>
         public byte[] Sign(byte[] privateKey, byte[] data)
         {
+            Ed25519PrivateKeyParameters privKey = null;
+            try
+            {
+                privKey = (Ed25519PrivateKeyParameters)CreateAsymmetricKeyParameterFromPrivateKeyInfo(privateKey);
+            }
+            catch (InvalidCastException exception)
+            {
+                string message = "Private Key Import Failed!\n" +
+                    $"{exception.Message}.\n" +
+                    "The contents of the source do not represent a valid Ed25519 key parameter\n" +
+                    "Verify that the key is not corrupted.\n" +
+                    "- or - Verify that the correct key is selected.";
+                throw new CryptoException(message, exception);
+            }
             var signer = new Ed25519Signer();
-            var privKey = (Ed25519PrivateKeyParameters)CreateAsymmetricKeyParameterFromPrivateKeyInfo(privateKey);
             signer.Init(true, privKey);
             signer.BlockUpdate(data, 0, data.Length);
             var signature = signer.GenerateSignature();
@@ -97,8 +112,21 @@ namespace CryptoCalc.Core
         /// <returns>true if signature is authentic, false if not</returns>
         public bool Verify(byte[] originalSignature, byte[] publicKey, byte[] data)
         {
+            Ed25519PublicKeyParameters pubKey = null;
+            try
+            {
+                pubKey = (Ed25519PublicKeyParameters)CreateAsymmetricKeyParameterFromPublicKeyInfo(publicKey);
+            }
+            catch (InvalidCastException exception)
+            {
+                string message = "Public Key Import Failed!\n" +
+                    $"{exception.Message}.\n" +
+                    "The contents of the source do not represent a valid Ed25519 key parameter\n" +
+                    "Verify that the key is not corrupted.\n" +
+                    "- or - Verify that the correct key is selected.";
+                throw new CryptoException(message, exception);
+            }
             var signer = new Ed25519Signer();
-            var pubKey = (Ed25519PublicKeyParameters)CreateAsymmetricKeyParameterFromPublicKeyInfo(publicKey);
             signer.Init(false, pubKey);
             signer.BlockUpdate(data, 0, data.Length);
             return signer.VerifySignature(originalSignature);

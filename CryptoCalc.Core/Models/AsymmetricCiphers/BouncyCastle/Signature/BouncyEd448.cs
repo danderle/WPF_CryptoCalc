@@ -1,7 +1,9 @@
-﻿using Org.BouncyCastle.Crypto.Generators;
+﻿using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Crypto.Signers;
 using Org.BouncyCastle.Security;
+using System;
 using System.Collections.ObjectModel;
 
 namespace CryptoCalc.Core
@@ -82,7 +84,20 @@ namespace CryptoCalc.Core
         public byte[] Sign(byte[] privateKey, byte[] data)
         {
             var signer = new Ed448Signer(ByteConvert.StringToAsciiBytes("context"));
-            var privKey = (Ed448PrivateKeyParameters)CreateAsymmetricKeyParameterFromPrivateKeyInfo(privateKey);
+            Ed448PrivateKeyParameters privKey = null;
+            try
+            {
+                privKey = (Ed448PrivateKeyParameters)CreateAsymmetricKeyParameterFromPrivateKeyInfo(privateKey);
+            }
+            catch(InvalidCastException exception)
+            {
+                string message = "Private Key Import Failed!\n" +
+                    $"{exception.Message}.\n" +
+                    "The contents of the source do not represent a valid Ed448 key parameter\n" +
+                    "Verify that the key is not corrupted.\n" +
+                    "- or - Verify that the correct key is selected.";
+                throw new CryptoException(message, exception);
+            }
             signer.Init(true, privKey);
             signer.BlockUpdate(data, 0, data.Length);
             var signature = signer.GenerateSignature();
@@ -98,8 +113,22 @@ namespace CryptoCalc.Core
         /// <returns>true if signature is authentic, false if not</returns>
         public bool Verify(byte[] originalSignature, byte[] publicKey, byte[] data)
         {
+            Ed448PublicKeyParameters pubKey = null;
+            try
+            {
+                pubKey = (Ed448PublicKeyParameters)CreateAsymmetricKeyParameterFromPublicKeyInfo(publicKey);
+            }
+            catch (InvalidCastException exception)
+            {
+                string message = "Public Key Import Failed!\n" +
+                    $"{exception.Message}.\n" +
+                    "The contents of the source do not represent a valid Ed448 key parameter\n" +
+                    "Verify that the key is not corrupted.\n" +
+                    "- or - Verify that the correct key is selected.";
+                throw new CryptoException(message, exception);
+            }
+
             var signer = new Ed448Signer(ByteConvert.StringToAsciiBytes("context"));
-            var pubKey = (Ed448PublicKeyParameters)CreateAsymmetricKeyParameterFromPublicKeyInfo(publicKey);
             signer.Init(false, pubKey);
             signer.BlockUpdate(data, 0, data.Length);
             return signer.VerifySignature(originalSignature);

@@ -96,22 +96,23 @@ namespace CryptoCalc.Core
         /// <returns>the signature as a byte array</returns>
         public byte[] Sign(byte[] privateKey, byte[] data)
         {
-            var signer = new ECGost3410Signer();
-            var privKey = (ECPrivateKeyParameters)CreateAsymmetricKeyParameterFromPrivateKeyInfo(privateKey);
-
+            ECPrivateKeyParameters privKey = null;
             try
             {
-                signer.Init(true, privKey);
+                privKey = (ECPrivateKeyParameters)CreateAsymmetricKeyParameterFromPrivateKeyInfo(privateKey);
             }
-            catch (Exception exception)
+            catch (InvalidCastException exception)
             {
-                string message = "Private Key Creation Failure!\n" +
+                string message = "Private Key Import Failed!\n" +
                     $"{exception.Message}.\n" +
-                    $"The private key file is corrupted, verify private key file or try another key.\n" +
-                    $"If all fails create a new key pair.";
+                    "The contents of the source do not represent a valid EC key parameter\n" +
+                    "Verify that the key is not corrupted.\n" +
+                    "- or - Verify that the correct key is selected.";
                 throw new CryptoException(message, exception);
             }
 
+            var signer = new ECGost3410Signer();
+            signer.Init(true, privKey);
             var bigIntSig = signer.GenerateSignature(data);
             var signature = new List<byte>();
             signature.AddRange(bigIntSig[0].ToByteArrayUnsigned());
@@ -128,8 +129,22 @@ namespace CryptoCalc.Core
         /// <returns>true if signature is authentic, false if not</returns>
         public bool Verify(byte[] originalSignature, byte[] publicKey, byte[] data)
         {
+            ECPublicKeyParameters pubKey = null;
+            try
+            {
+                pubKey = (ECPublicKeyParameters)CreateAsymmetricKeyParameterFromPublicKeyInfo(publicKey);
+            }
+            catch (InvalidCastException exception)
+            {
+                string message = "Public Key Import Failed!\n" +
+                    $"{exception.Message}.\n" +
+                    "The contents of the source do not represent a valid EC key parameter\n" +
+                    "Verify that the key is not corrupted.\n" +
+                    "- or - Verify that the correct key is selected.";
+                throw new CryptoException(message, exception);
+            }
+
             var signer = new ECGost3410Signer();
-            var pubKey = (ECPublicKeyParameters)CreateAsymmetricKeyParameterFromPublicKeyInfo(publicKey);
             signer.Init(false, pubKey);
             var r = new byte[originalSignature.Length / 2];
             var s = new byte[originalSignature.Length / 2];

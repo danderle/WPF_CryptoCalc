@@ -1,4 +1,5 @@
 ﻿using Org.BouncyCastle.Asn1.X9;
+using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Agreement;
 using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Crypto.Parameters;
@@ -95,16 +96,55 @@ namespace CryptoCalc.Core
         /// <returns></returns>
         public byte[] DeriveKey(byte[] myPrivateKey, byte[] otherPartyPublicKey)
         {
-            var a1 = new ECMqvBasicAgreement();
+            ECPrivateKeyParameters privKey = null;
+            try
+            {
+                privKey = (ECPrivateKeyParameters)CreateAsymmetricKeyParameterFromPrivateKeyInfo(myPrivateKey);
+            }
+            catch (InvalidCastException exception)
+            {
+                string message = "Private Key Import Failed!\n" +
+                    $"{exception.Message}.\n" +
+                    "The contents of the source do not represent a valid EC private key parameter\n" +
+                    "Verify that the public key is not corrupted.\n" +
+                    "- or - Verify that the correct key is selected.";
+                throw new CryptoException(message, exception);
+            }
 
-            var priv = (ECPrivateKeyParameters)CreateAsymmetricKeyParameterFromPrivateKeyInfo(myPrivateKey);
-            var mqvParameters = new MqvPrivateParameters(priv, priv);
+            var mqvParameters = new MqvPrivateParameters(privKey, privKey);
+            var a1 = new ECMqvBasicAgreement();
             a1.Init(mqvParameters);
 
-            var pubKey = (ECPublicKeyParameters)CreateAsymmetricKeyParameterFromPublicKeyInfo(otherPartyPublicKey);
+            ECPublicKeyParameters pubKey = null; 
+            try
+            {
+                pubKey = (ECPublicKeyParameters)CreateAsymmetricKeyParameterFromPublicKeyInfo(otherPartyPublicKey);
+            }
+            catch (InvalidCastException exception)
+            {
+                string message = "Public Key Import Failed!\n" +
+                    $"{exception.Message}.\n" +
+                    "The contents of the source do not represent a valid EC public key parameter\n" +
+                    "Verify that the public key is not corrupted.\n" +
+                    "- or - Verify that the correct key is selected.";
+                throw new CryptoException(message, exception);
+            }
 
             var mqvPubParameters = new MqvPublicParameters(pubKey, pubKey);
-            BigInteger k = a1.CalculateAgreement(mqvPubParameters);
+
+            BigInteger k = null;
+            try
+            {
+                k = a1.CalculateAgreement(mqvPubParameters);
+            }
+            catch(InvalidOperationException exception)
+            {
+                string message = "Key Deriviation Failed!\n" +
+                    $"{exception.Message}.\n" +
+                    "The public key does not use the same domain parameters as the private key.\n" +
+                    "Verify that the correct public key is selected.";
+                throw new CryptoException(message, exception);
+            }
 
             return k.ToByteArrayUnsigned();
         }
