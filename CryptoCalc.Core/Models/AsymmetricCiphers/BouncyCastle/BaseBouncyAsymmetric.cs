@@ -3,6 +3,8 @@ using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.X509;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 
 namespace CryptoCalc.Core
@@ -19,6 +21,94 @@ namespace CryptoCalc.Core
         /// </summary>
         protected AsymmetricCipherKeyPair keyPair;
 
+        #endregion
+
+        #region Public Static Methods
+
+        /// <summary>
+        /// Returns a Bouncy Castle cipher object
+        /// </summary>
+        /// <param name="selectedAlgorithim">The cipher algorithim to return</param>
+        /// <returns>The selected cipher object</returns>
+        public static IAsymmetricCipher GetBouncyCipher(string selectedAlgorithim)
+        {
+            var algorithim = (AsymmetricBouncyCiphers)Enum.Parse(typeof(AsymmetricBouncyCiphers), selectedAlgorithim);
+            switch (algorithim)
+            {
+                case AsymmetricBouncyCiphers.RSA:
+                    return new BouncyRsa();
+                case AsymmetricBouncyCiphers.SM2:
+                    return new BouncySM2();
+                case AsymmetricBouncyCiphers.DSA:
+                    return new BouncyDsa();
+                case AsymmetricBouncyCiphers.ECDsa:
+                    return new BouncyECDsa();
+                case AsymmetricBouncyCiphers.ECGost3410:
+                    return new BouncyECGost3410();
+                case AsymmetricBouncyCiphers.Gost3410_94:
+                    return new BouncyGost3410_94();
+                case AsymmetricBouncyCiphers.ECNR:
+                    return new BouncyECNR();
+                case AsymmetricBouncyCiphers.ED25519:
+                    return new BouncyEd25519();
+                case AsymmetricBouncyCiphers.ED448:
+                    return new BouncyEd448();
+                case AsymmetricBouncyCiphers.DiffieHellman:
+                    return new BouncyDH();
+                case AsymmetricBouncyCiphers.ECDiffieHellman:
+                    return new BouncyECDH();
+                case AsymmetricBouncyCiphers.ECMQV:
+                    return new BouncyECMqv();
+                case AsymmetricBouncyCiphers.X25519:
+                    return new BouncyX25519();
+                default:
+                    Debugger.Break();
+                    return null;
+            }
+        }
+
+        /// <summary>
+        /// Gets a list of possible Bouncy castle asymmetric cipher algorithims accoridng to a selected operation
+        /// </summary>
+        /// <param name="operation">The type of operation</param>
+        /// <returns>The list of cipher algorithims according the selected operation</returns>
+        public static List<string> GetBouncyAlgorthims(AsymmetricOperation operation)
+        {
+            switch (operation)
+            {
+                case AsymmetricOperation.Encryption:
+                    return new List<string>
+                    {
+                        AsymmetricBouncyCiphers.SM2.ToString(),
+                        AsymmetricBouncyCiphers.RSA.ToString(),
+                    };
+
+                case AsymmetricOperation.Signature:
+                    return new List<string>
+                    {
+                        AsymmetricBouncyCiphers.ECDsa.ToString(),
+                        AsymmetricBouncyCiphers.RSA.ToString(),
+                        AsymmetricBouncyCiphers.DSA.ToString(),
+                        AsymmetricBouncyCiphers.ECGost3410.ToString(),
+                        AsymmetricBouncyCiphers.Gost3410_94.ToString(),
+                        AsymmetricBouncyCiphers.ECNR.ToString(),
+                        AsymmetricBouncyCiphers.ED25519.ToString(),
+                        AsymmetricBouncyCiphers.ED448.ToString(),
+                    };
+
+                case AsymmetricOperation.KeyExchange:
+                    return new List<string>
+                    {
+                        AsymmetricBouncyCiphers.DiffieHellman.ToString(),
+                        AsymmetricBouncyCiphers.ECDiffieHellman.ToString(),
+                        AsymmetricBouncyCiphers.ECMQV.ToString(),
+                        AsymmetricBouncyCiphers.X25519.ToString(),
+                    };
+                default:
+                    Debugger.Break();
+                    return null;
+            }
+        }
         #endregion
 
         #region Protected Methods
