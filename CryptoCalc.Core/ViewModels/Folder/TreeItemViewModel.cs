@@ -161,8 +161,7 @@ namespace CryptoCalc.Core
             }
             catch(Exception e) 
             {
-                //TODO error pop window
-                string m = e.Message;
+                Dialog.OpenErrorMessageBoxAsync(e, "Directory/File Load Error", WindowDialogType.Error);
             }
         }
 
