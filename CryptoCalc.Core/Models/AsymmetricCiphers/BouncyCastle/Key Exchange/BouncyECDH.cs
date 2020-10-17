@@ -4,12 +4,9 @@ using Org.BouncyCastle.Crypto.Agreement;
 using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Math;
-using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.Security;
-using Org.BouncyCastle.X509;
 using System;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 
 namespace CryptoCalc.Core
@@ -17,17 +14,8 @@ namespace CryptoCalc.Core
     /// <summary>
     /// Class for EC Diffie Hellmann key exchange
     /// </summary>
-    public class BouncyECDH : IAsymmetricKeyExchange, IECAlgorithims
+    public class BouncyECDH : BaseBouncyAsymmetric, IAsymmetricKeyExchange, IECAlgorithims
     {
-        #region Private Fields
-
-        /// <summary>
-        /// The generated key pair object for this class
-        /// </summary>
-        private AsymmetricCipherKeyPair keyPair;
-
-        #endregion
-
         #region Constructor
 
         /// <summary>
@@ -83,14 +71,12 @@ namespace CryptoCalc.Core
         }
 
         /// <summary>
-        /// Returns the private key der encoded
+        /// Returns the private key ber encoded
         /// </summary>
         /// <returns>private key in bytes</returns>
         public byte[] GetPrivateKey()
         {
-            //get the private key info
-            var privateKeyInfo = PrivateKeyInfoFactory.CreatePrivateKeyInfo(keyPair.Private);
-            return privateKeyInfo.GetEncoded();
+            return GetPrivateKeyInfo();
         }
 
         /// <summary>
@@ -99,9 +85,7 @@ namespace CryptoCalc.Core
         /// <returns>the public key in bytes</returns>
         public byte[] GetPublicKey()
         {
-            //extract the public key info
-            var publicKeyInfo = SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(keyPair.Public);
-            return publicKeyInfo.GetDerEncoded();
+            return GetPublicKeyInfo();
         }
 
         /// <summary>
@@ -114,10 +98,10 @@ namespace CryptoCalc.Core
         {
             var a1 = new ECDHBasicAgreement();
 
-            var priv = CreatePrivateKeyParameterFromBytes(myPrivateKey);
+            var priv = (ECPrivateKeyParameters)CreateAsymmetricKeyParameterFromPrivateKeyInfo(myPrivateKey);
             a1.Init(priv);
 
-            var pubKey = CreatePublicKeyParameterFromBytes(otherPartyPublicKey);
+            var pubKey = (ECPublicKeyParameters)CreateAsymmetricKeyParameterFromPublicKeyInfo(otherPartyPublicKey);
 
             BigInteger k = null;
             try
@@ -133,91 +117,6 @@ namespace CryptoCalc.Core
             }
 
             return k.ToByteArrayUnsigned();
-        }
-
-        #endregion
-
-        #region Private Methods
-
-        /// <summary>
-        /// Creates a public key <see cref="ECPublicKeyParameters"/> from the der encoded public key info
-        /// </summary>
-        /// <param name="publicKey">the byte array conatining the exponent and the modulus</param>
-        /// <returns>The public key parameter object</returns>
-        private ECPublicKeyParameters CreatePublicKeyParameterFromBytes(byte[] publicKeyInfo)
-        {
-            AsymmetricKeyParameter publicKey = null;
-            try
-            {
-                publicKey = PublicKeyFactory.CreateKey(publicKeyInfo);
-            }
-            catch(SecurityUtilityException exception)
-            {
-                string message = "Public Key Import Failed!\n" +
-                    $"{exception.Message}.\n" +
-                    "The contents of source do not represent an ASN.1 - DER - encoded X.509 SubjectPublicKeyInfo structure.\n" +
-                    "- or - The contents of the source do not represent a usable object identifier\n" +
-                    "Verify that the public key is not corrupted";
-                throw new CryptoException(message, exception);
-            }
-            catch(IOException exception)
-            {
-                string message = "Public Key Import Failed!\n" +
-                    $"{exception.Message}.\n" +
-                    "The contents of source do not represent an ASN.1 - DER - encoded X.509 SubjectPublicKeyInfo structure.\n" +
-                    "Verify that the public key is not corrupted";
-                throw new CryptoException(message, exception);
-            }
-            catch (ArgumentException exception)
-            {
-                string message = "Public Key Import Failed!\n" +
-                    $"{exception.Message}\n" +
-                    "The contents of source indicate the key is for an algorithm other than the algorithm represented by this instance.\n" +
-                    "- or - The contents of source represent the key in a format that is not supported.\n" +
-                    "- or - The algorithm - specific key import failed." +
-                    "Verify that the public key is not corrupted";
-                throw new CryptoException(message, exception);
-            }
-            return (ECPublicKeyParameters)publicKey;
-        }
-
-        /// <summary>
-        /// Creates a private key <see cref="ECPrivateKeyParameters"/> from the ber encoded private key info
-        /// </summary>
-        /// <param name="privateKey">the byte array conatining the exponent and the modulus</param>
-        /// <returns>The private key parameter object</returns>
-        private ECPrivateKeyParameters CreatePrivateKeyParameterFromBytes(byte[] privateKeyInfo)
-        {
-            AsymmetricKeyParameter privateKey = null;
-            try
-            {
-                privateKey = PrivateKeyFactory.CreateKey(privateKeyInfo);
-            }
-            catch (SecurityUtilityException exception)
-            {
-                string message = "Private Key Import Failed!\n" +
-                    $"{exception.Message}.\n" +
-                    "The contents of the source do not represent a usable object identifier\n" +
-                    "Verify that the public key is not corrupted";
-                throw new CryptoException(message, exception);
-            }
-            catch (IOException exception)
-            {
-                string message = "Private Key Import Failed!\n" +
-                    $"{exception.Message}.\n" +
-                    "The contents of source do not represent an ASN1 - BER - encoded PKCS#8 structure.\n" +
-                    "Verify that the public key is not corrupted";
-                throw new CryptoException(message, exception);
-            }
-            catch (ArgumentException exception)
-            {
-                string message = "Private Key Import Failed!\n" +
-                    $"{exception.Message}\n" +
-                    "The contents of source do not represent an ASN.1 - BER - encoded PKCS#8 structure.\n" +
-                    "Verify that the private key is not corrupted";
-                throw new CryptoException(message, exception);
-            }
-            return (ECPrivateKeyParameters)privateKey;
         }
 
         #endregion
