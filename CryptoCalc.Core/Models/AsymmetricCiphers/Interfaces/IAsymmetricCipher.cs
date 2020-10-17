@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-
-namespace CryptoCalc.Core
+﻿namespace CryptoCalc.Core
 {
     /// <summary>
     /// A interface for any asymmetric operations

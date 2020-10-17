@@ -46,7 +46,7 @@ namespace CryptoCalc.Core
         /// <returns>the list of all ec curves</returns>
         public ObservableCollection<string> GetEcCurves(EcCurveProvider provider)
         {
-            return IECAlgorithims.GetBouncyEcCurves(provider);
+            return GetCurves(provider);
         }
 
         /// <summary>

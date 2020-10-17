@@ -358,13 +358,13 @@ namespace CryptoCalc.Core
                 //MSDN API
                 case CryptographyApi.MSDN:
                     //Get the selected cipher algorithim
-                    SelectedCipher = IAsymmetricCipher.GetMsdnCipher(Algorithims[SelectedAlgorithimIndex]);
+                    SelectedCipher = BaseMsdnAsymmetric.GetCipher(Algorithims[SelectedAlgorithimIndex]);
                     break;
 
                 //Bouncy castle api
                 case CryptographyApi.BouncyCastle:
                     //Get the selected cipher algorithim
-                    SelectedCipher = IAsymmetricCipher.GetBouncyCipher(Algorithims[SelectedAlgorithimIndex]);
+                    SelectedCipher = BaseBouncyAsymmetric.GetCipher(Algorithims[SelectedAlgorithimIndex]);
                     break;
             }
 
@@ -780,10 +780,10 @@ namespace CryptoCalc.Core
             switch (Api)
             {
                 case CryptographyApi.MSDN:
-                    Algorithims = IAsymmetricCipher.GetMsdnAlgorthims(SelectedOperation);
+                    Algorithims = BaseMsdnAsymmetric.GetAlgorthims(SelectedOperation);
                     break;
                 case CryptographyApi.BouncyCastle:
-                    Algorithims = IAsymmetricCipher.GetBouncyAlgorthims(SelectedOperation);
+                    Algorithims = BaseBouncyAsymmetric.GetAlgorthims(SelectedOperation);
                     break;
                 default:
                     Debugger.Break();

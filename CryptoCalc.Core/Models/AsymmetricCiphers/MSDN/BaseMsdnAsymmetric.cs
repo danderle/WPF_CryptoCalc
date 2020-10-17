@@ -14,7 +14,7 @@ namespace CryptoCalc.Core
         /// </summary>
         /// <param name="selectedAlgorithim">the cipher oparation to return</param>
         /// <returns>The selected cipher object</returns>
-        public static IAsymmetricCipher GetMsdnCipher(string selectedAlgorithim)
+        public static IAsymmetricCipher GetCipher(string selectedAlgorithim)
         {
             var algorithim = (AsymmetricMsdnCiphers)Enum.Parse(typeof(AsymmetricMsdnCiphers), selectedAlgorithim);
             switch (algorithim)
@@ -38,7 +38,7 @@ namespace CryptoCalc.Core
         /// </summary>
         /// <param name="operation">The type of operation</param>
         /// <returns>The list of cipher algorithims according the selected operation</returns>
-        public static List<string> GetMsdnAlgorthims(AsymmetricOperation operation)
+        public static List<string> GetAlgorthims(AsymmetricOperation operation)
         {
             switch (operation)
             {
@@ -71,7 +71,7 @@ namespace CryptoCalc.Core
         /// <summary>
         /// Creates a a dictionary for all the available msdn ec curves
         /// </summary>
-        protected Dictionary<string, ECCurve> GetAllAvailableMsdnEcCurves()
+        protected Dictionary<string, ECCurve> GetEcCurves()
         {
             Dictionary<string, ECCurve> ecCurves = new Dictionary<string, ECCurve>
             {

@@ -1,11 +1,20 @@
-﻿using Org.BouncyCastle.Crypto;
+﻿using Org.BouncyCastle.Asn1.Anssi;
+using Org.BouncyCastle.Asn1.CryptoPro;
+using Org.BouncyCastle.Asn1.GM;
+using Org.BouncyCastle.Asn1.Nist;
+using Org.BouncyCastle.Asn1.Sec;
+using Org.BouncyCastle.Asn1.TeleTrust;
+using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.X509;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 namespace CryptoCalc.Core
 {
@@ -30,7 +39,7 @@ namespace CryptoCalc.Core
         /// </summary>
         /// <param name="selectedAlgorithim">The cipher algorithim to return</param>
         /// <returns>The selected cipher object</returns>
-        public static IAsymmetricCipher GetBouncyCipher(string selectedAlgorithim)
+        public static IAsymmetricCipher GetCipher(string selectedAlgorithim)
         {
             var algorithim = (AsymmetricBouncyCiphers)Enum.Parse(typeof(AsymmetricBouncyCiphers), selectedAlgorithim);
             switch (algorithim)
@@ -72,7 +81,7 @@ namespace CryptoCalc.Core
         /// </summary>
         /// <param name="operation">The type of operation</param>
         /// <returns>The list of cipher algorithims according the selected operation</returns>
-        public static List<string> GetBouncyAlgorthims(AsymmetricOperation operation)
+        public static List<string> GetAlgorthims(AsymmetricOperation operation)
         {
             switch (operation)
             {
@@ -108,6 +117,45 @@ namespace CryptoCalc.Core
                     Debugger.Break();
                     return null;
             }
+        }
+
+        /// <summary>
+        /// Gets a list of available ec curves
+        /// </summary>
+        /// <returns>the list of all ec curves</returns>
+        public ObservableCollection<string> GetCurves(EcCurveProvider provider)
+        {
+            IEnumerator curves = null;
+            switch (provider)
+            {
+                case EcCurveProvider.SEC:
+                    curves = SecNamedCurves.Names.GetEnumerator();
+                    break;
+                case EcCurveProvider.NIST:
+                    curves = NistNamedCurves.Names.GetEnumerator();
+                    break;
+                case EcCurveProvider.TELETRUST:
+                    curves = TeleTrusTNamedCurves.Names.GetEnumerator();
+                    break;
+                case EcCurveProvider.ANSSI:
+                    curves = AnssiNamedCurves.Names.GetEnumerator();
+                    break;
+                case EcCurveProvider.GOST3410:
+                    curves = ECGost3410NamedCurves.Names.GetEnumerator();
+                    break;
+                case EcCurveProvider.GM:
+                    curves = GMNamedCurves.Names.GetEnumerator();
+                    break;
+            }
+            var list = new ObservableCollection<string>();
+            while (curves.MoveNext())
+            {
+                list.Add((string)curves.Current);
+            }
+
+            //sort list
+            list = new ObservableCollection<string>(list.OrderBy(x => x));
+            return list;
         }
         #endregion
 

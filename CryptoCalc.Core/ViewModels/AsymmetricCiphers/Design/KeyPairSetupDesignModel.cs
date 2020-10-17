@@ -22,10 +22,10 @@
         public KeyPairSetupDesignModel()
         {
             SelectedOperation = AsymmetricOperation.Encryption;
-            Algorithims = IAsymmetricCipher.GetMsdnAlgorthims(SelectedOperation);
+            Algorithims = BaseMsdnAsymmetric.GetAlgorthims(SelectedOperation);
             //Algorithims = IAsymmetricCipher.GetBouncyAlgorthims(SelectedOperation);
             SelectedAlgorithimIndex = 0;
-            IAsymmetricCipher.GetMsdnCipher(Algorithims[SelectedAlgorithimIndex]);
+            BaseMsdnAsymmetric.GetCipher(Algorithims[SelectedAlgorithimIndex]);
 
             PrivateKey = ByteConvert.HexStringToBytes("FFFFFFFFF111000");
             PublicKey = ByteConvert.HexStringToBytes("00000000FFFFFFF");

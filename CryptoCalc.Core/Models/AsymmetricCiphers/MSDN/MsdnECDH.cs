@@ -33,7 +33,7 @@ namespace CryptoCalc.Core
         /// </summary>
         public MsdnECDH()
         {
-            ecCurves = GetAllAvailableMsdnEcCurves();
+            ecCurves = GetEcCurves();
         }
 
         #endregion
