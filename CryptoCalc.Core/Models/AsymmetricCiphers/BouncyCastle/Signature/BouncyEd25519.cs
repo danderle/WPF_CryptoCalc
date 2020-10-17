@@ -1,10 +1,7 @@
-﻿using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Crypto.Generators;
+﻿using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Crypto.Signers;
 using Org.BouncyCastle.Security;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace CryptoCalc.Core
@@ -12,26 +9,8 @@ namespace CryptoCalc.Core
     /// <summary>
     /// class for signing and verifing data using ED25519 asymmetric keys
     /// </summary>
-    public class BouncyEd25519 : IAsymmetricSignature, IECAlgorithims
+    public class BouncyEd25519 : BaseBouncyAsymmetric, IAsymmetricSignature, IECAlgorithims
     {
-        #region Private Fields
-
-        /// <summary>
-        /// The generated key pair object for this class
-        /// </summary>
-        private AsymmetricCipherKeyPair keyPair;
-
-        #endregion
-
-        #region Public Properties
-
-        /// <summary>
-        /// A flag for knowing if the algorithim uses elliptical curves
-        /// </summary>
-        public bool UsesCurves => true;
-
-        #endregion
-
         #region Constructor
 
         /// <summary>
@@ -81,11 +60,7 @@ namespace CryptoCalc.Core
         /// <returns>private key in bytes</returns>
         public byte[] GetPrivateKey()
         {
-            var encoded = ((Ed25519PrivateKeyParameters)keyPair.Private).GetEncoded();
-            var privateKey = new List<byte>();
-            privateKey.AddRange(encoded);
-
-            return privateKey.ToArray();
+            return GetPrivateKeyInfo();
         }
 
         /// <summary>
@@ -94,15 +69,8 @@ namespace CryptoCalc.Core
         /// <returns>the public key in bytes</returns>
         public byte[] GetPublicKey()
         {
-            var der = ((Ed25519PrivateKeyParameters)keyPair.Private).GeneratePublicKey().GetEncoded();
-            var Y = ((Ed25519PublicKeyParameters)keyPair.Public).GetEncoded();
-            var publicKey = new List<byte>();
-            publicKey.AddRange(der);
-            publicKey.AddRange(Y);
-
-            return publicKey.ToArray();
+            return GetPublicKeyInfo();
         }
-
 
         /// <summary>
         /// Signs the passed in data with a private key
@@ -113,20 +81,7 @@ namespace CryptoCalc.Core
         public byte[] Sign(byte[] privateKey, byte[] data)
         {
             var signer = new Ed25519Signer();
-            Ed25519PrivateKeyParameters privKey = null;
-            try
-            {
-                privKey = CreatePrivateKeyParameterFromBytes(privateKey);
-            }
-            catch(ArgumentException exception)
-            {
-                string message = "Private Key Creation Failure!\n" +
-                    $"{exception.Message}.\n" +
-                    $"The private key file is corrupted, verify private key file or try another key.\n" +
-                    $"If all fails create a new key pair.";
-                throw new CryptoException(message, exception);
-            }
-            
+            var privKey = (Ed25519PrivateKeyParameters)CreateAsymmetricKeyParameterFromPrivateKeyInfo(privateKey);
             signer.Init(true, privKey);
             signer.BlockUpdate(data, 0, data.Length);
             var signature = signer.GenerateSignature();
@@ -143,49 +98,10 @@ namespace CryptoCalc.Core
         public bool Verify(byte[] originalSignature, byte[] publicKey, byte[] data)
         {
             var signer = new Ed25519Signer();
-            
-            Ed25519PublicKeyParameters pubKey = null;
-            try
-            {
-                pubKey = CreatePublicKeyParameterFromBytes(publicKey);
-            }
-            catch (ArgumentException exception)
-            {
-                string message = "Public Key Creation Failure!\n" +
-                    $"{exception.Message}.\n" +
-                    $"The public key file is corrupted, verify public key file or try another key.\n" +
-                    $"If all fails create a new key pair.";
-                throw new CryptoException(message, exception);
-            }
-
+            var pubKey = (Ed25519PublicKeyParameters)CreateAsymmetricKeyParameterFromPublicKeyInfo(publicKey);
             signer.Init(false, pubKey);
             signer.BlockUpdate(data, 0, data.Length);
             return signer.VerifySignature(originalSignature);
-        }
-
-
-        #endregion
-
-        #region Private Methods
-
-        /// <summary>
-        /// Creates a public key <see cref="Ed25519PublicKeyParameters"/> from a byte array containing the exponent and modulus
-        /// </summary>
-        /// <param name="publicKey">the byte array conatining the exponent and the modulus</param>
-        /// <returns>The public key parameter object</returns>
-        private Ed25519PublicKeyParameters CreatePublicKeyParameterFromBytes(byte[] publicKey)
-        {
-            return new Ed25519PublicKeyParameters(publicKey, 0);
-        }
-
-        /// <summary>
-        /// Creates a private key <see cref="Gost3410PrivateKeyParameters"/> from a byte array containing the exponent and modulus
-        /// </summary>
-        /// <param name="privateKey">the byte array containing the exponent and the modulus</param>
-        /// <returns>The private key parameter object</returns>
-        private Ed25519PrivateKeyParameters CreatePrivateKeyParameterFromBytes(byte[] privateKey)
-        {
-            return new Ed25519PrivateKeyParameters(privateKey, 0);
         }
 
         #endregion

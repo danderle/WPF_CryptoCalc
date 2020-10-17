@@ -7,6 +7,9 @@ using System.IO;
 
 namespace CryptoCalc.Core
 {
+    /// <summary>
+    /// The base class to alll the Bouncy asymmetric classes
+    /// </summary>
     public class BaseBouncyAsymmetric
     {
         #region Protected Fields

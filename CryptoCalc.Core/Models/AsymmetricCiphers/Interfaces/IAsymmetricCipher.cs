@@ -167,7 +167,6 @@ namespace CryptoCalc.Core
         /// <returns>the public key in bytes</returns>
         public byte[] GetPublicKey();
 
-
         #endregion
     }
 }

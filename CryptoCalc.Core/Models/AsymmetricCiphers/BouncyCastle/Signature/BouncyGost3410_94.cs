@@ -1,5 +1,4 @@
-﻿using Org.BouncyCastle.Asn1;
-using Org.BouncyCastle.Asn1.CryptoPro;
+﻿using Org.BouncyCastle.Asn1.CryptoPro;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Crypto.Parameters;
@@ -7,7 +6,6 @@ using Org.BouncyCastle.Crypto.Signers;
 using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Security;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -15,33 +13,10 @@ using System.Linq;
 namespace CryptoCalc.Core
 {
     /// <summary>
-    /// 
+    /// Class for signing and verifying using the Gost3410_94 algorithim
     /// </summary>
-    public class BouncyGost3410_94 : IAsymmetricSignature, IECAlgorithims
+    public class BouncyGost3410_94 : BaseBouncyAsymmetric, IAsymmetricSignature, IECAlgorithims
     {
-        #region Private Fields
-
-        /// <summary>
-        /// The generated key pair object for this class
-        /// </summary>
-        private AsymmetricCipherKeyPair keyPair;
-
-        #endregion
-
-        #region Public Properties
-
-        /// <summary>
-        /// A flag for knowing if the algorithim uses elliptical curves
-        /// </summary>
-        public bool UsesCurves => true;
-
-        /// <summary>
-        /// A flag for knowing if the algorithim uses key sizes for key creation
-        /// </summary>
-        public bool UsesKeySize => false;
-
-        #endregion
-
         #region Constructor
 
         /// <summary>
@@ -71,18 +46,7 @@ namespace CryptoCalc.Core
         /// <returns>the list of all ec curves</returns>
         public ObservableCollection<string> GetEcCurves(EcCurveProvider provider)
         {
-            IEnumerator curves = null;
-            switch(provider)
-            {
-                case EcCurveProvider.SEC:
-                case EcCurveProvider.NIST:
-                case EcCurveProvider.TELETRUST:
-                case EcCurveProvider.ANSSI:
-                case EcCurveProvider.GM:
-                case EcCurveProvider.GOST3410:
-                    curves = Gost3410NamedParameters.Names.GetEnumerator();
-                    break;
-            }
+            var curves = Gost3410NamedParameters.Names.GetEnumerator();
             var list = new ObservableCollection<string>();
             while(curves.MoveNext())
             {
@@ -114,13 +78,7 @@ namespace CryptoCalc.Core
         /// <returns>private key in bytes</returns>
         public byte[] GetPrivateKey()
         {
-            var der = ((Gost3410PrivateKeyParameters)keyPair.Private).PublicKeyParamSet.ToAsn1Object().GetDerEncoded();
-            var x = ((Gost3410PrivateKeyParameters)keyPair.Private).X.ToByteArrayUnsigned();
-            var privateKey = new List<byte>();
-            privateKey.AddRange(der);
-            privateKey.AddRange(x);
-
-            return privateKey.ToArray();
+            return GetPrivateKeyInfo();
         }
 
         /// <summary>
@@ -129,13 +87,7 @@ namespace CryptoCalc.Core
         /// <returns>the public key in bytes</returns>
         public byte[] GetPublicKey()
         {
-            var der = ((Gost3410PublicKeyParameters)keyPair.Public).PublicKeyParamSet.ToAsn1Object().GetDerEncoded();
-            var Y = ((Gost3410PublicKeyParameters)keyPair.Public).Y.ToByteArrayUnsigned();
-            var publicKey = new List<byte>();
-            publicKey.AddRange(der);
-            publicKey.AddRange(Y);
-
-            return publicKey.ToArray();
+            return GetPublicKeyInfo();
         }
 
         /// <summary>
@@ -147,11 +99,10 @@ namespace CryptoCalc.Core
         public byte[] Sign(byte[] privateKey, byte[] data)
         {
             var signer = new Gost3410Signer();
+            var privKey = (Gost3410PrivateKeyParameters)CreateAsymmetricKeyParameterFromPrivateKeyInfo(privateKey);
             
-            Gost3410PrivateKeyParameters privKey;
             try
             {
-                privKey = CreatePrivateKeyParameterFromBytes(privateKey);
                 signer.Init(true, privKey);
             }
             catch (Exception exception)
@@ -180,25 +131,7 @@ namespace CryptoCalc.Core
         public bool Verify(byte[] originalSignature, byte[] publicKey, byte[] data)
         {
             var signer = new Gost3410Signer();
-
-            Gost3410PublicKeyParameters pubKey;
-            try
-            {
-                pubKey = CreatePublicKeyParameterFromBytes(publicKey);
-            }
-            catch (CryptoException exception)
-            {
-                throw new CryptoException(exception.Message, exception);
-            }
-            catch (Exception exception)
-            {
-                string message = "Public Key Creation Failure!\n" +
-                    $"{exception.Message}.\n" +
-                    $"The public key file is corrupted, verify public key file or try another key.\n" +
-                    $"If all fails create a new key pair.";
-                throw new CryptoException(message, exception);
-            }
-
+            var pubKey = (Gost3410PublicKeyParameters)CreateAsymmetricKeyParameterFromPublicKeyInfo(publicKey);
             signer.Init(false, pubKey);
             var r = new byte[originalSignature.Length / 2];
             var s = new byte[originalSignature.Length / 2];
@@ -207,54 +140,6 @@ namespace CryptoCalc.Core
             var R = new BigInteger(1, r);
             var S = new BigInteger(1, s);
             return signer.VerifySignature(data, R, S);
-        }
-
-        #endregion
-
-        #region Private Methods
-
-        /// <summary>
-        /// Creates a public key <see cref="Gost3410PublicKeyParameters"/> from a byte array containing the exponent and modulus
-        /// </summary>
-        /// <param name="publicKey">the byte array conatining the exponent and the modulus</param>
-        /// <returns>The public key parameter object</returns>
-        private Gost3410PublicKeyParameters CreatePublicKeyParameterFromBytes(byte[] publicKey)
-        {
-            //Get length of the DER ecnoded bytes plus 1 for the tag and length of the tlv
-            var der = new byte[publicKey[1] + 2];
-            int restLength = publicKey.Length - der.Length;
-            var y = new byte[restLength];
-
-            Array.Copy(publicKey, der, der.Length);
-            Array.Copy(publicKey, der.Length, y, 0, y.Length);
-
-            //Get the der object identifierer
-            var derOid = DerObjectIdentifier.GetInstance(Asn1Object.FromByteArray(der));
-
-            //Get the Y coordinates and then create the ECPoint
-            var Y = new BigInteger(1, y);
-
-            return new Gost3410PublicKeyParameters(Y, derOid);
-        }
-
-        /// <summary>
-        /// Creates a private key <see cref="Gost3410PrivateKeyParameters"/> from a byte array containing the exponent and modulus
-        /// </summary>
-        /// <param name="privateKey">the byte array containing the exponent and the modulus</param>
-        /// <returns>The private key parameter object</returns>
-        private Gost3410PrivateKeyParameters CreatePrivateKeyParameterFromBytes(byte[] privateKey)
-        {
-            //Get length of the DER ecnoded bytes plus 1 for the tag and length of the tlv
-            var der = new byte[privateKey[1] + 2];
-            int restLength = privateKey.Length - der.Length;
-            var x = new byte[restLength];
-
-            Array.Copy(privateKey, der, der.Length);
-            Array.Copy(privateKey, der.Length, x, 0, x.Length);
-
-            var derObject = DerObjectIdentifier.GetInstance(Asn1Object.FromByteArray(der));
-            var X = new BigInteger(1, x);
-            return new Gost3410PrivateKeyParameters(X, derObject);
         }
 
         #endregion
