@@ -4,10 +4,7 @@ using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Crypto.Signers;
-using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Security;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace CryptoCalc.Core
@@ -15,7 +12,7 @@ namespace CryptoCalc.Core
     /// <summary>
     /// Bouncy castle RSA class for doing encryption and signatures
     /// </summary>
-    public class BouncyRsa : IAsymmetricEncryption, IAsymmetricSignature, INonECAlgorithims
+    public class BouncyRsa : BaseBouncyAsymmetric, IAsymmetricEncryption, IAsymmetricSignature, INonECAlgorithims
     {
         #region Private Fields
 
@@ -24,20 +21,6 @@ namespace CryptoCalc.Core
         /// </summary>
         private readonly IAsymmetricBlockCipher cipher = new RsaEngine();
         
-        /// <summary>
-        /// The generated key pair object for this class
-        /// </summary>
-        private AsymmetricCipherKeyPair keyPair;
-
-        #endregion
-
-        #region Public Properties
-
-        /// <summary>
-        /// A flag for knowing if the algorithim uses elliptical curves
-        /// </summary>
-        public bool UsesCurves => false;
-
         #endregion
 
         #region Constructor
@@ -87,12 +70,7 @@ namespace CryptoCalc.Core
         /// <returns>private key in bytes</returns>
         public byte[] GetPrivateKey()
         {
-            var exponent = ((RsaKeyParameters)keyPair.Private).Exponent.ToByteArrayUnsigned();
-            var modulus = ((RsaKeyParameters)keyPair.Private).Modulus.ToByteArrayUnsigned();
-            var privateKey = new List<byte>();
-            privateKey.AddRange(exponent);
-            privateKey.AddRange(modulus);
-            return privateKey.ToArray();
+            return GetPrivateKeyInfo();
         }
 
         /// <summary>
@@ -101,12 +79,7 @@ namespace CryptoCalc.Core
         /// <returns>the public key in bytes</returns>
         public byte[] GetPublicKey()
         {
-            var exponent = ((RsaKeyParameters)keyPair.Public).Exponent.ToByteArrayUnsigned();
-            var modulus = ((RsaKeyParameters)keyPair.Public).Modulus.ToByteArrayUnsigned();
-            var publicKey = new List<byte>();
-            publicKey.AddRange(exponent);
-            publicKey.AddRange(modulus);
-            return publicKey.ToArray();
+            return GetPublicKeyInfo();
         }
 
         /// <summary>
@@ -130,7 +103,7 @@ namespace CryptoCalc.Core
         public byte[] EncryptBytes(byte[] publicKey, byte[] plainBytes)
         {
             //CreateKeyPair public key
-            var pubKey = CreatePublicKeyParameterFromBytes(publicKey);
+            var pubKey = (RsaKeyParameters)CreateAsymmetricKeyParameterFromPublicKeyInfo(publicKey);
             cipher.Init(true, pubKey);
 
             byte[] encrypted;
@@ -182,7 +155,7 @@ namespace CryptoCalc.Core
         public byte[] DecryptToBytes(byte[] privateKey, byte[] encrypted)
         {
             //create private key
-            var privKey = CreatePrivateKeyParameterFromBytes(privateKey);
+            var privKey = (RsaKeyParameters)CreateAsymmetricKeyParameterFromPrivateKeyInfo(privateKey);
             cipher.Init(false, privKey);
             byte[] decrypted;
             try 
@@ -221,7 +194,7 @@ namespace CryptoCalc.Core
         public byte[] Sign(byte[] privateKey, byte[] data)
         {
             var signer = new RsaDigestSigner(new Sha1Digest());
-            var privKey = CreatePrivateKeyParameterFromBytes(privateKey);
+            var privKey = (RsaKeyParameters)CreateAsymmetricKeyParameterFromPrivateKeyInfo(privateKey);
             signer.Init(true, privKey);
             signer.BlockUpdate(data, 0, data.Length);
             return signer.GenerateSignature();
@@ -237,77 +210,10 @@ namespace CryptoCalc.Core
         public bool Verify(byte[] originalSignature, byte[] publicKey, byte[] data)
         {
             var signer = new RsaDigestSigner(new Sha1Digest());
-            var pubKey = CreatePublicKeyParameterFromBytes(publicKey);
+            var pubKey = (RsaKeyParameters)CreateAsymmetricKeyParameterFromPublicKeyInfo(publicKey);
             signer.Init(false, pubKey);
             signer.BlockUpdate(data, 0, data.Length);
             return signer.VerifySignature(originalSignature);
-        }
-
-
-        #endregion
-
-        #region Private Methods
-
-        /// <summary>
-        /// Creates a public key <see cref="RsaKeyParameters"/> from a byte array containing the exponent and modulus
-        /// </summary>
-        /// <param name="publicKey">the byte array conatining the exponent and the modulus</param>
-        /// <returns>The public RSA key parameter object</returns>
-        private RsaKeyParameters CreatePublicKeyParameterFromBytes(byte[] publicKey)
-        {
-            //exponent contains only the first 3 bytes
-            var e = new byte[3];
-            Array.Copy(publicKey, e, 3);
-            var m = new byte[publicKey.Length - 3];
-            Array.Copy(publicKey, 3, m, 0, publicKey.Length - 3);
-            var exponent = new BigInteger(1, e);
-            var modulus = new BigInteger(1, m);
-
-            RsaKeyParameters rsaKeyParams;
-            try
-            {
-                rsaKeyParams = new RsaKeyParameters(false, modulus, exponent);
-            }
-            catch (ArgumentException exception)
-            {
-                string message = "Public Key Creation Failure!\n" +
-                    $"{exception.Message}.\n" +
-                    $"The public key file is corrupted, verify public key file or try another key.\n" +
-                    $"If all fails create a new key pair.";
-                throw new CryptoException(message, exception);
-            }
-            return rsaKeyParams;
-        }
-
-        /// <summary>
-        /// Creates a private key <see cref="RsaKeyParameters"/> from a byte array containing the exponent and modulus
-        /// </summary>
-        /// <param name="publicKey">the byte array conatining the exponent and the modulus</param>
-        /// <returns>The private RSA key parameter object</returns>
-        private RsaKeyParameters CreatePrivateKeyParameterFromBytes(byte[] privateKey)
-        {
-            //the exponent and modulus are equal in length
-            var e = new byte[privateKey.Length / 2];
-            Array.Copy(privateKey, e, e.Length);
-            var m = new byte[privateKey.Length / 2];
-            Array.Copy(privateKey, e.Length, m, 0, m.Length);
-            var modulus = new BigInteger(1, m);
-            var exponent = new BigInteger(1, e);
-
-            RsaKeyParameters rsaKeyParams;
-            try
-            {
-                rsaKeyParams = new RsaKeyParameters(true, modulus, exponent);
-            }
-            catch(ArgumentException exception)
-            {
-                string message = "Private Key Creation Failure!\n" +
-                    $"{exception.Message}.\n" +
-                    $"The private key file is corrupted, verify private key file or try another key.\n" +
-                    $"If all fails create a new key pair.";
-                    throw new CryptoException(message, exception);
-            }
-            return rsaKeyParams;
         }
 
         #endregion
