@@ -10,7 +10,7 @@ namespace CryptoCalc.Core
     /// <summary>
     /// EC Diffie Hellman key exchange class
     /// </summary>
-    public class MsdnECDH : IAsymmetricKeyExchange, IECAlgorithims
+    public class MsdnECDH : BaseMsdnAsymmetric, IAsymmetricKeyExchange, IECAlgorithims
     {
         #region Private Fields
 
@@ -33,7 +33,7 @@ namespace CryptoCalc.Core
         /// </summary>
         public MsdnECDH()
         {
-            ecCurves = IECAlgorithims.GetAllAvailableMsdnEcCurves();
+            ecCurves = GetAllAvailableMsdnEcCurves();
         }
 
         #endregion

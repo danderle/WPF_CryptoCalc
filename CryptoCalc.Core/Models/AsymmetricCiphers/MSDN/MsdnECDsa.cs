@@ -8,7 +8,7 @@ namespace CryptoCalc.Core
     /// <summary>
     /// The ECDsa algorithim provided by the MSDN library
     /// </summary>
-    public class MsdnECDsa : IAsymmetricSignature, IECAlgorithims
+    public class MsdnECDsa : BaseMsdnAsymmetric, IAsymmetricSignature, IECAlgorithims
     {
         #region Private Fields
 
@@ -31,7 +31,7 @@ namespace CryptoCalc.Core
         /// </summary>
         public MsdnECDsa()
         {
-            ecCurves = IECAlgorithims.GetAllAvailableMsdnEcCurves();
+            ecCurves = GetAllAvailableMsdnEcCurves();
         }
 
         #endregion

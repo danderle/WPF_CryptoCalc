@@ -1,9 +1,11 @@
-﻿using System;
+﻿using System.Collections.ObjectModel;
 using System.Security.Cryptography;
-using System.Collections.ObjectModel;
 
 namespace CryptoCalc.Core
 {
+    /// <summary>
+    /// Classs for signing and verifying using DSA asymmetric keys
+    /// </summary>
     public class MsdnDsa : IAsymmetricSignature, INonECAlgorithims
     {
         #region Private Fields
@@ -12,15 +14,6 @@ namespace CryptoCalc.Core
         /// The cipher object to use for this class
         /// </summary>
         public DSACryptoServiceProvider cipher { get; set; } = new DSACryptoServiceProvider();
-
-        #endregion
-
-        #region Public Properties
-
-        /// <summary>
-        /// A flag for knowing if the algorithim uses elliptical curves
-        /// </summary>
-        public bool UsesCurves => false;
 
         #endregion
 
