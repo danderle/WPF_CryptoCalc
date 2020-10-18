@@ -480,7 +480,6 @@ namespace CryptoCalc.Core
         private void InitializeProperties(CryptographyApi api)
         {
             //according to the selected cipher api create a cipher object
-            //TODO create a factory
             switch (api)
             {
                 case CryptographyApi.MSDN:

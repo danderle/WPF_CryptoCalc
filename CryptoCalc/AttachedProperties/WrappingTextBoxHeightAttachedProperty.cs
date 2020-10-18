@@ -10,9 +10,13 @@ namespace CryptoCalc
     {
         #region Private Fields
 
-        double originalHeight = 0;
-        bool OriginalHeightSet = false;
+        bool originalHeightSet = false;
+
         int maxLines = 0;
+
+        double originalHeight = 0;
+
+        double totalPadding = 0;
 
         #endregion
 
@@ -49,7 +53,7 @@ namespace CryptoCalc
         /// <returns></returns>
         private double GetTextBoxHeight(TextBox tb, int lines)
         {
-            return tb.FontSize * lines + tb.BorderThickness.Top + tb.BorderThickness.Bottom;
+            return (tb.FontSize * lines) + totalPadding;
         }
 
         #endregion
@@ -71,17 +75,18 @@ namespace CryptoCalc
             tb.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
 
             //Get the original set height on the first text changed event
-            if (!OriginalHeightSet)
+            if (!originalHeightSet)
             {
                 originalHeight = tb.Height;
-                OriginalHeightSet = true;
+                totalPadding = originalHeight - tb.FontSize;
+                originalHeightSet = true;
             }
 
             if (lines == 1)
             {
                 tb.Height = originalHeight;
             }
-            else if (lines > 2 && lines <= maxLines)
+            else if (lines >= 2 && lines <= maxLines)
             {
                 double height = GetTextBoxHeight(tb, lines);
                 tb.Height = height;
