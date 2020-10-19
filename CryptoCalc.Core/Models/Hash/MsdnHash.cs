@@ -10,7 +10,7 @@ namespace CryptoCalc.Core
     /// <summary>
     /// A class for computing a variety of hash algorithims
     /// </summary>
-    static class MsdnHash
+    public static class MsdnHash
     {
         #region Private Properties
 

@@ -56,7 +56,7 @@ namespace CryptoCalc
             //as the dependency property does not fire
             if (DesignerProperties.GetIsInDesignMode(this))
             {
-                NewPage.Content = Ioc.Application.CurrentPage.ToBasePage();
+                NewPage.Content = DI.Application.CurrentPage.ToBasePage();
             }
         }
 

@@ -1,6 +1,9 @@
 ﻿using System;
+using System.ServiceProcess;
 using System.Windows;
 using CryptoCalc.Core;
+using Dna;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace CryptoCalc
 {
@@ -31,11 +34,11 @@ namespace CryptoCalc
         /// </summary>
         private void ApplicationSetup()
         {
-            //Setup the ioc
-            Ioc.Setup();
-
-            //Bind UI manager
-            Ioc.Kernal.Bind<IUIManager>().ToConstant(new UIManager());
+            // Setup the Dna Framework
+            Framework.Construct<DefaultFrameworkConstruction>()
+                .AddCryptoCalcViewModels()
+                .AddCryptoCalcClientServices()
+                .Build();
         }
     }
 }

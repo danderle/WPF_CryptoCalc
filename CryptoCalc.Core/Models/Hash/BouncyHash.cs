@@ -12,7 +12,7 @@ namespace CryptoCalc.Core
     /// <summary>
     /// A class for computing a variety of hash algorithims
     /// </summary>
-    static class BouncyHash
+    public static class BouncyHash
     {
         #region Private Properties
 

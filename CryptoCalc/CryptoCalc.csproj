@@ -48,8 +48,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Ninject" Version="3.3.4" />
-    <PackageReference Include="PropertyChanged.Fody" Version="3.2.8" />
+    <PackageReference Include="Dna.Framework" Version="1.0.7.19" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.9" />
+    <PackageReference Include="PropertyChanged.Fody" Version="3.2.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="BouncyCastle">
+      <HintPath>..\..\ExternalLibraries\bccrypto-csharp-1.8.6\crypto\bin\Release\lib\net20\BouncyCastle.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>

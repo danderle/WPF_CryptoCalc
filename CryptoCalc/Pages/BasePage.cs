@@ -1,8 +1,8 @@
-﻿using CryptoCalc.Core;
+﻿using Dna;
+using System.ComponentModel;
 
 namespace CryptoCalc
 {
-
     /// <summary>
     /// A base page for all pages to gain base functionality
     /// </summary>
@@ -68,8 +68,13 @@ namespace CryptoCalc
         /// </summary>
         public BasePage() : base()
         {
-            // Create a default view model
-            ViewModel = Ioc.Get<VM>();
+            // If in design time mode...
+            if (DesignerProperties.GetIsInDesignMode(this))
+                // Just use a new instance of the VM
+                ViewModel = new VM();
+            else
+                // Create a default view model
+                ViewModel = Framework.Service<VM>() ?? new VM();
         }
 
         /// <summary>
@@ -84,8 +89,13 @@ namespace CryptoCalc
             }
             else
             {
-                //Create a default view model
-                ViewModel = Ioc.Get<VM>();
+                // If in design time mode...
+                if (DesignerProperties.GetIsInDesignMode(this))
+                    // Just use a new instance of the VM
+                    ViewModel = new VM();
+                else
+                    // Create a default view model
+                    ViewModel = Framework.Service<VM>() ?? new VM();
             }
         }
         #endregion

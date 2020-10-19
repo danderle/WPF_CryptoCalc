@@ -1,4 +1,4 @@
-﻿<local:BasePage x:TypeArguments="core:AsymmetricViewModel"  
+﻿<local:BasePage x:TypeArguments="local:AsymmetricViewModel"  
                 x:Class="CryptoCalc.BouncyPkEncryptionPage"
                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
