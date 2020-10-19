@@ -1,5 +1,4 @@
-﻿using Dna;
-using CryptoCalc.Core;
+﻿using CryptoCalc.Core;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CryptoCalc

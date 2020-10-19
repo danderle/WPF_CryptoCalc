@@ -1,4 +1,4 @@
-﻿using Dna;
+﻿using CryptoCalc.Core;
 using System.ComponentModel;
 
 namespace CryptoCalc

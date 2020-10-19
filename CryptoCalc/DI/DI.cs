@@ -1,7 +1,10 @@
-﻿using Dna;
+﻿using CryptoCalc.Core;
 
 namespace CryptoCalc
 {
+    /// <summary>
+    /// A shorthand access class to get DI services with nice clean short code
+    /// </summary>
     public static class DI
     {
         /// <summary>

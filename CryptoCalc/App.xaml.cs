@@ -2,7 +2,6 @@
 using System.ServiceProcess;
 using System.Windows;
 using CryptoCalc.Core;
-using Dna;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CryptoCalc
