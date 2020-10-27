@@ -3,24 +3,43 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CryptoCalc", "CryptoCalc.csproj", "{381E60E0-C4CC-48BA-98B6-DF8F56B5A6F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CryptoCalc", "CryptoCalc.csproj", "{381E60E0-C4CC-48BA-98B6-DF8F56B5A6F6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CryptoCalc.Core", "..\CryptoCalc.Core\CryptoCalc.Core.csproj", "{41CFBBF3-DF55-46B5-832A-4CD02B0410D4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CryptoCalc.Core", "..\CryptoCalc.Core\CryptoCalc.Core.csproj", "{41CFBBF3-DF55-46B5-832A-4CD02B0410D4}"
+EndProject
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "CryptoCalc.Installer", "..\CryptoCalc.Installer\CryptoCalc.Installer.wixproj", "{C2B82371-1A81-4262-9DCB-914FBE788DF6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
-		Release|Any CPU = Release|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{381E60E0-C4CC-48BA-98B6-DF8F56B5A6F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{381E60E0-C4CC-48BA-98B6-DF8F56B5A6F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{381E60E0-C4CC-48BA-98B6-DF8F56B5A6F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{381E60E0-C4CC-48BA-98B6-DF8F56B5A6F6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{41CFBBF3-DF55-46B5-832A-4CD02B0410D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{41CFBBF3-DF55-46B5-832A-4CD02B0410D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{41CFBBF3-DF55-46B5-832A-4CD02B0410D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{41CFBBF3-DF55-46B5-832A-4CD02B0410D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{381E60E0-C4CC-48BA-98B6-DF8F56B5A6F6}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{381E60E0-C4CC-48BA-98B6-DF8F56B5A6F6}.Debug|x64.Build.0 = Debug|Any CPU
+		{381E60E0-C4CC-48BA-98B6-DF8F56B5A6F6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{381E60E0-C4CC-48BA-98B6-DF8F56B5A6F6}.Debug|x86.Build.0 = Debug|Any CPU
+		{381E60E0-C4CC-48BA-98B6-DF8F56B5A6F6}.Release|x64.ActiveCfg = Release|Any CPU
+		{381E60E0-C4CC-48BA-98B6-DF8F56B5A6F6}.Release|x64.Build.0 = Release|Any CPU
+		{381E60E0-C4CC-48BA-98B6-DF8F56B5A6F6}.Release|x86.ActiveCfg = Release|Any CPU
+		{381E60E0-C4CC-48BA-98B6-DF8F56B5A6F6}.Release|x86.Build.0 = Release|Any CPU
+		{41CFBBF3-DF55-46B5-832A-4CD02B0410D4}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{41CFBBF3-DF55-46B5-832A-4CD02B0410D4}.Debug|x64.Build.0 = Debug|Any CPU
+		{41CFBBF3-DF55-46B5-832A-4CD02B0410D4}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{41CFBBF3-DF55-46B5-832A-4CD02B0410D4}.Debug|x86.Build.0 = Debug|Any CPU
+		{41CFBBF3-DF55-46B5-832A-4CD02B0410D4}.Release|x64.ActiveCfg = Release|Any CPU
+		{41CFBBF3-DF55-46B5-832A-4CD02B0410D4}.Release|x64.Build.0 = Release|Any CPU
+		{41CFBBF3-DF55-46B5-832A-4CD02B0410D4}.Release|x86.ActiveCfg = Release|Any CPU
+		{41CFBBF3-DF55-46B5-832A-4CD02B0410D4}.Release|x86.Build.0 = Release|Any CPU
+		{C2B82371-1A81-4262-9DCB-914FBE788DF6}.Debug|x64.ActiveCfg = Debug|x64
+		{C2B82371-1A81-4262-9DCB-914FBE788DF6}.Debug|x86.ActiveCfg = Debug|x86
+		{C2B82371-1A81-4262-9DCB-914FBE788DF6}.Debug|x86.Build.0 = Debug|x86
+		{C2B82371-1A81-4262-9DCB-914FBE788DF6}.Release|x64.ActiveCfg = Release|x64
+		{C2B82371-1A81-4262-9DCB-914FBE788DF6}.Release|x64.Build.0 = Release|x64
+		{C2B82371-1A81-4262-9DCB-914FBE788DF6}.Release|x86.ActiveCfg = Release|x64
+		{C2B82371-1A81-4262-9DCB-914FBE788DF6}.Release|x86.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

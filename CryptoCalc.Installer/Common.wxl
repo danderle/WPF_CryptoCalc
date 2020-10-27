@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization Culture="en-us" xmlns="http://schemas.microsoft.com/wix/2006/localization">
+
+  <String Id="Company">danderle</String>
+
+  <String Id="ProductFolderName">CryptoCalc</String>
+  
+  <String Id="ProductName_x86">CryptoCalc (32bit)</String>
+  <String Id="ProductName_x64">CryptoCalc (64bit)</String>
+  
+  <String Id="Description">Describe the product</String>
+  <String Id="Comments">Some helpful comments</String>
+  <String Id="Keywords">dotnet, core, application, installer</String>
+
+  <String Id="DowngradeErrorMessage">A newer version of CryptoCalc is already installed.</String>
+  
+  <String Id="Language">1033</String>
+  
+</WixLocalization>

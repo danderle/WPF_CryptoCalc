@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  
+  <!--Give product a unique ID per platform-->
+  <?if $(var.Platform)=x64?>
+  <?define ProductCode = "{6964A03B-91E8-4432-BC66-DB6ECF67F76C}"?>
+  <?else?>
+  <?define ProductCode = "{E8E0CA85-0F91-44A3-B16C-B310FFF46509}"?>
+  <?endif?>
+  
+  <?define UpgradeCode = "{892B4AAE-EDAA-4E71-A7E3-E7FED8EC5A78}"?>
+  
+  <!--Define main product -->
+	<Product Id="$(var.ProductCode)" 
+           Name="!(loc.ProductName_$(var.Platform))" 
+           Language="!(loc.Language)" 
+           Version="$(var.BuildVersion)" 
+           Manufacturer="!(loc.Company)" 
+           UpgradeCode="$(var.UpgradeCode)">
+		
+    <!--Provide package details-->
+    <Package InstallerVersion="200" 
+             Compressed="yes" 
+             InstallScope="perMachine" 
+             Platform="$(var.Platform)"
+             Manufacturer="!(loc.Company)"
+             Description="!(loc.Description)"
+             Keywords="!(loc.Keywords)"
+             Comments="!(loc.Comments)"
+             Languages="!(loc.Language)"/>
+
+    <!--Downgrade error message-->
+		<MajorUpgrade DowngradeErrorMessage="!(loc.DowngradeErrorMessage)" />
+
+    
+    <!--Include .cab file into .msi file-->
+    <MediaTemplate EmbedCab="yes"/>
+
+    <!--Define main app icon-->
+    <Icon Id="icon.ico"
+          SourceFile="$(var.CryptoCalc.ProjectDir)\Resources\Images\padlock.ico"/>
+
+    <!--Use the icon.ico for this installer (shows up in Add/remove programs)-->
+    <Property Id="ARPPRODUCTICON">icon.ico</Property>
+    <!--HelpISupport website (shows in the Add/Remove programs) -->
+    <Property Id="ARPURLINFOABOUT">http://www.google.de</Property>
+
+    <!--Create a basic UI for the installer-->
+    <UIRef Id="WixUI_Minimal"/>
+    
+    <!--Change the installer background images-->
+    <WixVariable Id="WixUILicenseRtf" Value="$(var.ProjectDir)\Assets\license.rtf" />
+    <WixVariable Id="WixUIDialogBmp" Value="$(var.ProjectDir)\Assets\Background.bmp"/>
+    <WixVariable Id="WixUIBannerBmp" Value="$(var.ProjectDir)\Assets\Banner.bmp"/>
+    
+    <!--Define components, shortcuts, files etc... for intaller-->
+		<Feature Id="ProductFeature" 
+             Title="CryptoCalc.Installer" 
+             Level="1">
+			<ComponentGroupRef Id="ProductComponents" />
+			<ComponentGroupRef Id="PublishedComponents" />
+		</Feature>
+	</Product>
+	
+</Wix>

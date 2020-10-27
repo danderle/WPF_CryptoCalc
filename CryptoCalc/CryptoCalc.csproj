@@ -4,6 +4,7 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon>padlock.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -37,6 +38,8 @@
     <None Remove="Resources\Images\drive.png" />
     <None Remove="Resources\Images\file.png" />
     <None Remove="Resources\Images\folder.png" />
+    <None Remove="Resources\Images\padlock.ico" />
+    <None Remove="Resources\Images\padlock.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -85,6 +88,8 @@
     </Resource>
     <Resource Include="Resources\Images\file.png" />
     <Resource Include="Resources\Images\folder.png" />
+    <Resource Include="Resources\Images\padlock.ico" />
+    <Resource Include="Resources\Images\padlock.png" />
   </ItemGroup>
 
   <ItemGroup>

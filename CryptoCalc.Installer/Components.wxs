@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Fragment>
+    
+    <!--Product Components-->
+    <ComponentGroup Id="ProductComponents">
+      
+      <!--Shortcut-->
+      <ComponentRef Id="MainAppShortcut"/>
+    </ComponentGroup>
+
+    <!--Install files-->
+    <DirectoryRef Id="INSTALLFOLDER" FileSource="..\CryptoCalc\bin\$(var.Configuration)\netcoreapp3.1\win-$(var.Platform)\publish">
+      
+      <!--Shortcut to main application-->
+      <Component Id="MainAppShortcut" Guid="{F8240837-EFC7-4CF9-9D6A-F6824614391A}">
+
+        <Shortcut Id="MainAppShortcut"
+                  Name="!(loc.ProductName_$(var.Platform))"
+                  Target="[INSTALLFOLDER]CryptoCalc.exe"
+                  Directory="InstallProgramMenuFolder"
+                  WorkingDirectory="INSTALLFOLDER"
+                  Icon="icon.ico"/>
+
+        <!--Out unique key for this component-->
+        <RegistryValue Id="RegShortcutKey" Root="HKCU" Key="SOFTWARE\$loc.ProductFolderName)" Name="Shortcut" Value="1" Type="integer" KeyPath="yes" />
+        
+        <!--Remove start menu items-->
+        <RemoveFolder Id="RemoveStartMenu" Directory="InstallProgramMenuFolder" On="uninstall"/>
+      </Component>
+    </DirectoryRef>
+	</Fragment>
+</Wix>
