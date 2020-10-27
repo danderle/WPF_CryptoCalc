@@ -20,13 +20,13 @@
         <StackPanel Grid.Row="0">
             <!--Data input to be hashed entry-->
             <local:DataInputControl DataContext="{Binding DataInput}" 
-                                    d:DataContext="{x:Static local:DataInputDesignModel.Instance}"
-                                    x:Name="DataInput"/>
+                                    d:DataContext="{x:Static local:DataInputDesignModel.Instance}"/>
 
             <!--Hmac option control-->
             <local:HmacControl d:DataContext="{x:Static local:HmacDesignModel.Instance}"
                                DataContext="{Binding HmacSetup}"
-                               HmacSelected="{Binding HmacChecked}" />
+                               HmacSelected="{Binding HmacChecked}" 
+                               x:Name="Hmac"/>
         </StackPanel>
         <!--Border gradient brush-->
         <Border Style="{StaticResource SectionBorder}" 
@@ -39,7 +39,7 @@
                                    d:DataContext="{x:Static local:HashItemListDesignModel.Instance}"
                                    DataContext="{Binding HashList}"
                                    VerticalAlignment="Center"
-                                   local:HmacSelectedProperty.Value="{Binding ElementName=DataFormatOptions, Path=HmacSelected}"/>
+                                   local:HmacSelectedProperty.Value="{Binding ElementName=Hmac, Path=HmacSelected}"/>
 
         <!--Border gradient brush-->
         <Border Grid.Row="1"
