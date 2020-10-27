@@ -9,7 +9,7 @@
              d:DesignWidth="500">
 
     <Grid Background="{StaticResource WhiteBrush}"
-          d:DataContext="{x:Static core:AsymmetricSignatureDesignModel.Instance}">
+          d:DataContext="{x:Static local:AsymmetricSignatureDesignModel.Instance}">
         <Grid.RowDefinitions>
             <!--Setup control-->
             <RowDefinition Height="Auto" />

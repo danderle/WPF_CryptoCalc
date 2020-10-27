@@ -10,7 +10,7 @@
                 d:Height="600">
 
     <Border Style="{StaticResource MainPageBorder}"
-            d:DataContext="{x:Static core:AsymmetricKeyExchangeDesignModel.Instance}">
+            d:DataContext="{x:Static local:AsymmetricKeyExchangeDesignModel.Instance}">
         <Grid>
             <Grid.RowDefinitions>
                 <!--Setup control-->

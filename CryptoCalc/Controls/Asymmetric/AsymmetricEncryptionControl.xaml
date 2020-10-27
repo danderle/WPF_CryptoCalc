@@ -9,7 +9,7 @@
              d:DesignWidth="500">
 
     <Grid Background="{StaticResource WhiteBrush}"
-          d:DataContext="{x:Static core:SymmetricDesignModel.Instance}">
+          d:DataContext="{x:Static local:SymmetricDesignModel.Instance}">
         <Grid.RowDefinitions>
             <!--Setup control-->
             <RowDefinition Height="Auto" />

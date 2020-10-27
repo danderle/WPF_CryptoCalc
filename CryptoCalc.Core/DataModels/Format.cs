@@ -8,12 +8,12 @@
         /// <summary>
         /// Hash a string
         /// </summary>
-        TextString = 0,
+        Text = 0,
 
         /// <summary>
         /// Hash a hex string
         /// </summary>
-        HexString,
+        Hex,
 
         /// <summary>
         /// Hash a file

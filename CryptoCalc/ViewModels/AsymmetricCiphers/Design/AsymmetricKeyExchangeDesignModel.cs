@@ -23,7 +23,7 @@ namespace CryptoCalc
         /// </summary>
         public AsymmetricKeyExchangeDesignModel()
         {
-            DataInput.DataFormatSelected = Format.TextString;
+            DataInput.DataFormatSelected = Format.Text;
             DataInput.Data = "Some message";
             KeyName = "Some name";
             KeyPairSetup = new KeyPairSetupViewModel(CryptographyApi.MSDN, AsymmetricOperation.KeyExchange);

@@ -15,9 +15,9 @@ namespace CryptoCalc
             int index = (int)value >= 0 ? (int)value : 0;
             switch((Format)index)
             {
-                case Format.TextString:
+                case Format.Text:
                     return "Enter a text";
-                case Format.HexString:
+                case Format.Hex:
                     return "Enter a hexadecimal value";
                 case Format.File:
                     return "Enter a valid file path";

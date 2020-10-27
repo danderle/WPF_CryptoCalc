@@ -404,8 +404,8 @@ namespace CryptoCalc
         /// </summary>
         private void ChangedKeySize()
         {
-            UnloadKeyPair();
             OnKeyPairChanged();
+            UnloadKeyPair();
         }
 
         /// <summary>
@@ -413,8 +413,8 @@ namespace CryptoCalc
         /// </summary>
         private void ChangedEcCurve()
         {
-            UnloadKeyPair();
             OnKeyPairChanged();
+            UnloadKeyPair();
         }
 
         /// <summary>

@@ -54,7 +54,7 @@ namespace CryptoCalc
         /// <summary>
         /// Currently selected key format
         /// </summary>
-        public Format KeyFormatSelected { get; set; } = Format.TextString;
+        public Format KeyFormatSelected { get; set; } = Format.Text;
 
         #endregion
 
@@ -79,8 +79,8 @@ namespace CryptoCalc
             KeyFormatSelectionChangedCommand = new RelayCommand(KeyFormatSelectionChanged);
 
             // Adds the formats to the lists
-            KeyFormat.Add(Format.TextString.ToString());
-            KeyFormat.Add(Format.HexString.ToString());
+            KeyFormat.Add(Format.Text.ToString());
+            KeyFormat.Add(Format.Hex.ToString());
         }
 
         #endregion
@@ -112,7 +112,7 @@ namespace CryptoCalc
             {
                 case Format.File:
                     return File.Exists(text);
-                case Format.HexString:
+                case Format.Hex:
                     return text.Length % 2 == 0 && ByteConvert.OnlyHexInString(text);
                 default:
                     return text.Length > 0;

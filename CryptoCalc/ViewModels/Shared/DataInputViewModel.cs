@@ -42,7 +42,7 @@ namespace CryptoCalc
         /// <summary>
         /// Currently selected data format
         /// </summary>
-        public Format DataFormatSelected { get; set; } = Format.TextString;
+        public Format DataFormatSelected { get; set; } = Format.Text;
 
         /// <summary>
         /// A delegate event handler function for the ny data changes
@@ -162,7 +162,7 @@ namespace CryptoCalc
             {
                 case Format.File:
                     return File.Exists(text);
-                case Format.HexString:
+                case Format.Hex:
                     return text.Length % 2 == 0 && ByteConvert.OnlyHexInString(text);
                 default:
                     return text.Length > 0;

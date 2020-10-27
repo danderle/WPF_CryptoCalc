@@ -7,7 +7,7 @@
              xmlns:core="clr-namespace:CryptoCalc.Core;assembly=CryptoCalc.Core"
              mc:Ignorable="d" >
 
-    <Grid d:DataContext="{x:Static core:PageOptionListItemDesignModel.Instance}"
+    <Grid d:DataContext="{x:Static local:PageOptionListItemDesignModel.Instance}"
           Background="{StaticResource WhiteBrush}">
         <ScrollViewer VerticalScrollBarVisibility="Auto">
             <ItemsControl ItemsSource="{Binding Items}">

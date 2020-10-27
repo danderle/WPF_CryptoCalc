@@ -8,7 +8,7 @@
              mc:Ignorable="d" >
 
     <!--List border-->
-    <Border d:DataContext="{x:Static core:HashItemListDesignModel.Instance}"
+    <Border d:DataContext="{x:Static local:HashItemListDesignModel.Instance}"
           Background="{StaticResource WhiteBrush}"
             BorderThickness="0 0 0 1">
         <!--Scrollbar when list is too lonf-->

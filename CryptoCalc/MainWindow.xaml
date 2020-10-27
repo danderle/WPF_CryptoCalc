@@ -11,6 +11,7 @@
         Deactivated="Window_Deactivated"
         Height="650" 
         Width="800"
+        Icon="Resources/Images/padlock.ico"
         x:Name="AppWindow"
         WindowStyle="None"
         AllowsTransparency="True"
@@ -65,10 +66,12 @@
                                     </Grid.ColumnDefinitions>
 
                                     <!--Icon-->
-                                    <Button Command="{Binding MenuCommand}"
+                                    <Viewbox Margin="3">
+                                        <Button Command="{Binding MenuCommand}"
                                                 Style="{StaticResource SystemIconButton}">
-                                        <Image Source="/Resources/Images/projekt.ico"/>
-                                    </Button>
+                                            <Image Source="/Resources/Images/padlock.ico"/>
+                                        </Button>
+                                    </Viewbox>
 
                                     <!--Title-->
                                     <Viewbox Grid.ColumnSpan="3" >

@@ -56,7 +56,7 @@ namespace CryptoCalc
             //as the dependency property does not fire
             if (DesignerProperties.GetIsInDesignMode(this))
             {
-                NewPage.Content = DI.Application.CurrentPage.ToBasePage();
+                NewPage.Content = new ApplicationViewModel().CurrentPage.ToBasePage();
             }
         }
 
@@ -89,8 +89,6 @@ namespace CryptoCalc
 
                 return value;
             }
-
-            
 
             //Store the current page content as the old page
             var oldPageContent = newPageFrame.Content;

@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:CryptoCalc"
-             xmlns:core="clr-namespace:CryptoCalc.Core;assembly=CryptoCalc.Core"
              mc:Ignorable="d">
 
     <Grid Background="{StaticResource WhiteBrush}">
@@ -19,7 +18,7 @@
         <StackPanel VerticalAlignment="Center"
                     Margin="8">
             <!--Text encryption input / output-->
-            <StackPanel Visibility="{Binding DataInput.DataFormatSelected, Converter={local:DataFormatsToVisibility}, ConverterParameter=TextString}">
+            <StackPanel Visibility="{Binding DataInput.DataFormatSelected, Converter={local:DataFormatsToVisibility}, ConverterParameter=Text}">
                 <TextBlock Text="Encrypted Text" 
                            />
                 <TextBox Text="{Binding EncryptedText, UpdateSourceTrigger=PropertyChanged}"
@@ -34,7 +33,7 @@
             </StackPanel>
 
             <!--hex encryption input / output-->
-            <StackPanel Visibility="{Binding DataInput.DataFormatSelected, Converter={local:DataFormatsToVisibility}, ConverterParameter=HexString}">
+            <StackPanel Visibility="{Binding DataInput.DataFormatSelected, Converter={local:DataFormatsToVisibility}, ConverterParameter=Hex}">
                 <TextBlock Text="Encrypted Hex" />
                 <TextBox Text="{Binding EncryptedText, UpdateSourceTrigger=PropertyChanged}" 
                          ToolTip="{Binding DataInput.DataFormatSelected, Converter={local:DataFormatsToDecryptToolTip}}"

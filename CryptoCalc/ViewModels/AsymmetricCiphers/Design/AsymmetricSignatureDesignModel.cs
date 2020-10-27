@@ -23,7 +23,7 @@ namespace CryptoCalc
         /// </summary>
         public AsymmetricSignatureDesignModel()
         {
-            DataInput.DataFormatSelected = Format.HexString;
+            DataInput.DataFormatSelected = Format.Hex;
             DataInput.Data = "ffaa1111ff";
             KeyName = "Some name";
             KeyPairSetup = new KeyPairSetupViewModel(CryptographyApi.MSDN, AsymmetricOperation.Signature);

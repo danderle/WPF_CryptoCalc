@@ -187,7 +187,7 @@ namespace CryptoCalc
                 case Format.File:
                     data = File.ReadAllBytes(DataInput.Data);
                     break;
-                case Format.TextString:
+                case Format.Text:
                     data = ByteConvert.StringToUTF8Bytes(DataInput.Data);
                     break;
             }
@@ -206,7 +206,7 @@ namespace CryptoCalc
                 case Format.File:
                     data = File.ReadAllBytes(DataInput.Data);
                     break;
-                case Format.TextString:
+                case Format.Text:
                     data = ByteConvert.StringToUTF8Bytes(DataInput.Data);
                     break;
             }
@@ -245,7 +245,7 @@ namespace CryptoCalc
                     break;
 
                 //Decrypt a text
-                case Format.TextString:
+                case Format.Text:
                     //Convert the encrypted hex string to bytes
                     encrypted = ByteConvert.HexStringToBytes(EncryptedText);
 
@@ -254,7 +254,7 @@ namespace CryptoCalc
                     break;
 
                 //Decrypt a hex value
-                case Format.HexString:
+                case Format.Hex:
                     //Convert the encrypted hex string to bytes
                     encrypted = ByteConvert.HexStringToBytes(EncryptedText);
 
@@ -302,7 +302,7 @@ namespace CryptoCalc
                 break;
 
                 //Encrypt text
-                case Format.TextString:
+                case Format.Text:
                     //Encrypt
                     encrypted = KeyPairSetup.Encrypt(DataInput.Data);
 
@@ -315,7 +315,7 @@ namespace CryptoCalc
                     break;
 
                 //Encrypt hex string
-                case Format.HexString:
+                case Format.Hex:
                     //Convert hex string to plain bytes
                     plainBytes = ByteConvert.HexStringToBytes(DataInput.Data);
 
@@ -430,8 +430,8 @@ namespace CryptoCalc
             //determine which format is selected to only clear neseccary values
             switch (DataInput.DataFormatSelected)
             {
-                case Format.TextString:
-                case Format.HexString:
+                case Format.Text:
+                case Format.Hex:
                     EncryptedText = string.Empty;
                     DecryptedText = string.Empty;
                     break;

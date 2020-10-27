@@ -7,7 +7,7 @@
              xmlns:core="clr-namespace:CryptoCalc.Core;assembly=CryptoCalc.Core"
              mc:Ignorable="d">
 
-    <TreeView d:DataContext="{x:Static core:TreeDesignModel.Instance}"
+    <TreeView d:DataContext="{x:Static local:TreeDesignModel.Instance}"
               ItemsSource="{Binding LogicalDrives}">
         
         <!--Setting the Properties of a tree view item-->

@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 
 namespace CryptoCalc.Core
@@ -37,11 +36,6 @@ namespace CryptoCalc.Core
                 mServices = value;
             }
         }
-
-        /// <summary>
-        /// The configuration used for the Framework
-        /// </summary>
-        public IConfiguration Configuration { get; protected set; }
 
         #endregion
 

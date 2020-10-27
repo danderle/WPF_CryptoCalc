@@ -10,7 +10,7 @@
              d:DesignWidth="450">
     
     <Border Background="{StaticResource WhiteBrush}"
-            d:DataContext="{x:Static core:HashItemDesignModel.Instance}">
+            d:DataContext="{x:Static local:HashItemDesignModel.Instance}">
         
         <Grid VerticalAlignment="Center">
             <Grid.ColumnDefinitions>

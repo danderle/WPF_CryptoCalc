@@ -8,7 +8,7 @@
                              mc:Ignorable="d">
 
     <Grid Background="{StaticResource WhiteBrush}"
-                d:DataContext="{x:Static core:FolderBrowserDialogDesignModel.Instance}">
+                d:DataContext="{x:Static local:FolderBrowserDialogDesignModel.Instance}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>

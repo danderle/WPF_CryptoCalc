@@ -26,9 +26,9 @@ namespace CryptoCalc
             HmacChecked = true;
             Key = "some kind of hash key";
 
-            KeyFormat.Add(Format.TextString.ToString());
-            KeyFormat.Add(Format.HexString.ToString());
-            KeyFormatSelected = Format.TextString;
+            KeyFormat.Add(Format.Text.ToString());
+            KeyFormat.Add(Format.Hex.ToString());
+            KeyFormatSelected = Format.Text;
         } 
 
         #endregion

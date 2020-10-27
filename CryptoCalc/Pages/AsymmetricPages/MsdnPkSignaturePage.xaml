@@ -9,7 +9,7 @@
                 mc:Ignorable="d">
 
     <Border Style="{StaticResource MainPageBorder}"
-            d:DataContext="{x:Static core:AsymmetricSignatureDesignModel.Instance}">
+            d:DataContext="{x:Static local:AsymmetricSignatureDesignModel.Instance}">
         <Grid>
             <Grid.RowDefinitions>
                 <!--Setup control-->

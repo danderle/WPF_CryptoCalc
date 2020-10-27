@@ -14,9 +14,9 @@ namespace CryptoCalc
         {
             switch((Format)value)
             {
-                case Format.TextString:
+                case Format.Text:
                     return "Enter an encrypted text to decrypt";
-                case Format.HexString:
+                case Format.Hex:
                     return "Enter an encrypted hexadecimal value to decrypt";
                 case Format.File:
                     return "Enter a file path of encrypted file to decrypt";

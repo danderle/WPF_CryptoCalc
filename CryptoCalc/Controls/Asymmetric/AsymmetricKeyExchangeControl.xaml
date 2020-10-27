@@ -9,7 +9,7 @@
              d:DesignHeight="500">
 
     <Grid Background="{StaticResource WhiteBrush}"
-          d:DataContext="{x:Static core:AsymmetricKeyExchangeDesignModel.Instance}">
+          d:DataContext="{x:Static local:AsymmetricKeyExchangeDesignModel.Instance}">
         <Grid.RowDefinitions>
             <!--Setup control-->
             <RowDefinition Height="Auto" />

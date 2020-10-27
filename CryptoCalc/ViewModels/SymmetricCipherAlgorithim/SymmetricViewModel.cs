@@ -94,10 +94,10 @@ namespace CryptoCalc
                             encrypted = ByteConvert.BytesToHexString(bytes);
                         }
                         break;
-                    case Format.HexString:
+                    case Format.Hex:
                         encrypted = EncryptedText;
                         break;
-                    case Format.TextString:
+                    case Format.Text:
                         encrypted = EncryptedText;
                         break;
                 }
@@ -312,7 +312,7 @@ namespace CryptoCalc
             switch (DataInput.DataFormatSelected)
             {
                 //Encrypt a text string
-                case Format.TextString:
+                case Format.Text:
 
                     //Encrypt with the selected cipher and return the encrypted byte array
                     encrypted = SelectedCipherApi.EncryptText(SelectedAlgorithim, SelectedKeySize, secretKey, iv, DataInput.Data);
@@ -321,7 +321,7 @@ namespace CryptoCalc
                     EncryptedText = ByteConvert.BytesToHexString(encrypted);
                     break;
                 //Encrypt a hex string
-                case Format.HexString:
+                case Format.Hex:
 
                     //Convert the plain hex string to byte array
                     plainBytes = ByteConvert.HexStringToBytes(DataInput.Data);
@@ -372,7 +372,7 @@ namespace CryptoCalc
                 switch (DataInput.DataFormatSelected)
                 {
                     //Decrypt to a regular string
-                    case Format.TextString:
+                    case Format.Text:
 
                         //Convert the text string to a byte array
                         encrypted = ByteConvert.HexStringToBytes(EncryptedText);
@@ -382,7 +382,7 @@ namespace CryptoCalc
 
 
                         break;
-                    case Format.HexString:
+                    case Format.Hex:
 
                         //Convert the hex string to a byte array
                         encrypted = ByteConvert.HexStringToBytes(EncryptedText);
@@ -447,11 +447,11 @@ namespace CryptoCalc
                     EncryptedFilePath = string.Empty;
                     DecryptedFilePath = string.Empty;
                     break;
-                case Format.HexString:
+                case Format.Hex:
                     EncryptedText = string.Empty;
                     DecryptedText = string.Empty;
                     break;
-                case Format.TextString:
+                case Format.Text:
                     EncryptedText = string.Empty;
                     DecryptedText = string.Empty;
                     break;
@@ -518,8 +518,8 @@ namespace CryptoCalc
             //determine which format is selected to only clear neseccary values
             switch (DataInput.DataFormatSelected)
             {
-                case Format.TextString:
-                case Format.HexString:
+                case Format.Text:
+                case Format.Hex:
                     EncryptedText = string.Empty;
                     DecryptedText = string.Empty;
                     break;

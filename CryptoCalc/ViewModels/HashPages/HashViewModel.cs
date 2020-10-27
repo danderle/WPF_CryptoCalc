@@ -158,10 +158,10 @@ namespace CryptoCalc
                 case Format.File:
                     bytes = ByteConvert.FileToBytes(data);
                     break;
-                case Format.TextString:
+                case Format.Text:
                     bytes = ByteConvert.StringToAsciiBytes(data);
                     break;
-                case Format.HexString:
+                case Format.Hex:
                     bytes = ByteConvert.HexStringToBytes(data);
                     break;
                 default:

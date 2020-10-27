@@ -9,7 +9,7 @@
                              d:DesignWidth="400">
 
         <Grid Background="{StaticResource WhiteBrush}"
-              d:DataContext="{x:Static core:MessageBoxDialogDesignModel.Instance}">
+              d:DataContext="{x:Static local:MessageBoxDialogDesignModel.Instance}">
             <StackPanel TextBlock.TextAlignment="Left"
                         Margin="8">
                 <TextBlock Text="{Binding Message}"

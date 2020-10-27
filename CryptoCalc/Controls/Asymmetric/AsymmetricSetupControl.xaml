@@ -9,7 +9,7 @@
              d:DesignWidth="450">
 
     <Grid Background="{StaticResource WhiteBrush}"
-          d:DataContext="{x:Static core:AsymmetricEncryptionDesignModel.Instance}">
+          d:DataContext="{x:Static local:AsymmetricEncryptionDesignModel.Instance}">
 
         <Grid.ColumnDefinitions>
             <!--Option to select what type of format to hash-->

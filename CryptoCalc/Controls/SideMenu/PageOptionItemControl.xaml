@@ -10,7 +10,7 @@
     <Border Background="{StaticResource WhiteBrush}"
             Style="{StaticResource PageOptionBorder}">
         
-        <Grid d:DataContext="{x:Static core:PageOptionItemDesignModel.Instance}">
+        <Grid d:DataContext="{x:Static local:PageOptionItemDesignModel.Instance}">
             <Grid.ColumnDefinitions>
                 <!--Selection mark-->
                 <ColumnDefinition Width="auto" />
