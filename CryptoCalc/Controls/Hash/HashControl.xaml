@@ -5,53 +5,56 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:CryptoCalc"
              xmlns:core="clr-namespace:CryptoCalc.Core;assembly=CryptoCalc.Core"
-             mc:Ignorable="d" >
+             mc:Ignorable="d" 
+             d:DesignWidth="400">
 
-    <Grid Background="{StaticResource WhiteBrush}">
-        <Grid.RowDefinitions>
-            <!--The data format control-->
-            <RowDefinition Height="Auto" />
-            <!--The hash options-->
-            <RowDefinition Height="*" />
-            <!--The calculate button-->
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Background="{StaticResource WhiteBrush}">
+            <Grid.RowDefinitions>
+                <!--The data format control-->
+                <RowDefinition Height="Auto" />
+                <!--The hash options-->
+                <RowDefinition Height="*" />
+                <!--The calculate button-->
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0">
-            <!--Data input to be hashed entry-->
-            <local:DataInputControl DataContext="{Binding DataInput}" 
+            <StackPanel Grid.Row="0">
+                <!--Data input to be hashed entry-->
+                <local:DataInputControl DataContext="{Binding DataInput}" 
                                     d:DataContext="{x:Static local:DataInputDesignModel.Instance}"/>
 
-            <!--Hmac option control-->
-            <local:HmacControl d:DataContext="{x:Static local:HmacDesignModel.Instance}"
+                <!--Hmac option control-->
+                <local:HmacControl d:DataContext="{x:Static local:HmacDesignModel.Instance}"
                                DataContext="{Binding HmacSetup}"
                                HmacSelected="{Binding HmacChecked}" 
                                x:Name="Hmac"/>
-        </StackPanel>
-        <!--Border gradient brush-->
-        <Border Style="{StaticResource SectionBorder}" 
+            </StackPanel>
+            <!--Border gradient brush-->
+            <Border Style="{StaticResource SectionBorder}" 
                 Grid.Row="0"/>
 
 
 
-        <!--List of hashing algorithims-->
-        <local:HashItemListControl Grid.Row="1" 
+            <!--List of hashing algorithims-->
+            <local:HashItemListControl Grid.Row="1" 
                                    d:DataContext="{x:Static local:HashItemListDesignModel.Instance}"
                                    DataContext="{Binding HashList}"
                                    VerticalAlignment="Center"
                                    local:HmacSelectedProperty.Value="{Binding ElementName=Hmac, Path=HmacSelected}"/>
 
-        <!--Border gradient brush-->
-        <Border Grid.Row="1"
+            <!--Border gradient brush-->
+            <Border Grid.Row="1"
                 Style="{StaticResource SectionBorder}"/>
-        
-        <!--Calculate button-->
-        <Button Content="Hash"
+
+            <!--Calculate button-->
+            <Button Content="Hash"
                 Style="{StaticResource DefaultButton}"
                 Command="{Binding CalculateCommand}"
                 IsEnabled="{Binding DataIsReadyForProcessing, Mode=OneWay}"
                 HorizontalAlignment="Center"
                 Grid.Row="2"/>
 
-    </Grid>
+        </Grid>
+    </ScrollViewer>
 </UserControl>

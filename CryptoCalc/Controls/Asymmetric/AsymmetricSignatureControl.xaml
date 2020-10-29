@@ -8,23 +8,25 @@
              mc:Ignorable="d" 
              d:DesignWidth="500">
 
-    <Grid Background="{StaticResource WhiteBrush}"
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Background="{StaticResource WhiteBrush}"
           d:DataContext="{x:Static local:AsymmetricSignatureDesignModel.Instance}">
-        <Grid.RowDefinitions>
+            <Grid.RowDefinitions>
+                <!--Setup control-->
+                <RowDefinition Height="Auto" />
+                <!--Signatur input control-->
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
             <!--Setup control-->
-            <RowDefinition Height="Auto" />
+            <local:AsymmetricSetupControl DataContext="{Binding}"/>
+
+            <!--Section Separator-->
+            <Border Style="{StaticResource SectionBorder}" />
+
             <!--Signatur input control-->
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-
-        <!--Setup control-->
-        <local:AsymmetricSetupControl DataContext="{Binding}"/>
-
-        <!--Section Separator-->
-        <Border Style="{StaticResource SectionBorder}" />
-
-        <!--Signatur input control-->
-        <local:SignatureInputControl Grid.Row="1"
+            <local:SignatureInputControl Grid.Row="1"
                                      DataContext="{Binding}" />
-    </Grid>
+        </Grid>
+    </ScrollViewer>
 </UserControl>

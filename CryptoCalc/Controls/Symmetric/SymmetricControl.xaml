@@ -8,22 +8,23 @@
              mc:Ignorable="d" 
              d:DesignWidth="500">
 
-    <Grid Background="{StaticResource WhiteBrush}"
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Background="{StaticResource WhiteBrush}"
           d:DataContext="{x:Static local:SymmetricDesignModel.Instance}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
 
-        <!--setup control-->
-        <local:CipherSetupControl DataContext="{Binding}"/>
-        
-        <!--Section separator-->
-        <Border Style="{StaticResource SectionBorder}" />
+            <!--setup control-->
+            <local:CipherSetupControl DataContext="{Binding}"/>
 
-        <!--Output control-->
-        <local:CipherOutputControl Grid.Row="1" 
+            <!--Section separator-->
+            <Border Style="{StaticResource SectionBorder}" />
+
+            <!--Output control-->
+            <local:CipherOutputControl Grid.Row="1" 
                                    DataContext="{Binding}"/>
-    </Grid>
-    
+        </Grid>
+    </ScrollViewer>
 </UserControl>
