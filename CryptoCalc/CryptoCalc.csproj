@@ -234,6 +234,9 @@
     <Page Update="Pages\SymmetricPages\MsdnSymmetricPage.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Styles\Scrolls.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Styles\ComboBoxs.xaml">
       <SubType>Designer</SubType>
     </Page>
