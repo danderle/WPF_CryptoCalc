@@ -9,27 +9,24 @@
 
     <!--List border-->
     <Border d:DataContext="{x:Static local:HashItemListDesignModel.Instance}"
-          Background="{StaticResource WhiteBrush}"
+            Background="{StaticResource WhiteBrush}"
             BorderThickness="0 0 0 1">
-        <!--Scrollbar when list is too lonf-->
-        <ScrollViewer VerticalScrollBarVisibility="Auto">
             <!--Hahs option item-->
-            <ItemsControl ItemsSource="{Binding Items}"
+        <ItemsControl ItemsSource="{Binding Items}"
                             x:Name="TheItemsControl">
-                <!--Stackpanel to place all the items in-->
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel local:CheckBoxWidthMatcherProperty.Value="True"/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <!--Items-->
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                            <local:HashItemControl DataContext="{Binding }" 
-                                                   Margin="0 8 0 0"/>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </ScrollViewer>
+            <!--Stackpanel to place all the items in-->
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel local:CheckBoxWidthMatcherProperty.Value="True"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <!--Items-->
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <local:HashItemControl DataContext="{Binding }" 
+                                                Margin="0 8 0 0"/>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
     </Border>
 </UserControl>

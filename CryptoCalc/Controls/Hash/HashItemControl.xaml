@@ -33,8 +33,7 @@
                      Text="{Binding HashValue}" 
                      Style="{StaticResource OutputTextBox}"
                      VerticalAlignment="Center"
-                     TextWrapping="Wrap"
-                     MaxLines="3">
+                     TextWrapping="Wrap">
             </TextBox>
         </Grid>
     </Border>

@@ -71,7 +71,7 @@
                 <TextBlock Text="Key Directory"/>
                 <TextBox Text="{Binding KeyDirectoryPath, UpdateSourceTrigger=PropertyChanged}" 
                          Background="{Binding KeyDirectoryPathExists, Converter={local:BoolToBackground}}"
-                         local:WrappingTextBoxHeightProperty.Value="3"/>
+                         local:WrappingTextBoxHeightProperty.Value="true"/>
 
                 <!--Create key button-->
                 <Button Content="New Key Pair" 
@@ -99,7 +99,8 @@
                         <TextBox Text="{Binding PrivateKeyFilePath, UpdateSourceTrigger=PropertyChanged}" 
                                  Background="{Binding PrivateKeyFilePathExists, Converter={local:BoolToBackground}}"
                                  local:DragDropProperty.Value="True"
-                                 local:WrappingTextBoxHeightProperty.Value="3"/>
+                                 local:WrappingTextBoxHeightProperty.Value="true"
+                                 MaxLines="3"/>
 
                         <!--Public Key text box-->
                         <TextBlock Margin="0 8 0 0">
@@ -110,7 +111,8 @@
                         <TextBox Text="{Binding PublicKeyFilePath, UpdateSourceTrigger=PropertyChanged}" 
                                  Background="{Binding PublicKeyFilePathExists, Converter={local:BoolToBackground}}"
                                  local:DragDropProperty.Value="True"
-                                 local:WrappingTextBoxHeightProperty.Value="3"/>
+                                 local:WrappingTextBoxHeightProperty.Value="true"
+                                 MaxLines="3"/>
 
 
                         <TextBlock Margin="0 8 0 0">
@@ -121,7 +123,8 @@
                         <TextBox Text="{Binding OtherPartyPublicKeyFilePath, UpdateSourceTrigger=PropertyChanged}"
                                  Background="{Binding OtherPartyPublicKeyFilePathExists, Converter={local:BoolToBackground}}"
                                  local:DragDropProperty.Value="True"
-                                 local:WrappingTextBoxHeightProperty.Value="3"/>
+                                 local:WrappingTextBoxHeightProperty.Value="true"
+                                 MaxLines="3"/>
 
                         <!--Load and delete key buttons-->
                         <StackPanel Orientation="Horizontal"

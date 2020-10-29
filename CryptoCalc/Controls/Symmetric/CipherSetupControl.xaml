@@ -58,7 +58,8 @@
                          Background="{Binding DataInput.DataIsCorrectlyFormatted, Converter={local:BoolToBackground}}"
                          local:DragDropProperty.Value="True"
                          VerticalContentAlignment="Center"
-                         local:WrappingTextBoxHeightProperty.Value="8"
+                         local:WrappingTextBoxHeightProperty.Value="true"
+                         MaxLines="8"
                          ToolTip="{Binding DataInput.DataFormatSelected, Converter={local:DataFormatsToPlainDataToolTip}}"/>
                 
                 <!--File broswer dialog pop up button-->
@@ -77,7 +78,7 @@
                 </TextBlock>
                 <TextBox Text="{Binding SecretKey, UpdateSourceTrigger=PropertyChanged}" 
                          Background="{Binding SecretKeyAcceptable, Converter={local:BoolToBackground}}"
-                         local:WrappingTextBoxHeightProperty.Value="3"/>
+                         local:WrappingTextBoxHeightProperty.Value="true"/>
                 
                 <!--Initial value text box-->
                 <TextBlock >
@@ -88,7 +89,7 @@
                     <TextBox Text="{Binding IV, UpdateSourceTrigger=PropertyChanged}" 
                              IsEnabled="{Binding HasIv}"
                              Background="{Binding IvAcceptable, Converter={local:BoolToBackground}}"
-                             local:WrappingTextBoxHeightProperty.Value="3"/>
+                             local:WrappingTextBoxHeightProperty.Value="true"/>
             </StackPanel>
             
             <!--Random key generation button-->

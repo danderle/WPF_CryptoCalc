@@ -20,7 +20,8 @@
             <!--Signature-->
             <TextBlock Text="Original Signature" />
             <TextBox Text="{Binding OriginalSignature, UpdateSourceTrigger=PropertyChanged}" 
-                     local:WrappingTextBoxHeightProperty.Value="3"/>
+                     local:WrappingTextBoxHeightProperty.Value="true"
+                     MaxLines="3"/>
 
             <!--Verified Flag-->
             <TextBlock Text="Verified Signature" 

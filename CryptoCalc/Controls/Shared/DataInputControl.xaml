@@ -48,7 +48,8 @@
                          Background="{Binding DataIsCorrectlyFormatted, Converter={local:BoolToBackground}}"
                          local:DragDropProperty.Value="True"
                          ToolTip="{Binding ElementName=ComboBox1, Path=SelectedIndex, Converter={local:IndexToToolTip}}"
-                         local:WrappingTextBoxHeightProperty.Value="8"/>
+                         local:WrappingTextBoxHeightProperty.Value="true"
+                         MaxLines="8"/>
 
                 <!--File browser pop pup button-->
                 <Button Grid.Column="1"

@@ -22,7 +22,8 @@
             <TextBlock Text="Derived Key" />
             <TextBox Text="{Binding DerivedKey, UpdateSourceTrigger=PropertyChanged}" 
                      IsReadOnly="True"
-                     local:WrappingTextBoxHeightProperty.Value="3"/>
+                     local:WrappingTextBoxHeightProperty.Value="true"
+                     MaxLines="3"/>
 
         </StackPanel>
 

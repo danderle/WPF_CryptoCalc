@@ -6,13 +6,11 @@ namespace CryptoCalc
     /// <summary>
     /// Adjusts the height of a textbox when wrapping until the set maximum lines
     /// </summary>
-    public class WrappingTextBoxHeightProperty : BaseAttachedProperty<WrappingTextBoxHeightProperty, int>
+    public class WrappingTextBoxHeightProperty : BaseAttachedProperty<WrappingTextBoxHeightProperty, bool>
     {
         #region Private Fields
 
         bool originalHeightSet = false;
-
-        int maxLines = 0;
 
         double originalHeight = 0;
 
@@ -32,8 +30,6 @@ namespace CryptoCalc
             //make sure the object is a textbox
             if (sender is TextBox textBox)
             {
-                //save the maximum number of lines
-                maxLines = (int)e.NewValue;
                 //set text wrapping
                 textBox.TextWrapping = TextWrapping.Wrap;
                 //hook into the text changed event
@@ -86,14 +82,14 @@ namespace CryptoCalc
             {
                 tb.Height = originalHeight;
             }
-            else if (lines >= 2 && lines <= maxLines)
+            else if (lines >= 2 && lines <= tb.MaxLines)
             {
                 double height = GetTextBoxHeight(tb, lines);
                 tb.Height = height;
             }
-            else if (lines > maxLines)
+            else if (lines > tb.MaxLines)
             {
-                double height = GetTextBoxHeight(tb, maxLines);
+                double height = GetTextBoxHeight(tb, tb.MaxLines);
                 tb.Height = height;
                 tb.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
             }
